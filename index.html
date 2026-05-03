@@ -1,0 +1,1807 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoorSkill — The Global Marketplace for Any Business</title>
+<meta name="description" content="Find the best professionals globally for any task. DoorSkill connects you with skilled workers from all over the world. Post a job or offer your skills today."/>
+<meta name="keywords" content="DoorSkill, global marketplace, freelance, hire workers, find jobs, local services, global services, professional network"/>
+<meta property="og:title" content="DoorSkill — The Global Marketplace for Any Business"/>
+<meta property="og:description" content="Connect with top-rated professionals worldwide. Post a job or offer your services on DoorSkill."/>
+<meta property="og:type" content="website"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "DoorSkill",
+  "url": "https://doorskill.com",
+  "description": "The Global Marketplace for Any Business. Find the best professionals globally for any task."
+}
+</script>
+<style>
+:root{
+  --rose:#F43F5E;
+  --rose-lt:#FFE4EC;
+  --rose-md:#FB7185;
+  --pink-bg:#FFF0F5;
+  --cream:#FFFAF9;
+  --dark:#1A0A14;
+  --mid:#5C3D4E;
+  --muted:#9D7589;
+  --white:#FFFFFF;
+  --border:#F3D6E0;
+  --green:#10B981;
+  --shadow:0 4px 24px rgba(244,63,94,.10);
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--cream);
+  color:var(--dark);
+  overflow-x:hidden;
+}
+
+/* ─── NAVBAR ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:68px;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all .3s;
+}
+nav.scrolled{
+  box-shadow:0 4px 24px rgba(244,63,94,.10);
+}
+.logo{
+  display:inline-flex;align-items:center;
+  text-decoration:none;
+}
+.logo img { height: 32px; width: auto; }
+.nav-links{
+  display:flex;align-items:center;
+  gap:6px;list-style:none;
+}
+.nav-links a{
+  text-decoration:none;font-size:14px;
+  font-weight:500;color:var(--mid);
+  padding:8px 14px;border-radius:8px;
+  transition:all .2s;
+}
+.nav-links a:hover{
+  background:var(--rose-lt);
+  color:var(--rose);
+}
+.helper-btn {
+  background: linear-gradient(135deg, var(--rose) 0%, var(--rose-md) 100%);
+  color: #fff !important; font-weight: 700; padding: 6px 14px;
+  border-radius: 999px; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;
+}
+.helper-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Services Mega Menu */
+.has-mega{position:relative;}
+.has-mega > a::after{
+  content:' ▾';font-size:11px;
+}
+.mega-menu{
+  position:absolute;top:calc(100% + 12px);
+  left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:20px;
+  border:1.5px solid var(--border);
+  box-shadow:0 20px 60px rgba(244,63,94,.15);
+  padding:24px;width:700px;
+  display:none;z-index:999;
+}
+.has-mega:hover .mega-menu{display:grid;}
+.mega-menu{
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+.mega-col h4{
+  font-size:11px;font-weight:700;
+  color:var(--rose);letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+  padding-bottom:6px;
+  border-bottom:2px solid var(--rose-lt);
+}
+.mega-col a{
+  display:flex;align-items:center;
+  gap:6px;font-size:13px;color:var(--mid);
+  padding:4px 0;border-radius:6px;
+  text-decoration:none;transition:all .2s;
+  font-weight:400;
+}
+.mega-col a:hover{
+  color:var(--rose);
+  padding-left:4px;
+}
+.mega-footer{
+  grid-column:1/-1;
+  border-top:1px solid var(--border);
+  padding-top:14px;margin-top:4px;
+  display:flex;align-items:center;
+  justify-content:space-between;
+}
+.mega-footer p{font-size:12px;color:var(--muted);}
+.mega-footer a{
+  font-size:13px;font-weight:600;
+  color:var(--rose);text-decoration:none;
+}
+
+.nav-btns{display:flex;gap:8px;align-items:center;}
+.btn-outline{
+  padding:8px 18px;border-radius:8px;
+  border:1.5px solid var(--rose);
+  background:transparent;color:var(--rose);
+  font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  font-family:'DM Sans',sans-serif;
+  text-decoration:none;
+  display:inline-flex;align-items:center;
+}
+.btn-outline:hover{background:var(--rose-lt);}
+.btn-fill{
+  padding:8px 20px;border-radius:8px;
+  border:none;background:var(--rose);
+  color:#fff;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  font-family:'DM Sans',sans-serif;
+  text-decoration:none;
+  display:inline-flex;align-items:center;
+}
+.btn-fill:hover{
+  background:#e0334f;
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(244,63,94,.3);
+}
+
+.auth-btns { display: flex; align-items: center; gap: 8px; }
+
+/* Mobile menu */
+.hamburger{
+  display:none;background:none;border:none;
+  cursor:pointer;padding:8px;font-size:22px;
+  color:var(--dark);
+}
+.mobile-menu{
+  display:none;position:fixed;
+  top:68px;left:0;right:0;z-index:999;
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:16px 5%;
+  box-shadow:0 8px 24px rgba(0,0,0,.1);
+}
+.mobile-menu.open{display:block;}
+.mobile-menu a{
+  display:block;padding:12px 0;
+  font-size:15px;font-weight:500;
+  color:var(--dark);text-decoration:none;
+  border-bottom:1px solid var(--border);
+}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:hover{color:var(--rose);}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:100px 5% 60px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,
+    #fff 0%,
+    #FFF0F5 35%,
+    #FFE4EC 65%,
+    #ffd6e4 100%);
+}
+.blob{
+  position:absolute;border-radius:50%;
+  filter:blur(70px);pointer-events:none;z-index:0;
+}
+.blob-1{
+  width:550px;height:550px;
+  background:rgba(251,113,133,.18);
+  top:-130px;right:-100px;
+  animation:blobFloat 8s ease-in-out infinite;
+}
+.blob-2{
+  width:400px;height:400px;
+  background:rgba(244,63,94,.12);
+  bottom:40px;left:-120px;
+  animation:blobFloat 10s ease-in-out infinite reverse;
+}
+.blob-3{
+  width:280px;height:280px;
+  background:rgba(255,200,220,.25);
+  top:35%;right:12%;
+  animation:blobFloat 7s ease-in-out infinite 2s;
+}
+@keyframes blobFloat{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-25px) scale(1.05);}
+}
+.geo{position:absolute;border-radius:50%;pointer-events:none;}
+.geo-1{
+  width:200px;height:200px;
+  border:1.5px solid rgba(244,63,94,.12);
+  top:15%;left:5%;
+}
+.geo-2{
+  width:100px;height:100px;
+  border:1.5px solid rgba(244,63,94,.18);
+  top:25%;left:12%;
+}
+.geo-3{
+  width:350px;height:350px;
+  border:1px solid rgba(244,63,94,.07);
+  bottom:8%;right:3%;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:radial-gradient(
+    circle,rgba(244,63,94,.10) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.hero-content{
+  position:relative;z-index:1;
+  text-align:center;max-width:800px;
+  width:100%;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(244,63,94,.10);
+  border:1px solid rgba(244,63,94,.22);
+  border-radius:999px;padding:7px 20px;
+  margin-bottom:28px;
+  font-size:13px;font-weight:500;
+  color:var(--rose);
+  animation:fadeDown .7s ease both;
+}
+.live-dot{
+  width:7px;height:7px;
+  background:var(--green);border-radius:50%;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.5;transform:scale(1.5);}
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,5.5vw,4.2rem);
+  font-weight:900;line-height:1.12;
+  letter-spacing:-.02em;color:var(--dark);
+  animation:fadeDown .8s .1s ease both;
+}
+.hero h1 em{
+  font-style:normal;color:var(--rose);
+  position:relative;display:inline-block;
+}
+.hero h1 em::after{
+  content:'';position:absolute;
+  left:0;bottom:-4px;right:0;height:4px;
+  background:linear-gradient(90deg,var(--rose),var(--rose-md));
+  border-radius:2px;
+  animation:lineGrow .8s .7s ease both;
+  transform-origin:left;
+}
+@keyframes lineGrow{
+  from{transform:scaleX(0);}
+  to{transform:scaleX(1);}
+}
+.hero-sub{
+  margin:20px auto 36px;
+  font-size:17px;color:var(--mid);
+  font-weight:400;line-height:1.7;
+  max-width:580px;
+  animation:fadeUp .8s .2s ease both;
+}
+
+/* ─── SEARCH BAR ─── */
+.search-outer{
+  position:relative;
+  max-width:680px;width:100%;
+  margin:0 auto;
+  animation:fadeUp .8s .3s ease both;
+}
+.search-wrap{
+  background:#fff;border-radius:16px;
+  border:1.5px solid var(--border);
+  box-shadow:0 8px 40px rgba(244,63,94,.14);
+  padding:8px 8px 8px 20px;
+  display:flex;align-items:center;gap:8px;
+}
+.search-icon{color:var(--muted);flex-shrink:0;}
+.search-wrap input{
+  flex:1;border:none;outline:none;
+  background:transparent;
+  font-size:15px;font-family:'DM Sans',sans-serif;
+  color:var(--dark);padding:6px 0;
+}
+.search-wrap input::placeholder{color:var(--muted);}
+.search-divider{
+  width:1px;height:32px;
+  background:var(--border);flex-shrink:0;
+}
+.location-btn{
+  display:flex;align-items:center;gap:6px;
+  background:transparent;border:none;
+  cursor:pointer;font-size:13px;
+  color:var(--mid);font-family:'DM Sans',sans-serif;
+  white-space:nowrap;padding:0 8px;
+  transition:color .2s;
+}
+.location-btn:hover{color:var(--rose);}
+.search-btn{
+  background:var(--rose);color:#fff;
+  border:none;cursor:pointer;
+  border-radius:10px;padding:12px 24px;
+  font-size:14px;font-weight:700;
+  font-family:'DM Sans',sans-serif;
+  white-space:nowrap;transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.search-btn:hover{
+  background:#e0334f;
+  transform:translateY(-1px);
+}
+
+/* Autocomplete */
+.autocomplete{
+  position:absolute;top:calc(100% + 8px);
+  left:0;right:0;
+  background:#fff;border-radius:14px;
+  border:1.5px solid var(--border);
+  box-shadow:0 16px 48px rgba(244,63,94,.15);
+  overflow:hidden;display:none;z-index:100;
+}
+.autocomplete.show{display:block;}
+.auto-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;cursor:pointer;
+  transition:background .15s;
+  border-bottom:1px solid var(--rose-lt);
+}
+.auto-item:last-child{border-bottom:none;}
+.auto-item:hover{background:var(--pink-bg);}
+.auto-item-icon{font-size:18px;flex-shrink:0;}
+.auto-item-text{
+  font-size:14px;font-weight:500;color:var(--dark);
+}
+.auto-item-cat{
+  font-size:12px;color:var(--muted);margin-top:1px;
+}
+.auto-arrow{
+  margin-left:auto;color:var(--rose-md);font-size:14px;
+}
+.no-results{
+  padding:16px;text-align:center;
+  font-size:14px;color:var(--muted);
+}
+
+/* Tags */
+.popular-tags{
+  display:flex;align-items:center;
+  gap:8px;flex-wrap:wrap;
+  justify-content:center;
+  margin-top:18px;
+  animation:fadeUp .8s .4s ease both;
+}
+.popular-tags span{
+  font-size:13px;color:var(--muted);
+  font-weight:500;
+}
+.tag{
+  padding:5px 14px;border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.8);
+  font-size:13px;color:var(--mid);
+  cursor:pointer;transition:all .2s;
+  backdrop-filter:blur(8px);
+}
+.tag:hover{
+  border-color:var(--rose);
+  color:var(--rose);
+  background:var(--rose-lt);
+  transform:translateY(-1px);
+}
+
+/* Stats */
+.stats-strip{
+  display:flex;gap:0;
+  justify-content:center;
+  margin-top:56px;
+  position:relative;z-index:1;
+  animation:fadeUp .8s .5s ease both;
+  background:rgba(255,255,255,.7);
+  backdrop-filter:blur(12px);
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:20px 40px;
+  max-width:640px;
+  width:100%;
+}
+.stat{
+  text-align:center;flex:1;
+  position:relative;
+}
+.stat:not(:last-child)::after{
+  content:'';position:absolute;
+  right:0;top:50%;transform:translateY(-50%);
+  width:1px;height:40px;background:var(--border);
+}
+.stat-num{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:900;
+  color:var(--rose);line-height:1;
+}
+.stat-lbl{
+  font-size:12px;color:var(--muted);margin-top:4px;
+}
+
+/* ─── SECTIONS SHARED ─── */
+section{padding:80px 5%;}
+.section-tag{
+  display:inline-block;
+  background:var(--rose-lt);color:var(--rose);
+  font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  border-radius:999px;padding:5px 16px;
+  margin-bottom:12px;
+}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:900;color:var(--dark);
+  line-height:1.2;
+}
+.section-sub{
+  color:var(--muted);font-size:15px;
+  margin-top:10px;max-width:500px;
+  line-height:1.6;
+}
+
+/* ─── SERVICES SECTION ─── */
+.services-section{background:#fff;}
+.services-header{
+  display:flex;justify-content:space-between;
+  align-items:flex-end;margin-bottom:44px;
+  flex-wrap:wrap;gap:16px;
+}
+.view-all-btn{
+  padding:10px 22px;border:1.5px solid var(--rose);
+  background:transparent;color:var(--rose);
+  border-radius:10px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.view-all-btn:hover{background:var(--rose);color:#fff;}
+
+.categories-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:18px;
+}
+.cat-card{
+  border:1.5px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  background:#fff;transition:all .25s;
+  cursor:pointer;
+}
+.cat-card:hover{
+  border-color:var(--rose-md);
+  box-shadow:0 12px 40px rgba(244,63,94,.12);
+  transform:translateY(-3px);
+}
+.cat-header{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 20px 14px;
+  border-bottom:1px solid var(--border);
+}
+.cat-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;
+  justify-content:center;font-size:22px;
+  flex-shrink:0;
+}
+.cat-title{font-size:15px;font-weight:700;color:var(--dark);}
+.cat-count{font-size:12px;color:var(--muted);margin-top:2px;}
+.cat-body{padding:14px 20px 18px;}
+.sub-item{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:7px 0;
+  border-bottom:1px solid #fef0f3;
+  cursor:pointer;
+  transition:all .15s;
+}
+.sub-item:last-child{border-bottom:none;}
+.sub-item:hover .sub-name{color:var(--rose);}
+.sub-name{font-size:13px;color:var(--mid);}
+.sub-arrow{
+  color:var(--rose-md);font-size:14px;
+  opacity:0;transition:opacity .2s;
+}
+.cat-card:hover .sub-arrow{opacity:1;}
+
+/* icon bg colors */
+.ic-repair{background:#FFF0F5;}
+.ic-edu{background:#EFF6FF;}
+.ic-health{background:#F0FDF4;}
+.ic-beauty{background:#FDF4FF;}
+.ic-clean{background:#FFFBEB;}
+.ic-it{background:#F0F9FF;}
+.ic-auto{background:#FFF7ED;}
+.ic-other{background:#F5F3FF;}
+
+/* ─── HOW IT WORKS ─── */
+.how-section{
+  background:linear-gradient(135deg,var(--pink-bg) 0%,#fff 100%);
+}
+.how-header{text-align:center;margin-bottom:48px;}
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;max-width:900px;margin:0 auto;
+}
+.step-card{
+  background:#fff;border-radius:16px;
+  padding:28px 24px;
+  border:1.5px solid var(--border);
+  position:relative;transition:all .25s;
+}
+.step-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow);
+  border-color:var(--rose-md);
+}
+.step-num{
+  font-family:'Playfair Display',serif;
+  font-size:44px;font-weight:900;
+  color:var(--rose-lt);line-height:1;
+  margin-bottom:14px;
+}
+.step-icon{font-size:26px;margin-bottom:10px;}
+.step-title{
+  font-size:15px;font-weight:700;
+  color:var(--dark);margin-bottom:8px;
+}
+.step-desc{
+  font-size:13px;color:var(--muted);line-height:1.6;
+}
+
+/* ─── ALL WORKERS ─── */
+.workers-section{background:#fff;}
+.workers-header{text-align:center;margin-bottom:40px;}
+.workers-note{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--rose-lt);border-radius:999px;
+  padding:8px 20px;margin-top:14px;
+  font-size:13px;color:var(--rose);font-weight:500;
+}
+.workers-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:12px;max-width:900px;margin:0 auto;
+}
+.worker-chip{
+  display:flex;flex-direction:column;
+  align-items:center;gap:8px;
+  padding:18px 10px;border-radius:12px;
+  border:1.5px solid var(--border);
+  background:#fff;cursor:pointer;
+  transition:all .22s;text-align:center;
+}
+.worker-chip:hover{
+  border-color:var(--rose);
+  background:var(--rose-lt);
+  transform:translateY(-3px);
+  box-shadow:0 8px 24px rgba(244,63,94,.12);
+}
+.wc-icon{font-size:26px;}
+.wc-label{
+  font-size:12px;font-weight:600;
+  color:var(--mid);
+}
+.worker-chip:hover .wc-label{color:var(--rose);}
+.custom-worker{
+  grid-column:1/-1;
+  display:flex;align-items:center;
+  justify-content:center;gap:8px;
+  padding:16px;border-radius:12px;
+  border:2px dashed var(--border);
+  background:transparent;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--muted);
+  transition:all .2s;
+  font-family:'DM Sans',sans-serif;
+}
+.custom-worker:hover{
+  border-color:var(--rose);
+  color:var(--rose);background:var(--rose-lt);
+}
+
+/* ─── TRUST SECTION ─── */
+.trust-section{
+  background:var(--pink-bg);
+}
+.trust-header{text-align:center;margin-bottom:44px;}
+.trust-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;max-width:800px;margin:0 auto;
+}
+.trust-card{
+  text-align:center;padding:28px 20px;
+  background:#fff;border-radius:16px;
+  border:1.5px solid var(--border);
+  transition:all .2s;
+}
+.trust-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+.trust-icon{font-size:36px;margin-bottom:12px;}
+.trust-title{
+  font-size:15px;font-weight:700;
+  color:var(--dark);margin-bottom:6px;
+}
+.trust-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* ─── CTA ─── */
+.cta-section{
+  background:linear-gradient(135deg,var(--rose) 0%,#be123c 100%);
+  padding:80px 5%;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(
+    circle,rgba(255,255,255,.07) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.cta-blob{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);pointer-events:none;
+  background:rgba(255,255,255,.1);
+}
+.cta-blob-1{width:300px;height:300px;top:-100px;right:-50px;}
+.cta-blob-2{width:200px;height:200px;bottom:-60px;left:-40px;}
+.cta-section h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;color:#fff;position:relative;
+  margin-bottom:12px;
+}
+.cta-section p{
+  color:rgba(255,255,255,.82);font-size:17px;
+  position:relative;margin-bottom:32px;
+  max-width:500px;margin-left:auto;margin-right:auto;
+  margin-bottom:36px;
+}
+.cta-btns{
+  display:flex;gap:12px;
+  justify-content:center;flex-wrap:wrap;
+  position:relative;
+}
+.cta-btn-primary{
+  padding:14px 32px;border-radius:10px;
+  border:none;background:#fff;color:var(--rose);
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.cta-btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.2);
+}
+.cta-btn-outline{
+  padding:14px 32px;border-radius:10px;
+  border:2px solid rgba(255,255,255,.7);
+  background:transparent;color:#fff;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.cta-btn-outline:hover{
+  background:rgba(255,255,255,.15);
+  border-color:#fff;
+}
+
+/* ─── FOOTER ─── */
+.footer-divider{
+  height:80px;
+  background:linear-gradient(135deg,var(--rose),#be123c);
+  clip-path:polygon(0 0,100% 40%,100% 100%,0 100%);
+  margin-bottom:-2px;
+}
+footer{
+  background:var(--dark);color:#fff;
+  padding:56px 5% 28px;
+  position:relative;overflow:hidden;
+}
+footer::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(244,63,94,.15) 0%,transparent 70%);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:40px;position:relative;
+  margin-bottom:44px;
+}
+.footer-brand .logo{
+  font-size:24px;display:block;
+  margin-bottom:12px;text-decoration:none;
+}
+.footer-brand p{
+  font-size:14px;color:rgba(255,255,255,.45);
+  line-height:1.7;max-width:260px;
+}
+.footer-social{display:flex;gap:8px;margin-top:18px;}
+.soc-btn{
+  width:36px;height:36px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;
+  justify-content:center;font-size:14px;
+  cursor:pointer;transition:all .2s;
+  color:rgba(255,255,255,.55);text-decoration:none;
+}
+.soc-btn:hover{
+  background:var(--rose);
+  border-color:var(--rose);color:#fff;
+}
+.footer-col h4{
+  font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);margin-bottom:16px;
+}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:10px;}
+.footer-col ul li a{
+  font-size:14px;color:rgba(255,255,255,.6);
+  text-decoration:none;transition:color .2s;
+}
+.footer-col ul li a:hover{color:var(--rose-md);}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,.06);
+  padding-top:22px;position:relative;
+  display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:10px;
+}
+.footer-bottom p{
+  font-size:13px;color:rgba(255,255,255,.3);
+}
+.footer-bottom a{
+  color:var(--rose-md);text-decoration:none;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.reveal{
+  opacity:0;transform:translateY(32px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .nav-links,.nav-btns{display:none;}
+  .hamburger{display:block;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .mega-menu{display:none!important;}
+}
+@media(max-width:600px){
+  .stats-strip{
+    flex-wrap:wrap;gap:16px;padding:16px 24px;
+  }
+  .stat:not(:last-child)::after{display:none;}
+  .search-divider,.location-btn{display:none;}
+  .footer-grid{grid-template-columns:1fr;}
+  .cta-btns{flex-direction:column;align-items:center;}
+  .cta-btn-primary,.cta-btn-outline{width:100%;max-width:280px;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ─── -->
+<nav id="navbar">
+  <a href="index.html" class="logo"><img src="assets/logo.png" alt="DoorSkill Logo"></a>
+
+  <ul class="nav-links">
+    <li class="has-mega">
+      <a href="#">Services</a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>🔧 Home</h4>
+          <a href="pages/find-workers.html?q=Plumber">🪛 Plumber</a>
+          <a href="pages/find-workers.html?q=Electrician">⚡ Electrician</a>
+          <a href="pages/find-workers.html?q=Carpenter">🪚 Carpenter</a>
+          <a href="pages/find-workers.html?q=Painter">🖌️ Painter</a>
+          <a href="pages/find-workers.html?q=AC Repair">❄️ AC Repair</a>
+        </div>
+        <div class="mega-col">
+          <h4>📚 Education</h4>
+          <a href="pages/find-workers.html?q=Math Teacher">➕ Math Teacher</a>
+          <a href="pages/find-workers.html?q=Science Teacher">🔬 Science</a>
+          <a href="pages/find-workers.html?q=English Tutor">🗣️ English Tutor</a>
+          <a href="pages/find-workers.html?q=Quran Tutor">📖 Quran Tutor</a>
+          <a href="pages/find-workers.html?q=Coding Tutor">💻 Coding</a>
+        </div>
+        <div class="mega-col">
+          <h4>🏥 Health</h4>
+          <a href="pages/find-workers.html?q=Doctor">👨‍⚕️ Doctor</a>
+          <a href="pages/find-workers.html?q=Dentist">🦷 Dentist</a>
+          <a href="pages/find-workers.html?q=Physiotherapist">🤸 Physio</a>
+          <a href="pages/find-workers.html?q=Nurse">👩‍⚕️ Nurse</a>
+          <a href="pages/find-workers.html?q=Nutritionist">🥗 Nutritionist</a>
+        </div>
+        <div class="mega-col">
+          <h4>💻 IT & More</h4>
+          <a href="pages/find-workers.html?q=Laptop Repair">🖥️ Laptop Repair</a>
+          <a href="pages/find-workers.html?q=Mobile Repair">📱 Mobile Repair</a>
+          <a href="pages/find-workers.html?q=Home Cleaning">🧹 Cleaning</a>
+          <a href="pages/find-workers.html?q=Car Mechanic">🚗 Car Mechanic</a>
+          <a href="pages/find-workers.html?q=Makeup Artist">💄 Makeup</a>
+        </div>
+        <div class="mega-footer">
+          <p>✨ Any skill not listed? Post a custom job!</p>
+          <a href="pages/post-job.html">Browse All Services →</a>
+        </div>
+      </div>
+    </li>
+    <li><a href="#how-it-works">How it Works</a></li>
+    <li><a href="auth/worker-signup.html">Become a Worker</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+
+  <div class="nav-btns">
+    <a href="auth/login.html" class="btn-outline">Login</a>
+    <a href="pages/post-job.html" class="btn-fill">Post a Job →</a>
+  </div>
+
+  <button class="hamburger" onclick="toggleMobile()">☰</button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">Services</a>
+  <a href="#how-it-works">How it Works</a>
+  <a href="auth/worker-signup.html">Become a Worker</a>
+  <a href="#about">About</a>
+  <a href="auth/login.html">Login</a>
+  <a href="pages/post-job.html" style="color:var(--rose);font-weight:700;">Post a Job →</a>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="geo geo-1"></div>
+  <div class="geo geo-2"></div>
+  <div class="geo geo-3"></div>
+
+  <div class="hero-content">
+
+    <!-- Live Badge -->
+    <div class="hero-badge">
+      <span class="live-dot"></span>
+      <span id="online-count">1,200+</span> Workers Online Globally
+    </div>
+
+    <!-- Heading -->
+    <h1>
+      Find <em>Any</em> Professional<br/>
+      Anywhere in the World
+    </h1>
+
+    <p class="hero-sub">
+      DoorSkill connects you with verified professionals globally for
+      <strong>any skill, any service</strong> — plumbers, doctors,
+      teachers, engineers and beyond.
+      Fast. Safe. Reliable.
+    </p>
+
+    <!-- Search Bar -->
+    <div class="search-outer">
+      <div class="search-wrap">
+        <svg class="search-icon" width="20" height="20" fill="none"
+             stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder='Search any skill — "Plumber", "Doctor", "Teacher"...'
+          autocomplete="off"
+          oninput="handleSearch(this.value)"
+          onkeydown="searchEnter(event)"
+        />
+        <div class="search-divider"></div>
+        <button class="location-btn" onclick="detectLocation()">
+          <svg width="14" height="14" fill="none" stroke="currentColor"
+               stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          <span id="loc-text">Worldwide</span>
+        </button>
+        <button class="search-btn" onclick="doSearch()">
+          Search
+          <svg width="16" height="16" fill="none" stroke="currentColor"
+               stroke-width="2" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Autocomplete -->
+      <div class="autocomplete" id="autocomplete"></div>
+    </div>
+
+    <!-- Popular Tags -->
+    <div class="popular-tags">
+      <span>Popular:</span>
+      <div class="tag" onclick="quickSearch('Plumber')">🪛 Plumber</div>
+      <div class="tag" onclick="quickSearch('Electrician')">⚡ Electrician</div>
+      <div class="tag" onclick="quickSearch('Math Teacher')">📚 Tutor</div>
+      <div class="tag" onclick="quickSearch('Doctor')">🏥 Doctor</div>
+      <div class="tag" onclick="quickSearch('Laptop Repair')">💻 IT Repair</div>
+      <div class="tag" onclick="quickSearch('Home Cleaning')">🧹 Cleaning</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stat">
+      <div class="stat-num" id="stat-workers">12K+</div>
+      <div class="stat-lbl">Verified Workers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-jobs">45K+</div>
+      <div class="stat-lbl">Jobs Completed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">120+</div>
+      <div class="stat-lbl">Cities Covered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4.8★</div>
+      <div class="stat-lbl">Avg. Rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES SECTION ─── -->
+<section class="services-section reveal">
+  <div class="services-header">
+    <div>
+      <div class="section-tag">All Services</div>
+      <h2 class="section-title">Every Skill,<br/>One Platform</h2>
+      <p class="section-sub">
+        40+ services across 7 categories — and growing every day.
+        Any worker, any skill can register.
+      </p>
+    </div>
+    <a href="pages/find-workers.html" class="view-all-btn">
+      View All Workers →
+    </a>
+  </div>
+
+  <div class="categories-grid" id="categoriesGrid">
+
+    <!-- HOME REPAIRS -->
+    <div class="cat-card" onclick="goCategory('Home Repairs')">
+      <div class="cat-header">
+        <div class="cat-icon ic-repair">🔧</div>
+        <div>
+          <div class="cat-title">Home Repairs</div>
+          <div class="cat-count">4+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Plumber')">
+          <span class="sub-name">🪛 Plumber — Leaks, Pumps, Geysers</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Electrician')">
+          <span class="sub-name">⚡ Electrician — Wiring, Fans, Panels</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Carpenter')">
+          <span class="sub-name">🪚 Carpenter — Furniture, Doors</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Painter')">
+          <span class="sub-name">🖌️ Painter — Interior / Exterior</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="cat-card" onclick="goCategory('Education')">
+      <div class="cat-header">
+        <div class="cat-icon ic-edu">📚</div>
+        <div>
+          <div class="cat-title">Education</div>
+          <div class="cat-count">5+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Math Teacher')">
+          <span class="sub-name">➕ Math Teacher</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Science Teacher')">
+          <span class="sub-name">🔬 Science Teacher</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('English Tutor')">
+          <span class="sub-name">🗣️ English Tutor</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Quran Tutor')">
+          <span class="sub-name">📖 Quran Tutor</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Coding Tutor')">
+          <span class="sub-name">💻 Coding Tutor</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEALTH -->
+    <div class="cat-card" onclick="goCategory('Health')">
+      <div class="cat-header">
+        <div class="cat-icon ic-health">🏥</div>
+        <div>
+          <div class="cat-title">Health</div>
+          <div class="cat-count">5+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Doctor')">
+          <span class="sub-name">👨‍⚕️ General Physician</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Dentist')">
+          <span class="sub-name">🦷 Dentist</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Physiotherapist')">
+          <span class="sub-name">🤸 Physiotherapist</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Nutritionist')">
+          <span class="sub-name">🥗 Nutritionist</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Nurse')">
+          <span class="sub-name">👩‍⚕️ Nurse</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEAUTY -->
+    <div class="cat-card" onclick="goCategory('Beauty')">
+      <div class="cat-header">
+        <div class="cat-icon ic-beauty">💄</div>
+        <div>
+          <div class="cat-title">Beauty</div>
+          <div class="cat-count">4+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Salon at Home')">
+          <span class="sub-name">✂️ Salon at Home</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Makeup Artist')">
+          <span class="sub-name">💋 Makeup Artist</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Barber')">
+          <span class="sub-name">💈 Barber</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Manicure')">
+          <span class="sub-name">💅 Manicure / Pedicure</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLEANING -->
+    <div class="cat-card" onclick="goCategory('Cleaning')">
+      <div class="cat-header">
+        <div class="cat-icon ic-clean">🧹</div>
+        <div>
+          <div class="cat-title">Cleaning</div>
+          <div class="cat-count">4+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Home Cleaning')">
+          <span class="sub-name">🏠 Home Cleaning</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Sofa Cleaning')">
+          <span class="sub-name">🛋️ Sofa Cleaning</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Carpet Cleaning')">
+          <span class="sub-name">🔲 Carpet Cleaning</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Kitchen Deep Clean')">
+          <span class="sub-name">🍳 Kitchen Deep Clean</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- IT & TECH -->
+    <div class="cat-card" onclick="goCategory('IT Tech')">
+      <div class="cat-header">
+        <div class="cat-icon ic-it">💻</div>
+        <div>
+          <div class="cat-title">IT &amp; Tech</div>
+          <div class="cat-count">4+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Laptop Repair')">
+          <span class="sub-name">🖥️ Laptop Repair</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Mobile Repair')">
+          <span class="sub-name">📱 Mobile Repair</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Internet Setup')">
+          <span class="sub-name">📡 Internet Setup</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Software Install')">
+          <span class="sub-name">💾 Software Install</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTO SERVICES -->
+    <div class="cat-card" onclick="goCategory('Auto Services')">
+      <div class="cat-header">
+        <div class="cat-icon ic-auto">🚗</div>
+        <div>
+          <div class="cat-title">Auto Services</div>
+          <div class="cat-count">3+ Services Available</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Car Mechanic')">
+          <span class="sub-name">🔩 Car Mechanic</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Bike Mechanic')">
+          <span class="sub-name">🏍️ Bike Mechanic</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Car Wash')">
+          <span class="sub-name">🚿 Car Wash</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANY SKILL -->
+    <div class="cat-card" onclick="goCategory('Other')">
+      <div class="cat-header">
+        <div class="cat-icon ic-other">✨</div>
+        <div>
+          <div class="cat-title">Any Other Skill</div>
+          <div class="cat-count">Unlimited Categories</div>
+        </div>
+      </div>
+      <div class="cat-body">
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Freelancer')">
+          <span class="sub-name">💼 Freelancer / Designer</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Chef')">
+          <span class="sub-name">🍳 Chef / Cook</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Security Guard')">
+          <span class="sub-name">👮 Security Guard</span>
+          <span class="sub-arrow">›</span>
+        </div>
+        <div class="sub-item" onclick="event.stopPropagation();quickSearch('Driver')">
+          <span class="sub-name">🚗 Driver / Transport</span>
+          <span class="sub-arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how-section reveal" id="how-it-works">
+  <div class="how-header">
+    <div class="section-tag">Simple Process</div>
+    <h2 class="section-title">How DoorSkill Works</h2>
+    <p class="section-sub" style="margin:10px auto 0;">
+      4 simple steps — Post, Receive Bids, Chat, Done.
+    </p>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">📋</div>
+      <div class="step-title">Post Your Job</div>
+      <div class="step-desc">
+        Describe what you need, set your budget.
+        Nearby workers get notified <strong>instantly</strong>.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">📬</div>
+      <div class="step-title">Receive Bids</div>
+      <div class="step-desc">
+        Workers near you send price quotes.
+        Compare profiles, ratings, reviews —
+        choose the best fit.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">💬</div>
+      <div class="step-title">Chat &amp; Confirm</div>
+      <div class="step-desc">
+        Chat or call inside DoorSkill — no WhatsApp needed.
+        Worker has 20 minutes to confirm after you accept.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">⭐</div>
+      <div class="step-title">Pay &amp; Rate</div>
+      <div class="step-desc">
+        Pay safely through the platform.
+        Leave a star rating to help the community.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURED PROFESSIONALS (Fiverr-style Dynamic Feed) ─── -->
+<section class="workers-section reveal" style="padding:100px 5%;background:var(--cream);">
+  <div class="workers-header" style="text-align:center;margin-bottom:40px;">
+    <div class="section-tag">Top Rated</div>
+    <h2 class="section-title">Featured Professionals</h2>
+    <p class="section-sub" style="margin:10px auto 0;max-width:600px;">
+      Browse our top-rated freelancers and local service experts from around the world.
+    </p>
+  </div>
+
+  <div id="dynamicWorkersGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+    <div style="text-align:center;grid-column:1/-1;color:var(--muted);padding:40px;">
+      <div class="spin" style="width:36px;height:36px;border:3px solid var(--rose-lt);border-top-color:var(--rose);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 10px;"></div>
+      Loading top professionals...
+    </div>
+  </div>
+  
+  <div style="text-align:center;margin-top:40px;">
+    <a href="pages/find-workers.html" class="btn-fill">View All Categories & Workers →</a>
+  </div>
+</section>
+
+<!-- ─── REAL MAP SECTION ─── -->
+<section class="map-section reveal" style="padding:100px 5%;background:#fff;text-align:center;position:relative;overflow:hidden;">
+  <div class="section-tag" style="margin-bottom:12px;">Global Reach</div>
+  <h2 class="section-title" style="margin-bottom:16px;">
+    Available in Any City, <span style="color:var(--rose);">Worldwide</span>
+  </h2>
+  <p class="section-sub" style="margin:0 auto 50px;max-width:600px;">
+    Explore our network of professionals across the globe. Click on any pin to view worker details.
+  </p>
+
+  <div id="realMap" style="width:100%;max-width:1100px;margin:0 auto;height:500px;border-radius:20px;border:1.5px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.1);z-index:1;"></div>
+</section>
+
+<!-- ─── TRUST SECTION ─── -->
+<section class="trust-section reveal" id="about">
+  <div class="trust-header">
+    <div class="section-tag">Why DoorSkill</div>
+    <h2 class="section-title">Safe, Fast &amp; Reliable</h2>
+    <p class="section-sub" style="margin:10px auto 0;">
+      Built for national and international scale — with trust at the core.
+    </p>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-card">
+      <div class="trust-icon">🔒</div>
+      <div class="trust-title">Verified Workers</div>
+      <div class="trust-desc">
+        Every worker goes through CNIC verification
+        and admin approval before going live.
+      </div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">💬</div>
+      <div class="trust-title">In-App Chat &amp; Call</div>
+      <div class="trust-desc">
+        Chat and call inside DoorSkill only.
+        No personal numbers shared — fully private.
+      </div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">💰</div>
+      <div class="trust-title">Secure Payment</div>
+      <div class="trust-desc">
+        Payment held in escrow — released only
+        when job is completed successfully.
+      </div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">⭐</div>
+      <div class="trust-title">Real Reviews</div>
+      <div class="trust-desc">
+        Only verified clients can leave reviews.
+        Top-rated workers rank higher automatically.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta-section reveal">
+  <div class="cta-blob cta-blob-1"></div>
+  <div class="cta-blob cta-blob-2"></div>
+  <h2>Ready to Get Started?</h2>
+  <p>
+    Join thousands of clients and skilled workers
+    already growing with DoorSkill.
+  </p>
+  <div class="cta-btns">
+    <a href="pages/post-job.html" class="cta-btn-primary">
+      📋 Post a Job — It's Free
+    </a>
+    <a href="auth/worker-signup.html" class="cta-btn-outline">
+      👷 Register as a Worker →
+    </a>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<div class="footer-divider"></div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo"><img src="assets/logo.png" alt="DoorSkill Logo" style="filter: brightness(0) invert(1);"></a>
+      <p>
+        Connecting clients with verified local professionals
+        worldwide. Fast, safe, and reliable — every time.
+      </p>
+      <div class="footer-social">
+        <a href="#" class="soc-btn">f</a>
+        <a href="#" class="soc-btn">in</a>
+        <a href="#" class="soc-btn">ig</a>
+        <a href="#" class="soc-btn">yt</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Home Repairs</a></li>
+        <li><a href="#">Education</a></li>
+        <li><a href="#">Health</a></li>
+        <li><a href="#">Beauty</a></li>
+        <li><a href="#">Cleaning</a></li>
+        <li><a href="#">IT &amp; Tech</a></li>
+        <li><a href="#">Auto Services</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="#how-it-works">How it Works</a></li>
+        <li><a href="pages/post-job.html">Post a Job</a></li>
+        <li><a href="auth/worker-signup.html">Become a Worker</a></li>
+        <li><a href="dashboard/worker.html">Worker Dashboard</a></li>
+        <li><a href="#">Pricing &amp; Fees</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 DoorSkill. Made with ❤️ for the World.</p>
+    <p>
+      Designed for
+      <a href="#">national &amp; international scale</a>
+    </p>
+  </div>
+</footer>
+
+<!-- ─── FIREBASE + SEARCH SCRIPT ─── -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain: "doorskill-beff1.firebaseapp.com",
+  databaseURL: "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId: "doorskill-beff1",
+  storageBucket: "doorskill-beff1.firebasestorage.app",
+  messagingSenderId: "620272735898",
+  appId: "1:620272735898:web:b35d24737ef79c01a67123"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Load live stats from Firebase
+async function loadStats(){
+  try{
+    const snap = await getDocs(collection(db,'workers'));
+    const total = snap.size;
+    if(total > 0){
+      document.getElementById('stat-workers').textContent =
+        total + '+';
+    }
+    // Online workers
+    let online = 0;
+    snap.forEach(d => {
+      if(d.data().isOnline) online++;
+    });
+    if(online > 0){
+      document.getElementById('online-count').textContent =
+        online + '+';
+    }
+
+    // Jobs count
+    const jobsSnap = await getDocs(collection(db,'jobs'));
+    if(jobsSnap.size > 0){
+      document.getElementById('stat-jobs').textContent =
+        jobsSnap.size + '+';
+    }
+  } catch(e){
+    // Firebase not yet set up — use defaults
+    console.log('Stats: using defaults');
+  }
+}
+loadStats();
+</script>
+
+<script>
+// ─── SEARCH DATA (Local suggestions) ───
+const SEARCH_DATA = [
+  {icon:'🪛', name:'Plumber',          cat:'Home Repairs'},
+  {icon:'⚡', name:'Electrician',       cat:'Home Repairs'},
+  {icon:'🪚', name:'Carpenter',         cat:'Home Repairs'},
+  {icon:'🖌️', name:'Painter',           cat:'Home Repairs'},
+  {icon:'❄️', name:'AC Repair',         cat:'Home Repairs'},
+  {icon:'🔩', name:'Welder',            cat:'Home Repairs'},
+  {icon:'➕', name:'Math Teacher',      cat:'Education'},
+  {icon:'🔬', name:'Science Teacher',   cat:'Education'},
+  {icon:'🗣️', name:'English Tutor',     cat:'Education'},
+  {icon:'📖', name:'Quran Tutor',       cat:'Education'},
+  {icon:'💻', name:'Coding Tutor',      cat:'Education'},
+  {icon:'👨‍⚕️', name:'Doctor',           cat:'Health'},
+  {icon:'🦷', name:'Dentist',           cat:'Health'},
+  {icon:'🤸', name:'Physiotherapist',   cat:'Health'},
+  {icon:'🥗', name:'Nutritionist',      cat:'Health'},
+  {icon:'👩‍⚕️', name:'Nurse',            cat:'Health'},
+  {icon:'✂️', name:'Salon at Home',     cat:'Beauty'},
+  {icon:'💋', name:'Makeup Artist',     cat:'Beauty'},
+  {icon:'💈', name:'Barber',            cat:'Beauty'},
+  {icon:'💅', name:'Manicure',          cat:'Beauty'},
+  {icon:'🏠', name:'Home Cleaning',     cat:'Cleaning'},
+  {icon:'🛋️', name:'Sofa Cleaning',     cat:'Cleaning'},
+  {icon:'🔲', name:'Carpet Cleaning',   cat:'Cleaning'},
+  {icon:'🍳', name:'Kitchen Deep Clean',cat:'Cleaning'},
+  {icon:'🖥️', name:'Laptop Repair',     cat:'IT & Tech'},
+  {icon:'📱', name:'Mobile Repair',     cat:'IT & Tech'},
+  {icon:'📡', name:'Internet Setup',    cat:'IT & Tech'},
+  {icon:'💾', name:'Software Install',  cat:'IT & Tech'},
+  {icon:'🔩', name:'Car Mechanic',      cat:'Auto Services'},
+  {icon:'🏍️', name:'Bike Mechanic',     cat:'Auto Services'},
+  {icon:'🚿', name:'Car Wash',          cat:'Auto Services'},
+  {icon:'🍳', name:'Chef',              cat:'Other'},
+  {icon:'🚗', name:'Driver',            cat:'Other'},
+  {icon:'💼', name:'Freelancer',        cat:'Other'},
+  {icon:'👮', name:'Security Guard',    cat:'Other'},
+  {icon:'📊', name:'Accountant',        cat:'Other'},
+  {icon:'⚖️', name:'Lawyer',            cat:'Other'},
+  {icon:'🏗️', name:'Mason',             cat:'Other'},
+  {icon:'🎨', name:'Graphic Designer',  cat:'Other'},
+  {icon:'📸', name:'Photographer',      cat:'Other'},
+];
+
+// ─── SEARCH LOGIC ───
+function handleSearch(val){
+  const box = document.getElementById('autocomplete');
+  if(!val.trim()){ box.classList.remove('show'); return; }
+
+  const filtered = SEARCH_DATA.filter(item =>
+    item.name.toLowerCase().includes(val.toLowerCase()) ||
+    item.cat.toLowerCase().includes(val.toLowerCase())
+  ).slice(0,7);
+
+  if(filtered.length === 0){
+    box.innerHTML = `<div class="no-results">
+      🔍 No match — post a custom job for this skill!
+    </div>`;
+    box.classList.add('show');
+    return;
+  }
+
+  box.innerHTML = filtered.map(item => `
+    <div class="auto-item" onclick="quickSearch('${item.name}')">
+      <div class="auto-item-icon">${item.icon}</div>
+      <div>
+        <div class="auto-item-text">${item.name}</div>
+        <div class="auto-item-cat">${item.cat}</div>
+      </div>
+      <div class="auto-arrow">›</div>
+    </div>
+  `).join('');
+  box.classList.add('show');
+}
+
+function quickSearch(term){
+  document.getElementById('searchInput').value = term;
+  document.getElementById('autocomplete').classList.remove('show');
+  window.location.href = `pages/find-workers.html?q=${encodeURIComponent(term)}`;
+}
+
+function doSearch(){
+  const val = document.getElementById('searchInput').value.trim();
+  if(!val){
+    document.getElementById('searchInput').focus();
+    return;
+  }
+  window.location.href = `pages/find-workers.html?q=${encodeURIComponent(val)}`;
+}
+
+function searchEnter(e){
+  if(e.key === 'Enter') doSearch();
+}
+
+function goCategory(cat){
+  window.location.href = `pages/find-workers.html?category=${encodeURIComponent(cat)}`;
+}
+
+// Close autocomplete on outside click
+document.addEventListener('click', e => {
+  if(!e.target.closest('.search-outer')){
+    document.getElementById('autocomplete').classList.remove('show');
+  }
+});
+
+// ─── LOCATION DETECT ───
+function detectLocation(){
+  const btn = document.getElementById('loc-text');
+  btn.textContent = 'Detecting...';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      localStorage.setItem('ds_lat', pos.coords.latitude);
+      localStorage.setItem('ds_lng', pos.coords.longitude);
+      btn.textContent = '✓ Located';
+      btn.style.color = 'var(--green)';
+    },
+    () => {
+      btn.textContent = 'Near Me';
+    }
+  );
+}
+
+// ─── NAVBAR SCROLL ───
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if(window.scrollY > 20){
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// ─── MOBILE MENU ───
+function toggleMobile(){
+  const m = document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+}
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+    }
+  });
+}, {threshold: 0.08});
+
+document.querySelectorAll('.reveal').forEach(el => {
+  observer.observe(el);
+});
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, limit, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain: "doorskill-beff1.firebaseapp.com",
+  databaseURL: "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId: "doorskill-beff1",
+  storageBucket: "doorskill-beff1.firebasestorage.app",
+});
+const db = getFirestore(app);
+
+// Simple City coordinates for demo map
+const cityCoords = {
+  'New York': [40.7128, -74.0060],
+  'London': [51.5074, -0.1278],
+  'Dubai': [25.2048, 55.2708],
+  'Karachi': [24.8607, 67.0011],
+  'Lahore': [31.5204, 74.3587],
+  'Islamabad': [33.6844, 73.0479],
+  'Sydney': [-33.8688, 151.2093],
+  'Mumbai': [19.0760, 72.8777]
+};
+
+let map = null;
+let markersLayer = null;
+
+function loadDynamicContent() {
+  const q = query(collection(db, 'workers'), orderBy('createdAt', 'desc'), limit(12));
+  
+  onSnapshot(q, (snap) => {
+    let workers = [];
+    snap.forEach(d => {
+      const data = d.data();
+      if (data.status !== 'pending') workers.push({id: d.id, ...data});
+    });
+    
+    renderDynamicGrid(workers);
+    initMap(workers);
+  }, (e) => {
+    console.error("Error loading dynamic content:", e);
+    document.getElementById('dynamicWorkersGrid').innerHTML = '<p style="text-align:center;color:red;grid-column:1/-1;">Failed to load professionals.</p>';
+  });
+}
+
+function renderDynamicGrid(workers) {
+  const container = document.getElementById('dynamicWorkersGrid');
+  if(workers.length === 0) {
+    container.innerHTML = '<p style="text-align:center;grid-column:1/-1;">No professionals found yet. Be the first to join!</p>';
+    return;
+  }
+  
+  let html = '';
+  workers.forEach(w => {
+    const stars = w.totalReviews > 0 ? `★ ${(w.rating||0).toFixed(1)} (${w.totalReviews})` : '☆ New';
+    const skillsHtml = (w.skills||[]).slice(0,2).map(s => `<span style="background:var(--rose-lt);color:var(--rose);padding:3px 8px;border-radius:12px;font-size:11px;font-weight:600;">${s}</span>`).join(' ');
+    const imgUrl = w.photoURL || 'https://via.placeholder.com/150/FFF0F5/F43F5E?text=Pro';
+    
+    html += `
+      <div style="background:#fff;border-radius:16px;border:1.5px solid var(--border);overflow:hidden;transition:all 0.3s;display:flex;flex-direction:column;cursor:pointer;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 30px rgba(244,63,94,0.1)';" onmouseout="this.style.transform='none';this.style.boxShadow='none';" onclick="window.location.href='pages/find-workers.html?worker=${w.id}'">
+        <div style="height:140px;background:url('${imgUrl}') center/cover;border-bottom:1.5px solid var(--border);"></div>
+        <div style="padding:16px;flex:1;display:flex;flex-direction:column;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="font-weight:700;font-size:16px;color:var(--dark);">${w.fullName || 'Professional'}</div>
+            <div style="color:#F59E0B;font-size:13px;font-weight:700;">${stars}</div>
+          </div>
+          <div style="color:var(--muted);font-size:13px;margin-bottom:12px;">${w.category || 'Service'} • ${w.city || 'Worldwide'}</div>
+          <div style="margin-bottom:16px;">${skillsHtml}</div>
+          <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:12px;">
+            <span style="font-size:12px;color:var(--muted);">Starting at</span>
+            <span style="font-size:15px;font-weight:700;color:var(--dark);">PKR ${w.rate || '--'}/hr</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function initMap(workers) {
+  if (!map) {
+    map = L.map('realMap').setView([20.0, 0.0], 2); // Global View
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    markersLayer = L.layerGroup().addTo(map);
+  }
+  
+  markersLayer.clearLayers();
+
+  if(workers.length === 0) {
+    Object.keys(cityCoords).forEach(city => {
+      L.marker(cityCoords[city]).addTo(markersLayer).bindPopup(`<b>${city}</b><br>Available for services`);
+    });
+  } else {
+    workers.forEach(w => {
+      let coords = cityCoords[w.city];
+      if(!coords) {
+        const lat = 20 + Math.random() * 30;
+        const lng = 40 + Math.random() * 60;
+        coords = [lat, lng];
+      } else {
+        coords = [coords[0] + (Math.random()-0.5)*0.1, coords[1] + (Math.random()-0.5)*0.1];
+      }
+      
+      const customIcon = L.divIcon({
+        className: 'custom-pin',
+        html: `<div style="background:var(--rose);width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 10px rgba(244,63,94,0.5);animation:pulse 2s infinite;"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+
+      const popupHtml = `
+        <div style="text-align:center;">
+          <b style="font-size:14px;">${w.fullName}</b><br>
+          <span style="color:var(--rose);font-size:12px;font-weight:600;">${w.category}</span><br>
+          <span style="font-size:11px;color:gray;">${w.city || 'Global'}</span><br>
+          <a href="pages/find-workers.html?worker=${w.id}" style="display:inline-block;margin-top:6px;padding:4px 10px;background:var(--rose);color:#fff;border-radius:6px;text-decoration:none;font-size:12px;">Message</a>
+        </div>
+      `;
+      L.marker(coords, {icon: customIcon}).addTo(markersLayer).bindPopup(popupHtml);
+    });
+  }
+}
+
+// Start
+loadDynamicContent();
+</script>
+<script src="assets/ai-helper.js"></script>
+
+</body>
+</html>
