@@ -1,0 +1,3364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoorSkill — Admin Panel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
+<style>
+:root{
+  --rose:#F43F5E;--rose-lt:#FFE4EC;--rose-md:#FB7185;
+  --dark:#1A0A14;--mid:#5C3D4E;--muted:#9D7589;
+  --border:#F3D6E0;--green:#10B981;--green-lt:#D1FAE5;
+  --yellow:#F59E0B;--yellow-lt:#FEF3C7;
+  --blue:#3B82F6;--blue-lt:#DBEAFE;
+  --red:#EF4444;--red-lt:#FEE2E2;
+  --purple:#8B5CF6;--purple-lt:#EDE9FE;
+  --indigo:#6366F1;--indigo-lt:#EEF2FF;
+  --orange:#F97316;--orange-lt:#FFF7ED;
+  --teal:#14B8A6;--teal-lt:#CCFBF1;
+  --sidebar:#0A0510;--sidebar-w:256px;--topbar-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#F9F0F3;color:var(--dark);
+  display:flex;min-height:100vh;
+}
+
+/* ════════════ SIDEBAR ════════════ */
+.sidebar{
+  width:var(--sidebar-w);background:var(--sidebar);
+  min-height:100vh;position:fixed;left:0;top:0;bottom:0;
+  display:flex;flex-direction:column;z-index:300;
+  transition:transform .3s;overflow-y:auto;
+}
+.sb-logo{
+  padding:16px 14px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;gap:8px;
+  flex-shrink:0;
+}
+.sb-logo-txt{
+  display:inline-flex;align-items:center;
+}
+.sb-admin-badge{
+  margin-left:auto;font-size:9px;font-weight:700;
+  background:rgba(244,63,94,.25);color:var(--rose-md);
+  padding:2px 7px;border-radius:999px;
+  letter-spacing:.08em;text-transform:uppercase;
+  flex-shrink:0;
+}
+.sb-nav{flex:1;padding:8px 0;}
+.sb-section{
+  font-size:9px;font-weight:700;
+  color:rgba(255,255,255,.18);
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:12px 14px 4px;
+}
+.sb-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 14px;margin:1px 5px;
+  border-radius:8px;cursor:pointer;
+  font-size:13px;font-weight:500;
+  color:rgba(255,255,255,.4);
+  transition:all .18s;position:relative;
+}
+.sb-item:hover{
+  background:rgba(244,63,94,.09);
+  color:rgba(255,255,255,.75);
+}
+.sb-item.active{
+  background:rgba(244,63,94,.18);color:#fff;
+}
+.sb-item.active::before{
+  content:'';position:absolute;left:-5px;top:50%;
+  transform:translateY(-50%);
+  width:3px;height:14px;
+  background:var(--rose);border-radius:2px;
+}
+.sb-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.sb-badge{
+  margin-left:auto;color:#fff;
+  font-size:9px;font-weight:700;
+  padding:1px 6px;border-radius:999px;
+  min-width:16px;text-align:center;
+}
+.bg-rose{background:var(--rose);}
+.bg-yellow{background:var(--yellow);color:#000!important;}
+.bg-green{background:var(--green);}
+.bg-blue{background:var(--blue);}
+.bg-red{background:var(--red);}
+.sb-bottom{
+  padding:8px 5px;
+  border-top:1px solid rgba(255,255,255,.04);
+  flex-shrink:0;
+}
+.sb-profile{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 9px;border-radius:9px;
+  transition:background .2s;cursor:pointer;
+}
+.sb-profile:hover{background:rgba(255,255,255,.04);}
+.sb-avatar{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--rose),#be123c);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.sb-name{font-size:12px;font-weight:600;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:120px;}
+.sb-role-txt{font-size:10px;color:rgba(255,255,255,.25);}
+.sb-logout{
+  margin-left:auto;background:transparent;border:none;
+  color:rgba(255,255,255,.2);cursor:pointer;
+  font-size:14px;padding:4px;transition:color .2s;flex-shrink:0;
+}
+.sb-logout:hover{color:var(--rose);}
+
+/* ════════════ MAIN ════════════ */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{
+  height:var(--topbar-h);background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 20px;gap:12px;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-hamburger{
+  display:none;background:none;border:none;
+  font-size:20px;cursor:pointer;color:var(--dark);
+}
+.topbar-info{flex:1;}
+.topbar-title{font-size:15px;font-weight:700;color:var(--dark);}
+.topbar-sub{font-size:11px;color:var(--muted);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-clock{
+  font-size:13px;color:var(--muted);font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.5;transform:scale(1.4);}
+}
+.topbar-notif{
+  position:relative;background:transparent;border:none;
+  cursor:pointer;font-size:18px;padding:6px;
+  border-radius:8px;transition:background .2s;
+}
+.topbar-notif:hover{background:var(--rose-lt);}
+.notif-dot{
+  position:absolute;top:4px;right:4px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--rose);border:2px solid #fff;
+}
+
+/* ════════════ CONTENT ════════════ */
+.content{padding:20px;flex:1;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* STATS GRID */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:12px;margin-bottom:20px;
+}
+.stat-card{
+  background:#fff;border-radius:14px;
+  border:1.5px solid var(--border);
+  padding:16px 14px;transition:all .2s;
+  cursor:pointer;position:relative;overflow:hidden;
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(244,63,94,.1);
+}
+.stat-card-bg{
+  position:absolute;top:-10px;right:-10px;
+  font-size:60px;opacity:.07;
+  pointer-events:none;
+}
+.sc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sc-icon{
+  width:38px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.sc-change{font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px;}
+.ch-up{background:var(--green-lt);color:#065F46;}
+.ch-dn{background:var(--red-lt);color:#991B1B;}
+.ch-neutral{background:var(--blue-lt);color:#1E40AF;}
+.sc-num{font-size:26px;font-weight:800;color:var(--dark);line-height:1;}
+.sc-label{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* CARD */
+.card{
+  background:#fff;border-radius:14px;
+  border:1.5px solid var(--border);
+  padding:18px;margin-bottom:16px;
+}
+.card-head{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;flex-wrap:wrap;gap:8px;
+}
+.card-title{font-size:14px;font-weight:700;color:var(--dark);}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.card-action{
+  font-size:12px;color:var(--rose);font-weight:600;
+  background:transparent;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;padding:6px 12px;
+  border-radius:7px;transition:all .2s;
+}
+.card-action:hover{background:var(--rose-lt);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{background:#FFF5F7;}
+th{
+  text-align:left;padding:9px 12px;
+  font-size:10px;font-weight:700;
+  color:var(--muted);letter-spacing:.08em;
+  text-transform:uppercase;
+  border-bottom:1.5px solid var(--border);
+  white-space:nowrap;
+}
+td{
+  padding:10px 12px;
+  border-bottom:1px solid #FFF0F5;
+  color:var(--mid);vertical-align:middle;
+}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#FFFBFC;}
+.td-name{
+  font-weight:700;color:var(--dark);
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;
+}
+.td-avatar{
+  width:32px;height:32px;border-radius:7px;
+  background:var(--rose-lt);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;overflow:hidden;
+  border:1.5px solid var(--border);
+  font-weight:700;color:var(--rose);
+}
+.td-avatar img{width:100%;height:100%;object-fit:cover;display:none;}
+
+/* BADGES */
+.badge{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;
+}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;}
+.b-pending{background:var(--yellow-lt);color:#92400E;}
+.b-pending::before{background:var(--yellow);}
+.b-active{background:var(--green-lt);color:#065F46;}
+.b-active::before{background:var(--green);}
+.b-banned{background:var(--red-lt);color:#991B1B;}
+.b-banned::before{background:var(--red);}
+.b-rejected{background:#F3F4F6;color:#6B7280;}
+.b-rejected::before{background:#9CA3AF;}
+.b-open{background:var(--blue-lt);color:#1E40AF;}
+.b-open::before{background:var(--blue);}
+.b-closed{background:#F3F4F6;color:#6B7280;}
+.b-closed::before{background:#9CA3AF;}
+.b-done{background:var(--green-lt);color:#065F46;}
+.b-done::before{background:var(--green);}
+.b-accepted{background:var(--green-lt);color:#065F46;}
+.b-accepted::before{background:var(--green);}
+.b-resolved{background:var(--teal-lt);color:#0F766E;}
+.b-resolved::before{background:var(--teal);}
+
+/* ACTION BUTTONS */
+.act-btn{
+  padding:4px 9px;border-radius:6px;
+  font-size:11px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  border:none;transition:all .2s;white-space:nowrap;
+}
+.ab-approve{background:var(--green-lt);color:#065F46;}
+.ab-approve:hover{background:var(--green);color:#fff;}
+.ab-reject{background:var(--yellow-lt);color:#92400E;}
+.ab-reject:hover{background:var(--yellow);color:#000;}
+.ab-ban{background:var(--red-lt);color:#991B1B;}
+.ab-ban:hover{background:var(--red);color:#fff;}
+.ab-unban{background:var(--green-lt);color:#065F46;}
+.ab-unban:hover{background:var(--green);color:#fff;}
+.ab-view{background:var(--blue-lt);color:#1E40AF;}
+.ab-view:hover{background:var(--blue);color:#fff;}
+.ab-edit{background:var(--purple-lt);color:#5B21B6;}
+.ab-edit:hover{background:var(--purple);color:#fff;}
+.ab-delete{background:var(--red-lt);color:#991B1B;}
+.ab-delete:hover{background:var(--red);color:#fff;}
+.ab-close{background:var(--yellow-lt);color:#92400E;}
+.ab-close:hover{background:var(--yellow);color:#000;}
+.ab-msg{background:var(--rose-lt);color:var(--rose);}
+.ab-msg:hover{background:var(--rose);color:#fff;}
+.actions-cell{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
+
+/* FILTER BAR */
+.filter-bar{
+  display:flex;align-items:center;gap:8px;
+  flex-wrap:wrap;margin-bottom:14px;
+}
+.filter-bar input,.filter-bar select{
+  padding:7px 12px;border:1.5px solid var(--border);
+  border-radius:8px;font-size:12px;
+  font-family:'DM Sans',sans-serif;color:var(--dark);
+  outline:none;background:#fff;transition:border .2s;
+}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--rose);}
+.filter-bar input::placeholder{color:var(--muted);}
+.filter-bar input{min-width:200px;}
+.filter-bar select{cursor:pointer;}
+
+/* OVERVIEW GRID */
+.ov-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+.activity-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 0;border-bottom:1px solid #FFF0F5;
+}
+.activity-item:last-child{border-bottom:none;}
+.ai-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.ai-text{font-size:12px;color:var(--mid);line-height:1.5;}
+.ai-text strong{color:var(--dark);}
+.ai-time{font-size:10px;color:var(--muted);margin-top:2px;}
+.quick-stat{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:9px 0;border-bottom:1px solid #FFF0F5;font-size:12px;
+}
+.quick-stat:last-child{border-bottom:none;}
+.qs-label{color:var(--muted);}
+.qs-val{font-weight:700;color:var(--dark);}
+
+/* MODAL */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  z-index:9998;align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:#fff;border-radius:20px;padding:28px;
+  width:100%;max-width:560px;margin:16px;
+  max-height:92vh;overflow-y:auto;
+  box-shadow:0 24px 80px rgba(0,0,0,.2);
+}
+.modal-title{
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-weight:900;color:var(--dark);
+  margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-close{
+  background:transparent;border:none;cursor:pointer;
+  font-size:18px;color:var(--muted);padding:2px;
+}
+.modal-close:hover{color:var(--rose);}
+.modal-row{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;padding:8px 0;
+  border-bottom:1px solid #FFF0F5;font-size:12px;gap:12px;
+}
+.modal-row:last-of-type{border-bottom:none;}
+.mr-label{color:var(--muted);font-weight:600;flex-shrink:0;min-width:110px;}
+.mr-val{color:var(--dark);font-weight:500;text-align:right;word-break:break-all;}
+.modal-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.ma-btn{
+  flex:1;padding:10px;border-radius:9px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;border:none;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  min-width:100px;
+}
+.ma-approve{background:var(--green);color:#fff;}
+.ma-approve:hover{background:#059669;}
+.ma-reject{background:var(--yellow);color:#000;}
+.ma-reject:hover{background:#D97706;}
+.ma-ban{background:var(--red);color:#fff;}
+.ma-ban:hover{background:#DC2626;}
+.ma-unban{background:var(--green);color:#fff;}
+.ma-unban:hover{background:#059669;}
+.ma-close-modal{
+  background:transparent;border:1.5px solid var(--border);
+  color:var(--mid);
+}
+.ma-close-modal:hover{border-color:var(--rose);color:var(--rose);}
+
+/* EDIT FORM in modal */
+.edit-form .fgroup{margin-bottom:12px;}
+.edit-form label{
+  display:block;font-size:10px;font-weight:700;
+  color:var(--mid);margin-bottom:5px;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.edit-form input,
+.edit-form select,
+.edit-form textarea{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:'DM Sans',sans-serif;
+  color:var(--dark);outline:none;transition:border .2s;
+  background:#fff;
+}
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus{border-color:var(--rose);}
+.edit-form .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.edit-form textarea{resize:vertical;min-height:70px;}
+
+/* CONFIRM MODAL */
+.confirm-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+  z-index:99999;align-items:center;justify-content:center;
+}
+.confirm-overlay.show{display:flex;}
+.confirm-box{
+  background:#fff;border-radius:20px;padding:28px;
+  width:100%;max-width:360px;margin:16px;
+  text-align:center;
+  box-shadow:0 24px 80px rgba(0,0,0,.25);
+}
+.cfm-icon{font-size:48px;margin-bottom:12px;}
+.cfm-title{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:900;color:var(--dark);margin-bottom:6px;
+}
+.cfm-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.cfm-btns{display:flex;gap:8px;}
+.cfm-cancel{
+  flex:1;padding:11px;border:1.5px solid var(--border);
+  border-radius:10px;background:transparent;
+  color:var(--mid);font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.cfm-cancel:hover{border-color:var(--rose);color:var(--rose);}
+.cfm-ok{
+  flex:2;padding:11px;border:none;border-radius:10px;
+  color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.cfm-ok:hover{opacity:.88;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:22px;right:22px;z-index:999999;
+  background:var(--dark);color:#fff;
+  padding:11px 16px;border-radius:10px;
+  font-size:13px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  border-left:3px solid var(--rose);
+  transform:translateY(20px);opacity:0;
+  transition:all .3s;max-width:300px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* SPINNER */
+.spin{
+  width:32px;height:32px;
+  border:3px solid var(--rose-lt);border-top-color:var(--rose);
+  border-radius:50%;animation:spin .7s linear infinite;
+  margin:32px auto;display:block;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* EMPTY */
+.empty-state{
+  text-align:center;padding:48px 20px;color:var(--muted);
+}
+.es-icon{font-size:44px;margin-bottom:12px;}
+.es-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.es-sub{font-size:12px;}
+
+/* PILL TABS */
+.pill-tabs{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;
+}
+.pill-tab{
+  padding:5px 14px;border-radius:999px;
+  border:1.5px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--mid);
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;background:#fff;
+}
+.pill-tab.active,.pill-tab:hover{
+  background:var(--rose);color:#fff;border-color:var(--rose);
+}
+
+/* SETTINGS SECTION */
+.settings-section{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:18px;margin-bottom:14px;
+}
+.ss-title{
+  font-size:13px;font-weight:700;color:var(--dark);
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:7px;
+}
+.ss-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid #FFF5F7;
+  gap:14px;flex-wrap:wrap;
+}
+.ss-row:last-child{border-bottom:none;}
+.ss-label{font-size:13px;font-weight:600;color:var(--dark);}
+.ss-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.ss-input{
+  padding:7px 12px;border:1.5px solid var(--border);
+  border-radius:8px;font-size:13px;
+  font-family:'DM Sans',sans-serif;color:var(--dark);
+  outline:none;background:#fff;transition:border .2s;
+  min-width:160px;
+}
+.ss-input:focus{border-color:var(--rose);}
+.ss-btn{
+  padding:7px 16px;border:none;border-radius:8px;
+  background:var(--rose);color:#fff;
+  font-size:12px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.ss-btn:hover{background:#e0334f;}
+.ss-btn.green{background:var(--green);}
+.ss-btn.green:hover{background:#059669;}
+.code-box{
+  background:#0A0510;color:#FB7185;
+  border-radius:8px;padding:10px 14px;
+  font-size:11px;font-family:monospace;
+  word-break:break-all;line-height:1.6;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .topbar-hamburger{display:block;}
+  .ov-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:560px){
+  .content{padding:12px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .edit-form .frow{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     SIDEBAR
+════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-txt"><img src="assets/logo.png" alt="DoorSkill Logo" style="filter: brightness(0) invert(1); height:42px; width:auto;">
+<span style="font-size:26px; font-weight:900; color:#fff; margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></div>
+    <div class="sb-admin-badge">Admin</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <a class="sb-item active" onclick="showPage('overview',this)">
+      <span class="sb-icon">📊</span> Dashboard
+    </a>
+    <a class="sb-item" onclick="showPage('analytics',this)">
+      <span class="sb-icon">📈</span> Analytics
+    </a>
+
+    <div class="sb-section">Users</div>
+    <a class="sb-item" onclick="showPage('workers',this)">
+      <span class="sb-icon">👷</span> Workers
+      <span class="sb-badge bg-yellow" id="pendingBadge">0</span>
+    </a>
+    <a class="sb-item" onclick="showPage('clients',this)">
+      <span class="sb-icon">👤</span> Clients
+    </a>
+
+    <div class="sb-section">Jobs & Bids</div>
+    <a class="sb-item" onclick="showPage('jobs',this)">
+      <span class="sb-icon">📋</span> All Jobs
+    </a>
+    <a class="sb-item" onclick="showPage('bids',this)">
+      <span class="sb-icon">📬</span> All Bids
+    </a>
+
+    <div class="sb-section">Content</div>
+    <a class="sb-item" onclick="showPage('reviews',this)">
+      <span class="sb-icon">⭐</span> Reviews
+    </a>
+    <a class="sb-item" onclick="showPage('chats',this)">
+      <span class="sb-icon">💬</span> Chats
+    </a>
+    <a class="sb-item" onclick="showPage('calls',this)">
+      <span class="sb-icon">📞</span> Call Logs
+    </a>
+
+    <div class="sb-section">Moderation</div>
+    <a class="sb-item" onclick="showPage('reports',this)">
+      <span class="sb-icon">🚨</span> Reports
+      <span class="sb-badge bg-red" id="reportsBadge">0</span>
+    </a>
+
+    <div class="sb-section">Finance</div>
+    <a class="sb-item" onclick="showPage('finance',this)">
+      <span class="sb-icon">💰</span> Earnings
+    </a>
+    <a class="sb-item" onclick="showPage('pricing',this)">
+      <span class="sb-icon">🏷️</span> Pricing Config
+    </a>
+
+    <div class="sb-section">System</div>
+    <a class="sb-item" onclick="showPage('settings',this)">
+      <span class="sb-icon">⚙️</span> Settings
+    </a>
+  </nav>
+
+  <div class="sb-bottom">
+    <div class="sb-profile">
+      <div class="sb-avatar">👑</div>
+      <div>
+        <div class="sb-name" id="sbName">Admin</div>
+        <div class="sb-role-txt">Super Admin</div>
+      </div>
+      <button class="sb-logout" onclick="doLogout()" title="Logout">⏻</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════
+     MAIN
+════════════════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="topbar-hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="topbar-info">
+      <div class="topbar-title" id="topbarTitle">Admin Dashboard</div>
+      <div class="topbar-sub" id="topbarSub">DoorSkill Full Control Panel</div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-dot"></div>
+      <div class="topbar-clock" id="clock">00:00:00</div>
+      <button class="topbar-notif" onclick="showPage('reports',null)" title="Reports">
+        🔔<div class="notif-dot" id="notifDot" style="display:none;"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══════════════════════════
+         OVERVIEW PAGE
+    ══════════════════════════ -->
+    <div class="page active" id="page-overview">
+
+      <div class="stats-grid">
+        <div class="stat-card" onclick="showPage('workers',null)">
+          <div class="stat-card-bg">👷</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#FFF0F5;">👷</div>
+            <span class="sc-change ch-neutral" id="sc-workers">Live</span>
+          </div>
+          <div class="sc-num" id="ov-workers">—</div>
+          <div class="sc-label">Total Workers</div>
+        </div>
+        <div class="stat-card" onclick="showPage('clients',null)">
+          <div class="stat-card-bg">👤</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#D1FAE5;">👤</div>
+            <span class="sc-change ch-up" id="sc-clients">Live</span>
+          </div>
+          <div class="sc-num" id="ov-clients">—</div>
+          <div class="sc-label">Total Clients</div>
+        </div>
+        <div class="stat-card" onclick="showPage('jobs',null)">
+          <div class="stat-card-bg">📋</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#DBEAFE;">📋</div>
+            <span class="sc-change ch-up" id="sc-jobs">Live</span>
+          </div>
+          <div class="sc-num" id="ov-jobs">—</div>
+          <div class="sc-label">Total Jobs</div>
+        </div>
+        <div class="stat-card" onclick="showPage('bids',null)">
+          <div class="stat-card-bg">📬</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#EDE9FE;">📬</div>
+            <span class="sc-change ch-neutral">Live</span>
+          </div>
+          <div class="sc-num" id="ov-bids">—</div>
+          <div class="sc-label">Total Bids</div>
+        </div>
+        <div class="stat-card" onclick="showPage('workers',null)">
+          <div class="stat-card-bg">⏳</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#FEF3C7;">⏳</div>
+            <span class="sc-change ch-dn" id="sc-pending">Action</span>
+          </div>
+          <div class="sc-num" id="ov-pending">—</div>
+          <div class="sc-label">Pending Approvals</div>
+        </div>
+        <div class="stat-card" onclick="showPage('finance',null)">
+          <div class="stat-card-bg">💰</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#D1FAE5;">💰</div>
+            <span class="sc-change ch-up">Live</span>
+          </div>
+          <div class="sc-num" id="ov-earnings">—</div>
+          <div class="sc-label">Total Platform Earnings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-bg">🟢</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#D1FAE5;">🟢</div>
+            <span class="sc-change ch-up">Now</span>
+          </div>
+          <div class="sc-num" id="ov-online">—</div>
+          <div class="sc-label">Workers Online Now</div>
+        </div>
+        <div class="stat-card" onclick="showPage('reports',null)">
+          <div class="stat-card-bg">🚨</div>
+          <div class="sc-header">
+            <div class="sc-icon" style="background:#FEE2E2;">🚨</div>
+            <span class="sc-change ch-dn" id="sc-reports">Open</span>
+          </div>
+          <div class="sc-num" id="ov-reports">—</div>
+          <div class="sc-label">Open Reports</div>
+        </div>
+      </div>
+
+      <div class="ov-grid">
+
+        <!-- Activity Feed -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">🕐 Live Activity Feed</div>
+              <div class="card-sub">Real-time platform activity</div>
+            </div>
+            <button class="card-action" onclick="loadAllData()">🔄 Refresh</button>
+          </div>
+          <div id="activityFeed"><div class="spin"></div></div>
+        </div>
+
+        <!-- Right col -->
+        <div>
+          <!-- Quick Stats -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">📊 Quick Stats</div>
+            </div>
+            <div id="quickStats"><div class="spin"></div></div>
+          </div>
+
+          <!-- Pending Alert -->
+          <div class="card" id="pendingAlert"
+               style="background:var(--yellow-lt);border-color:#FCD34D;display:none;">
+            <div style="font-size:20px;margin-bottom:6px;">⏳</div>
+            <div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:4px;">
+              Workers Awaiting Approval
+            </div>
+            <div style="font-size:12px;color:#B45309;margin-bottom:12px;">
+              <span id="pendingAlertCount">0</span> worker(s) need your review
+            </div>
+            <button onclick="showPage('workers',null)"
+                    style="padding:7px 16px;background:#D97706;color:#fff;
+                           border:none;border-radius:7px;font-size:12px;
+                           font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+              Review Now →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Workers Quick Table -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">⏳ Pending Worker Approvals</div>
+          <button class="card-action" onclick="showPage('workers',null)">View All →</button>
+        </div>
+        <div id="pendingTable"><div class="spin"></div></div>
+      </div>
+
+      <!-- Recent Jobs -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📋 Recently Posted Jobs</div>
+          <button class="card-action" onclick="showPage('jobs',null)">View All →</button>
+        </div>
+        <div id="recentJobsTable"><div class="spin"></div></div>
+      </div>
+
+    </div><!-- /overview -->
+
+    <!-- ══════════════════════════
+         ANALYTICS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-analytics">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--green-lt);">✅</div>
+          </div>
+          <div class="sc-num" id="an-activeWorkers">—</div>
+          <div class="sc-label">Active Workers</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--yellow-lt);">⏳</div>
+          </div>
+          <div class="sc-num" id="an-pendingWorkers">—</div>
+          <div class="sc-label">Pending Workers</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--red-lt);">🚫</div>
+          </div>
+          <div class="sc-num" id="an-bannedWorkers">—</div>
+          <div class="sc-label">Banned Workers</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--blue-lt);">📋</div>
+          </div>
+          <div class="sc-num" id="an-openJobs">—</div>
+          <div class="sc-label">Open Jobs</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--green-lt);">✅</div>
+          </div>
+          <div class="sc-num" id="an-doneJobs">—</div>
+          <div class="sc-label">Completed Jobs</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--purple-lt);">📬</div>
+          </div>
+          <div class="sc-num" id="an-acceptedBids">—</div>
+          <div class="sc-label">Accepted Bids</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--rose-lt);">⭐</div>
+          </div>
+          <div class="sc-num" id="an-avgRating">—</div>
+          <div class="sc-label">Avg. Worker Rating</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--teal-lt);">💬</div>
+          </div>
+          <div class="sc-num" id="an-totalChats">—</div>
+          <div class="sc-label">Total Chats</div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📂 Workers by Category</div>
+        </div>
+        <div id="categoryBreakdown"><div class="spin"></div></div>
+      </div>
+
+      <!-- Top Workers -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">🏆 Top Rated Workers</div>
+        </div>
+        <div id="topWorkers"><div class="spin"></div></div>
+      </div>
+
+    </div><!-- /analytics -->
+
+    <!-- ══════════════════════════
+         WORKERS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-workers">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">👷 All Workers</div>
+            <div class="card-sub" id="workersCount">Loading...</div>
+          </div>
+          <button class="card-action" onclick="loadWorkers()">🔄 Refresh</button>
+        </div>
+        <div class="pill-tabs" id="workerTabs">
+          <button class="pill-tab active" onclick="filterByStatus('',this,'worker')">All</button>
+          <button class="pill-tab" onclick="filterByStatus('pending',this,'worker')">⏳ Pending</button>
+          <button class="pill-tab" onclick="filterByStatus('active',this,'worker')">✅ Active</button>
+          <button class="pill-tab" onclick="filterByStatus('banned',this,'worker')">🚫 Banned</button>
+          <button class="pill-tab" onclick="filterByStatus('rejected',this,'worker')">❌ Rejected</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="workerSearch"
+                 placeholder="🔍 Search name, email, city, skill..."
+                 oninput="renderWorkers()"/>
+          <select id="workerCat" onchange="renderWorkers()">
+            <option value="">All Categories</option>
+            <option>Home Repairs</option><option>Education</option>
+            <option>Health</option><option>Beauty</option>
+            <option>Cleaning</option><option>IT</option>
+            <option>Auto</option><option>Other</option>
+          </select>
+          <select id="workerSort" onchange="renderWorkers()">
+            <option value="newest">Newest First</option>
+            <option value="rating">Highest Rated</option>
+            <option value="jobs">Most Jobs</option>
+            <option value="earnings">Most Earnings</option>
+          </select>
+        </div>
+        <div class="table-wrap" id="workersTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         CLIENTS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-clients">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">👤 All Clients</div>
+            <div class="card-sub" id="clientsCount">Loading...</div>
+          </div>
+          <button class="card-action" onclick="loadClients()">🔄 Refresh</button>
+        </div>
+        <div class="pill-tabs">
+          <button class="pill-tab active" onclick="filterByStatus('',this,'client')">All</button>
+          <button class="pill-tab" onclick="filterByStatus('active',this,'client')">✅ Active</button>
+          <button class="pill-tab" onclick="filterByStatus('banned',this,'client')">🚫 Banned</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="clientSearch"
+                 placeholder="🔍 Search name, email, city..."
+                 oninput="renderClients()"/>
+          <select id="clientSort" onchange="renderClients()">
+            <option value="newest">Newest First</option>
+            <option value="jobs">Most Jobs</option>
+          </select>
+        </div>
+        <div class="table-wrap" id="clientsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         JOBS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-jobs">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">📋 All Jobs</div>
+            <div class="card-sub" id="jobsCount">Loading...</div>
+          </div>
+          <button class="card-action" onclick="loadJobs()">🔄 Refresh</button>
+        </div>
+        <div class="pill-tabs">
+          <button class="pill-tab active" onclick="filterByStatus('',this,'job')">All</button>
+          <button class="pill-tab" onclick="filterByStatus('open',this,'job')">🟢 Open</button>
+          <button class="pill-tab" onclick="filterByStatus('closed',this,'job')">⚫ Closed</button>
+          <button class="pill-tab" onclick="filterByStatus('done',this,'job')">✅ Done</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="jobSearch"
+                 placeholder="🔍 Search title, category, city..."
+                 oninput="renderJobs()"/>
+          <select id="jobSort" onchange="renderJobs()">
+            <option value="newest">Newest First</option>
+            <option value="budget-high">Budget: High → Low</option>
+            <option value="budget-low">Budget: Low → High</option>
+            <option value="bids">Most Bids</option>
+          </select>
+        </div>
+        <div class="table-wrap" id="jobsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         BIDS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-bids">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">📬 All Bids</div>
+            <div class="card-sub" id="bidsCount">Loading...</div>
+          </div>
+          <button class="card-action" onclick="loadBids()">🔄 Refresh</button>
+        </div>
+        <div class="pill-tabs">
+          <button class="pill-tab active" onclick="filterByStatus('',this,'bid')">All</button>
+          <button class="pill-tab" onclick="filterByStatus('pending',this,'bid')">⏳ Pending</button>
+          <button class="pill-tab" onclick="filterByStatus('accepted',this,'bid')">✅ Accepted</button>
+          <button class="pill-tab" onclick="filterByStatus('rejected',this,'bid')">❌ Rejected</button>
+          <button class="pill-tab" onclick="filterByStatus('done',this,'bid')">🏁 Done</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="bidSearch"
+                 placeholder="🔍 Search worker, job..."
+                 oninput="renderBids()"/>
+          <select id="bidSort" onchange="renderBids()">
+            <option value="newest">Newest First</option>
+            <option value="price-high">Price: High → Low</option>
+            <option value="price-low">Price: Low → High</option>
+          </select>
+        </div>
+        <div class="table-wrap" id="bidsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         REVIEWS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-reviews">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">⭐ All Reviews</div>
+          <button class="card-action" onclick="loadReviews()">🔄 Refresh</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="reviewSearch"
+                 placeholder="🔍 Search..."
+                 oninput="renderReviews()"/>
+          <select id="reviewRating" onchange="renderReviews()">
+            <option value="">All Ratings</option>
+            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+            <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+            <option value="3">⭐⭐⭐ 3 Stars</option>
+            <option value="2">⭐⭐ 2 Stars</option>
+            <option value="1">⭐ 1 Star</option>
+          </select>
+        </div>
+        <div class="table-wrap" id="reviewsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         CHATS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-chats">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">💬 All Chat Conversations</div>
+          <button class="card-action" onclick="loadChats()">🔄 Refresh</button>
+        </div>
+        <div class="table-wrap" id="chatsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         CALLS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-calls">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📞 Call Logs</div>
+          <button class="card-action" onclick="loadCalls()">🔄 Refresh</button>
+        </div>
+        <div class="table-wrap" id="callsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         REPORTS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-reports">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">🚨 User Reports</div>
+          <button class="card-action" onclick="loadReports()">🔄 Refresh</button>
+        </div>
+        <div class="pill-tabs">
+          <button class="pill-tab active" onclick="filterByStatus('',this,'report')">All</button>
+          <button class="pill-tab" onclick="filterByStatus('open',this,'report')">🔴 Open</button>
+          <button class="pill-tab" onclick="filterByStatus('resolved',this,'report')">✅ Resolved</button>
+        </div>
+        <div class="table-wrap" id="reportsTable">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════
+         FINANCE PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-finance">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--green-lt);">💰</div>
+          </div>
+          <div class="sc-num" id="fin-total">Rs. 0</div>
+          <div class="sc-label">Total Worker Earnings</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--rose-lt);">🏦</div>
+          </div>
+          <div class="sc-num" id="fin-platform">Rs. 0</div>
+          <div class="sc-label">Platform Fee (10%)</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--blue-lt);">📊</div>
+          </div>
+          <div class="sc-num" id="fin-avgBid">Rs. 0</div>
+          <div class="sc-label">Avg Bid Price</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-header">
+            <div class="sc-icon" style="background:var(--purple-lt);">🏁</div>
+          </div>
+          <div class="sc-num" id="fin-completed">0</div>
+          <div class="sc-label">Completed Jobs</div>
+        </div>
+      </div>
+
+      <!-- Top Earning Workers -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">🏆 Top Earning Workers</div>
+        </div>
+        <div id="topEarners"><div class="spin"></div></div>
+      </div>
+
+      <!-- Earnings per Category -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📂 Earnings by Category</div>
+        </div>
+        <div id="earningsByCategory"><div class="spin"></div></div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════
+         PRICING CONFIG PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-pricing">
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">🏷️ Platform Pricing Configuration</div>
+            <div class="card-sub">Set fees, min/max prices, and platform rates</div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="ss-title">💸 Platform Commission</div>
+
+          <div class="ss-row">
+            <div>
+              <div class="ss-label">Platform Commission Rate (%)</div>
+              <div class="ss-sub">% taken from each completed job payment</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input class="ss-input" type="number"
+                     id="cfg-commission" placeholder="10" min="0" max="50"/>
+              <span style="font-size:13px;color:var(--muted);">%</span>
+            </div>
+          </div>
+
+          <div class="ss-row">
+            <div>
+              <div class="ss-label">Minimum Bid Price (PKR)</div>
+              <div class="ss-sub">Worker cannot bid below this amount</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:13px;color:var(--muted);">Rs.</span>
+              <input class="ss-input" type="number"
+                     id="cfg-minBid" placeholder="100" min="0"/>
+            </div>
+          </div>
+
+          <div class="ss-row">
+            <div>
+              <div class="ss-label">Maximum Bid Price (PKR)</div>
+              <div class="ss-sub">Upper limit for worker bids</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:13px;color:var(--muted);">Rs.</span>
+              <input class="ss-input" type="number"
+                     id="cfg-maxBid" placeholder="500000" min="0"/>
+            </div>
+          </div>
+
+          <div class="ss-row">
+            <div>
+              <div class="ss-label">Minimum Job Budget (PKR)</div>
+              <div class="ss-sub">Client minimum budget for posting a job</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:13px;color:var(--muted);">Rs.</span>
+              <input class="ss-input" type="number"
+                     id="cfg-minBudget" placeholder="200" min="0"/>
+            </div>
+          </div>
+
+          <div class="ss-row">
+            <div>
+              <div class="ss-label">Free Jobs Per Client</div>
+              <div class="ss-sub">How many free job posts per client per month</div>
+            </div>
+            <input class="ss-input" type="number"
+                   id="cfg-freeJobs" placeholder="5" min="0"/>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="ss-title">📂 Category Min Rates (PKR/hr)</div>
+          <div id="categoryRates">
+            <div class="spin"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="ss-btn" onclick="savePricingConfig()">
+            💾 Save Pricing Config
+          </button>
+          <button class="ss-btn"
+                  style="background:var(--blue);"
+                  onclick="loadPricingConfig()">
+            🔄 Reload
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════
+         SETTINGS PAGE
+    ══════════════════════════ -->
+    <div class="page" id="page-settings">
+
+      <!-- Admin Access -->
+      <div class="settings-section">
+        <div class="ss-title">👑 Admin Access</div>
+        <div class="ss-row">
+          <div>
+            <div class="ss-label">Your Admin UID</div>
+            <div class="ss-sub">Copy and paste in auth/login.html</div>
+          </div>
+          <button class="ss-btn" onclick="copyUID()">📋 Copy UID</button>
+        </div>
+        <div class="code-box" id="myUID">Loading...</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+          In <code>auth/login.html</code> replace
+          <code style="color:var(--rose);">'YOUR_ADMIN_UID'</code>
+          with your UID above.
+        </div>
+      </div>
+
+      <!-- Platform Settings -->
+      <div class="settings-section">
+        <div class="ss-title">⚙️ Platform Settings</div>
+
+        <div class="ss-row">
+          <div>
+            <div class="ss-label">Platform Name</div>
+            <div class="ss-sub">Shown across the website</div>
+          </div>
+          <input class="ss-input" type="text"
+                 id="cfg-platformName" placeholder="DoorSkill"/>
+        </div>
+
+        <div class="ss-row">
+          <div>
+            <div class="ss-label">Support Email</div>
+            <div class="ss-sub">Contact email for users</div>
+          </div>
+          <input class="ss-input" type="email"
+                 id="cfg-supportEmail" placeholder="support@doorskill.com"/>
+        </div>
+
+        <div class="ss-row">
+          <div>
+            <div class="ss-label">Max Bid Messages (chars)</div>
+            <div class="ss-sub">Worker bid message character limit</div>
+          </div>
+          <input class="ss-input" type="number"
+                 id="cfg-bidMsgLimit" placeholder="300"/>
+        </div>
+
+        <div class="ss-row">
+          <div>
+            <div class="ss-label">Worker Confirmation Window (mins)</div>
+            <div class="ss-sub">Minutes worker has to confirm after acceptance</div>
+          </div>
+          <input class="ss-input" type="number"
+                 id="cfg-confirmWindow" placeholder="20"/>
+        </div>
+
+        <div class="ss-row">
+          <div>
+            <div class="ss-label">Agora App ID</div>
+            <div class="ss-sub">For audio calls (pages/call.html)</div>
+          </div>
+          <input class="ss-input" type="text"
+                 id="cfg-agoraAppId" placeholder="Your Agora App ID"/>
+        </div>
+
+        <div style="margin-top:14px;">
+          <button class="ss-btn" onclick="savePlatformSettings()">
+            💾 Save Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- Database Overview -->
+      <div class="settings-section">
+        <div class="ss-title">🗄️ Database Overview</div>
+        <div id="dbOverview"><div class="spin"></div></div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="settings-section"
+           style="border-color:var(--red);background:var(--red-lt);">
+        <div class="ss-title" style="color:#991B1B;">⚠️ Danger Zone</div>
+        <p style="font-size:12px;color:#991B1B;margin-bottom:14px;">
+          These actions are irreversible. Use with extreme caution.
+        </p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="cfmAction('deleteClosedJobs')"
+                  style="padding:8px 16px;background:var(--red);color:#fff;
+                         border:none;border-radius:8px;font-size:12px;
+                         font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+            🗑️ Delete All Closed Jobs
+          </button>
+          <button onclick="cfmAction('deleteRejectedWorkers')"
+                  style="padding:8px 16px;background:var(--red);color:#fff;
+                         border:none;border-radius:8px;font-size:12px;
+                         font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+            🗑️ Delete Rejected Workers
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════
+     DETAIL MODAL
+══════════════════════════════════ -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modalTitle">Details</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="editModalTitle">Edit</span>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div id="editModalBody"></div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-overlay" id="cfmOverlay">
+  <div class="confirm-box">
+    <div class="cfm-icon" id="cfmIcon">⚠️</div>
+    <div class="cfm-title" id="cfmTitle">Are you sure?</div>
+    <div class="cfm-sub" id="cfmSub">This cannot be undone.</div>
+    <div class="cfm-btns">
+      <button class="cfm-cancel" onclick="closeCfm()">Cancel</button>
+      <button class="cfm-ok" id="cfmOkBtn" onclick="executeCfm()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════
+     FIREBASE
+══════════════════════════════════ -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc, getDoc, getDocs, updateDoc,
+  deleteDoc, setDoc, addDoc,
+  collection, query, where,
+  orderBy, limit,
+  serverTimestamp, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:            "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain:        "doorskill-beff1.firebaseapp.com",
+  databaseURL:       "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId:         "doorskill-beff1",
+  storageBucket:     "doorskill-beff1.firebasestorage.app",
+  messagingSenderId: "620272735898",
+  appId:             "1:620272735898:web:b35d24737ef79c01a67123"
+});
+
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── Global Data Store ──
+window._D = {
+  workers:[], clients:[], jobs:[],
+  bids:[], reviews:[], chats:[],
+  calls:[], reports:[], config:{},
+};
+
+let _uid = null;
+let _pendingAction = null;
+
+// ══ STATUS FILTERS ══
+window._filters = {
+  worker:'', client:'', job:'', bid:'', report:''
+};
+
+// ════════════════════
+// AUTH CHECK
+// ════════════════════
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    window.location.href = 'admin-login.html'; return;
+  }
+  _uid = user.uid;
+
+  // Check admin access
+  let isAdmin = false;
+  try {
+    // Check admins collection
+    const adminSnap = await getDoc(doc(db,'admins',_uid));
+    if(adminSnap.exists()) isAdmin = true;
+
+    // Check worker role=admin
+    if(!isAdmin){
+      const wSnap = await getDoc(doc(db,'workers',_uid));
+      if(wSnap.exists() && wSnap.data().role === 'admin') isAdmin = true;
+    }
+
+    // Check localStorage
+    if(!isAdmin && localStorage.getItem('ds_role') === 'admin')
+      isAdmin = true;
+
+  } catch(e){ isAdmin = true; } // If rules allow, let through
+
+  if(!isAdmin){
+    showToast('❌ Admin access only!');
+    setTimeout(()=> window.location.href = 'admin-login.html', 2000);
+    return;
+  }
+
+  // Set admin info
+  document.getElementById('sbName').textContent =
+    user.displayName || user.email?.split('@')[0] || 'Admin';
+  document.getElementById('myUID').textContent = _uid;
+
+  // Load all data
+  loadAllData();
+  loadPricingConfig();
+  loadPlatformSettings();
+});
+
+// ════════════════════
+// LOAD ALL DATA
+// ════════════════════
+window.loadAllData = async function(){
+  try {
+    // Workers
+    const wSnap = await getDocs(
+      query(collection(db,'workers'), orderBy('createdAt','desc'))
+    );
+    window._D.workers = [];
+    wSnap.forEach(d => window._D.workers.push({id:d.id,...d.data()}));
+
+    // Clients
+    const cSnap = await getDocs(
+      query(collection(db,'clients'), orderBy('createdAt','desc'))
+    );
+    window._D.clients = [];
+    cSnap.forEach(d => window._D.clients.push({id:d.id,...d.data()}));
+
+    // Jobs
+    const jSnap = await getDocs(
+      query(collection(db,'jobs'), orderBy('createdAt','desc'), limit(500))
+    );
+    window._D.jobs = [];
+    jSnap.forEach(d => window._D.jobs.push({id:d.id,...d.data()}));
+
+    // Bids
+    const bSnap = await getDocs(
+      query(collection(db,'bids'), orderBy('createdAt','desc'), limit(500))
+    );
+    window._D.bids = [];
+    bSnap.forEach(d => window._D.bids.push({id:d.id,...d.data()}));
+
+    // Reviews
+    const rSnap = await getDocs(
+      query(collection(db,'reviews'), orderBy('createdAt','desc'))
+    );
+    window._D.reviews = [];
+    rSnap.forEach(d => window._D.reviews.push({id:d.id,...d.data()}));
+
+    // Chats
+    const chSnap = await getDocs(
+      query(collection(db,'chats'), orderBy('lastTime','desc'), limit(200))
+    );
+    window._D.chats = [];
+    chSnap.forEach(d => window._D.chats.push({id:d.id,...d.data()}));
+
+    // Calls
+    const callSnap = await getDocs(
+      query(collection(db,'calls'), orderBy('startedAt','desc'), limit(200))
+    );
+    window._D.calls = [];
+    callSnap.forEach(d => window._D.calls.push({id:d.id,...d.data()}));
+
+    // Reports
+    const rpSnap = await getDocs(
+      query(collection(db,'reports'), orderBy('createdAt','desc'))
+    );
+    window._D.reports = [];
+    rpSnap.forEach(d => window._D.reports.push({id:d.id,...d.data()}));
+
+    // Update all UI
+    updateAllStats();
+    renderOverviewPendingTable();
+    renderOverviewRecentJobs();
+    renderActivityFeed();
+    renderQuickStats();
+    renderAnalytics();
+    renderFinance();
+    renderDBOverview();
+
+    // Update badges
+    const pending = window._D.workers.filter(w=>w.status==='pending').length;
+    const openRep = window._D.reports.filter(r=>r.status==='open').length;
+    document.getElementById('pendingBadge').textContent = pending;
+    document.getElementById('reportsBadge').textContent = openRep;
+    document.getElementById('notifDot').style.display =
+      (pending > 0 || openRep > 0) ? 'block' : 'none';
+
+    // Show pending alert
+    if(pending > 0){
+      document.getElementById('pendingAlert').style.display = 'block';
+      document.getElementById('pendingAlertCount').textContent = pending;
+    }
+
+  } catch(err){
+    console.error('loadAllData error:', err);
+    showToast('⚠️ Some data could not load: '+err.message);
+  }
+};
+
+// ════════════════════
+// UPDATE STATS CARDS
+// ════════════════════
+function updateAllStats(){
+  const D = window._D;
+  const pending  = D.workers.filter(w=>w.status==='pending').length;
+  const online   = D.workers.filter(w=>w.isOnline).length;
+  const openRep  = D.reports.filter(r=>r.status==='open').length;
+  const totalEarnings = D.workers.reduce((s,w)=>s+(w.totalEarnings||0),0);
+  const platformFee   = Math.round(totalEarnings * 0.10);
+
+  document.getElementById('ov-workers').textContent  = D.workers.length;
+  document.getElementById('ov-clients').textContent  = D.clients.length;
+  document.getElementById('ov-jobs').textContent     = D.jobs.length;
+  document.getElementById('ov-bids').textContent     = D.bids.length;
+  document.getElementById('ov-pending').textContent  = pending;
+  document.getElementById('ov-online').textContent   = online;
+  document.getElementById('ov-reports').textContent  = openRep;
+  document.getElementById('ov-earnings').textContent =
+    'Rs.'+platformFee.toLocaleString();
+
+  document.getElementById('sc-pending').textContent =
+    pending > 0 ? pending+' pending' : 'All clear';
+  document.getElementById('sc-reports').textContent =
+    openRep > 0 ? openRep+' open' : 'All clear';
+}
+
+// ════════════════════
+// OVERVIEW — PENDING TABLE
+// ════════════════════
+function renderOverviewPendingTable(){
+  const pending = window._D.workers.filter(w=>w.status==='pending');
+  const cont = document.getElementById('pendingTable');
+
+  if(!pending.length){
+    cont.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">✅</div>
+        <div class="es-title">No pending workers!</div>
+        <div class="es-sub">All workers have been reviewed.</div>
+      </div>`;
+    return;
+  }
+
+  cont.innerHTML = `
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>Worker</th><th>Category</th>
+      <th>City</th><th>Skills</th>
+      <th>Registered</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${pending.map(w=>`
+    <tr>
+      <td>
+        <div class="td-name">
+          ${avatarHtml(w,'worker')}
+          <div>
+            <div>${w.fullName||'—'}</div>
+            <div style="font-size:10px;color:var(--muted);">${w.email||'—'}</div>
+          </div>
+        </div>
+      </td>
+      <td>${w.category||'—'}</td>
+      <td>${w.city||'—'}</td>
+      <td>${(w.skills||[]).slice(0,2).join(', ')||'—'}</td>
+      <td>${fmtDate(w.createdAt)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="act-btn ab-view"
+                  onclick="viewWorker('${w.id}')">👁️ View</button>
+          <button class="act-btn ab-approve"
+                  onclick="cfmAction('approve','${w.id}','${esc(w.fullName||'')}')">
+            ✅ Approve
+          </button>
+          <button class="act-btn ab-reject"
+                  onclick="cfmAction('reject','${w.id}','${esc(w.fullName||'')}')">
+            ❌ Reject
+          </button>
+        </div>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>`;
+}
+
+// ════════════════════
+// OVERVIEW — RECENT JOBS
+// ════════════════════
+function renderOverviewRecentJobs(){
+  const jobs = window._D.jobs.slice(0,5);
+  const cont = document.getElementById('recentJobsTable');
+  if(!jobs.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No jobs yet</div></div>';
+    return;
+  }
+  cont.innerHTML = `
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>Title</th><th>Budget</th>
+      <th>Category</th><th>City</th>
+      <th>Bids</th><th>Status</th>
+    </tr></thead>
+    <tbody>
+    ${jobs.map(j=>`
+    <tr>
+      <td style="font-weight:700;color:var(--dark);max-width:160px;
+                 overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+        ${j.title||'Untitled'}
+      </td>
+      <td style="font-weight:700;color:var(--rose);">
+        Rs.${(j.budget||0).toLocaleString()}
+      </td>
+      <td>${j.category||'—'}</td>
+      <td>${j.city||'—'}</td>
+      <td>${j.bidsCount||0}</td>
+      <td><span class="badge ${statusBadge(j.status,'job')}">${j.status||'open'}</span></td>
+    </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>`;
+}
+
+// ════════════════════
+// ACTIVITY FEED
+// ════════════════════
+function renderActivityFeed(){
+  const D = window._D;
+  let items = [];
+
+  D.workers.slice(0,3).forEach(w=>{
+    items.push({icon:'👷',bg:'var(--rose-lt)',
+      text:`<strong>${w.fullName||'Worker'}</strong> registered — ${w.category||''}`,
+      ts:w.createdAt?.seconds||0});
+  });
+  D.jobs.slice(0,3).forEach(j=>{
+    items.push({icon:'📋',bg:'var(--blue-lt)',
+      text:`Job posted: <strong>${j.title||'Untitled'}</strong> — Rs.${(j.budget||0).toLocaleString()}`,
+      ts:j.createdAt?.seconds||0});
+  });
+  D.bids.slice(0,2).forEach(b=>{
+    items.push({icon:'📬',bg:'var(--green-lt)',
+      text:`<strong>${b.workerName||'Worker'}</strong> bid Rs.${(b.myPrice||0).toLocaleString()} on "${b.jobTitle||''}"`,
+      ts:b.createdAt?.seconds||0});
+  });
+  D.reviews.slice(0,2).forEach(r=>{
+    items.push({icon:'⭐',bg:'var(--yellow-lt)',
+      text:`Review: <strong>${r.clientName||'Client'}</strong> rated ${r.rating||0}★`,
+      ts:r.createdAt?.seconds||0});
+  });
+
+  items.sort((a,b)=>b.ts-a.ts);
+
+  const cont = document.getElementById('activityFeed');
+  if(!items.length){
+    cont.innerHTML='<div class="empty-state"><div class="es-icon">🕐</div><div class="es-title">No recent activity</div></div>';
+    return;
+  }
+  cont.innerHTML = items.slice(0,10).map(a=>`
+    <div class="activity-item">
+      <div class="ai-icon" style="background:${a.bg};">${a.icon}</div>
+      <div>
+        <div class="ai-text">${a.text}</div>
+        <div class="ai-time">${tsAgo(a.ts)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ════════════════════
+// QUICK STATS
+// ════════════════════
+function renderQuickStats(){
+  const D = window._D;
+  const active   = D.workers.filter(w=>w.status==='active').length;
+  const pending  = D.workers.filter(w=>w.status==='pending').length;
+  const banned   = D.workers.filter(w=>w.status==='banned').length;
+  const online   = D.workers.filter(w=>w.isOnline).length;
+  const openJobs = D.jobs.filter(j=>j.status==='open').length;
+  const doneJobs = D.jobs.filter(j=>j.status==='done').length;
+  const accBids  = D.bids.filter(b=>b.status==='accepted').length;
+  const avgRat   = D.workers.filter(w=>w.rating)
+    .reduce((s,w,_,a)=>s+(w.rating||0)/a.length,0).toFixed(1);
+
+  document.getElementById('quickStats').innerHTML = [
+    ['✅ Active Workers', active],
+    ['⏳ Pending Workers', pending],
+    ['🚫 Banned Workers', banned],
+    ['🟢 Online Now', online],
+    ['📋 Open Jobs', openJobs],
+    ['✅ Completed Jobs', doneJobs],
+    ['📬 Accepted Bids', accBids],
+    ['⭐ Avg Rating', avgRat+'★'],
+    ['💬 Total Chats', D.chats.length],
+    ['📞 Total Calls', D.calls.length],
+    ['⭐ Total Reviews', D.reviews.length],
+  ].map(([l,v])=>`
+    <div class="quick-stat">
+      <span class="qs-label">${l}</span>
+      <span class="qs-val">${v}</span>
+    </div>`).join('');
+}
+
+// ════════════════════
+// ANALYTICS
+// ════════════════════
+function renderAnalytics(){
+  const D = window._D;
+  const active   = D.workers.filter(w=>w.status==='active').length;
+  const pending  = D.workers.filter(w=>w.status==='pending').length;
+  const banned   = D.workers.filter(w=>w.status==='banned').length;
+  const openJobs = D.jobs.filter(j=>j.status==='open').length;
+  const doneJobs = D.jobs.filter(j=>j.status==='done').length;
+  const accBids  = D.bids.filter(b=>b.status==='accepted').length;
+  const ratedW   = D.workers.filter(w=>w.rating);
+  const avgRat   = ratedW.length
+    ? (ratedW.reduce((s,w)=>s+(w.rating||0),0)/ratedW.length).toFixed(1)
+    : '—';
+
+  document.getElementById('an-activeWorkers').textContent  = active;
+  document.getElementById('an-pendingWorkers').textContent = pending;
+  document.getElementById('an-bannedWorkers').textContent  = banned;
+  document.getElementById('an-openJobs').textContent       = openJobs;
+  document.getElementById('an-doneJobs').textContent       = doneJobs;
+  document.getElementById('an-acceptedBids').textContent   = accBids;
+  document.getElementById('an-avgRating').textContent      = avgRat+'★';
+  document.getElementById('an-totalChats').textContent     = D.chats.length;
+
+  // Category breakdown
+  const cats = {};
+  D.workers.forEach(w=>{
+    const c = w.category||'Other';
+    cats[c] = (cats[c]||0)+1;
+  });
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const maxCat = sorted[0]?.[1]||1;
+
+  document.getElementById('categoryBreakdown').innerHTML = `
+  <div style="display:flex;flex-direction:column;gap:8px;">
+  ${sorted.map(([cat,cnt])=>`
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:12px;color:var(--dark);font-weight:600;
+                  min-width:140px;white-space:nowrap;overflow:hidden;
+                  text-overflow:ellipsis;">${cat}</div>
+      <div style="flex:1;background:#FFF0F5;border-radius:999px;height:10px;overflow:hidden;">
+        <div style="width:${(cnt/maxCat*100).toFixed(0)}%;
+                    height:100%;background:var(--rose);border-radius:999px;
+                    transition:width .5s;"></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--rose);min-width:28px;">
+        ${cnt}
+      </div>
+    </div>`).join('')}
+  </div>`;
+
+  // Top rated workers
+  const top = [...D.workers]
+    .filter(w=>w.rating && w.totalReviews > 0)
+    .sort((a,b)=>(b.rating||0)-(a.rating||0))
+    .slice(0,5);
+
+  document.getElementById('topWorkers').innerHTML = top.length
+    ? `<table><thead><tr>
+        <th>Worker</th><th>Category</th>
+        <th>Rating</th><th>Reviews</th>
+        <th>Jobs Done</th><th>Earnings</th>
+      </tr></thead><tbody>
+      ${top.map(w=>`<tr>
+        <td><div class="td-name">
+          ${avatarHtml(w,'worker')}
+          <div>
+            <div>${w.fullName||'—'}</div>
+            <div style="font-size:10px;color:var(--muted);">${w.email||'—'}</div>
+          </div>
+        </div></td>
+        <td>${w.category||'—'}</td>
+        <td style="color:#F59E0B;font-weight:700;">
+          ⭐ ${Number(w.rating||0).toFixed(1)}
+        </td>
+        <td>${w.totalReviews||0}</td>
+        <td>${w.totalJobs||0}</td>
+        <td style="color:var(--green);font-weight:700;">
+          Rs.${(w.totalEarnings||0).toLocaleString()}
+        </td>
+      </tr>`).join('')}
+      </tbody></table>`
+    : '<div class="empty-state"><div class="es-icon">⭐</div><div class="es-title">No reviews yet</div></div>';
+}
+
+// ════════════════════
+// FINANCE
+// ════════════════════
+function renderFinance(){
+  const D = window._D;
+  const totalEarn   = D.workers.reduce((s,w)=>s+(w.totalEarnings||0),0);
+  const platformFee = Math.round(totalEarn * 0.10);
+  const doneBids    = D.bids.filter(b=>b.status==='done');
+  const avgBid      = doneBids.length
+    ? Math.round(doneBids.reduce((s,b)=>s+(b.myPrice||0),0)/doneBids.length)
+    : 0;
+
+  document.getElementById('fin-total').textContent    = 'Rs.'+totalEarn.toLocaleString();
+  document.getElementById('fin-platform').textContent = 'Rs.'+platformFee.toLocaleString();
+  document.getElementById('fin-avgBid').textContent   = 'Rs.'+avgBid.toLocaleString();
+  document.getElementById('fin-completed').textContent= doneBids.length;
+
+  // Top earners
+  const topE = [...D.workers]
+    .filter(w=>w.totalEarnings > 0)
+    .sort((a,b)=>(b.totalEarnings||0)-(a.totalEarnings||0))
+    .slice(0,10);
+
+  document.getElementById('topEarners').innerHTML = topE.length
+    ? `<table><thead><tr>
+        <th>Worker</th><th>Category</th>
+        <th>City</th><th>Jobs Done</th>
+        <th>Total Earned</th><th>Platform Fee</th>
+      </tr></thead><tbody>
+      ${topE.map(w=>`<tr>
+        <td><div class="td-name">
+          ${avatarHtml(w,'worker')}
+          <div>
+            <div>${w.fullName||'—'}</div>
+            <div style="font-size:10px;color:var(--muted);">${w.email||'—'}</div>
+          </div>
+        </div></td>
+        <td>${w.category||'—'}</td>
+        <td>${w.city||'—'}</td>
+        <td>${w.totalJobs||0}</td>
+        <td style="font-weight:700;color:var(--green);">
+          Rs.${(w.totalEarnings||0).toLocaleString()}
+        </td>
+        <td style="color:var(--rose);font-weight:600;">
+          Rs.${Math.round((w.totalEarnings||0)*0.10).toLocaleString()}
+        </td>
+      </tr>`).join('')}
+      </tbody></table>`
+    : '<div class="empty-state"><div class="es-icon">💰</div><div class="es-title">No earnings data yet</div></div>';
+
+  // Earnings by category
+  const catEarn = {};
+  D.workers.forEach(w=>{
+    const c = w.category||'Other';
+    catEarn[c] = (catEarn[c]||0)+(w.totalEarnings||0);
+  });
+  const catArr = Object.entries(catEarn).sort((a,b)=>b[1]-a[1]);
+
+  document.getElementById('earningsByCategory').innerHTML = catArr.length
+    ? `<table><thead><tr>
+        <th>Category</th><th>Workers</th><th>Total Earnings</th><th>Platform Fee</th>
+      </tr></thead><tbody>
+      ${catArr.map(([cat,earn])=>`<tr>
+        <td style="font-weight:700;">${cat}</td>
+        <td>${D.workers.filter(w=>(w.category||'Other')===cat).length}</td>
+        <td style="color:var(--green);font-weight:700;">Rs.${earn.toLocaleString()}</td>
+        <td style="color:var(--rose);font-weight:600;">Rs.${Math.round(earn*0.10).toLocaleString()}</td>
+      </tr>`).join('')}
+      </tbody></table>`
+    : '<div class="empty-state"><div class="es-icon">📊</div><div class="es-title">No data</div></div>';
+}
+
+// ════════════════════
+// DB OVERVIEW
+// ════════════════════
+function renderDBOverview(){
+  const D = window._D;
+  document.getElementById('dbOverview').innerHTML = [
+    ['👷 Workers', D.workers.length],
+    ['👤 Clients', D.clients.length],
+    ['📋 Jobs', D.jobs.length],
+    ['📬 Bids', D.bids.length],
+    ['⭐ Reviews', D.reviews.length],
+    ['💬 Chats', D.chats.length],
+    ['📞 Calls', D.calls.length],
+    ['🚨 Reports', D.reports.length],
+  ].map(([l,v])=>`
+    <div class="quick-stat">
+      <span class="qs-label">${l}</span>
+      <span class="qs-val">${v} docs</span>
+    </div>`).join('');
+}
+
+// ════════════════════
+// LOAD WORKERS PAGE
+// ════════════════════
+window.loadWorkers = async function(){
+  document.getElementById('workersTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'workers'), orderBy('createdAt','desc'))
+    );
+    window._D.workers = [];
+    snap.forEach(d => window._D.workers.push({id:d.id,...d.data()}));
+    renderWorkers();
+  } catch(err){
+    document.getElementById('workersTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+window.renderWorkers = function(){
+  const search = (document.getElementById('workerSearch')?.value||'').toLowerCase();
+  const cat    = document.getElementById('workerCat')?.value||'';
+  const sort   = document.getElementById('workerSort')?.value||'newest';
+  const status = window._filters.worker;
+
+  let list = [...window._D.workers];
+  if(status) list = list.filter(w=>w.status===status);
+  if(cat)    list = list.filter(w=>(w.category||'').toLowerCase().includes(cat.toLowerCase()));
+  if(search) list = list.filter(w=>
+    (w.fullName||'').toLowerCase().includes(search)||
+    (w.email||'').toLowerCase().includes(search)||
+    (w.city||'').toLowerCase().includes(search)||
+    (w.phone||'').includes(search)||
+    (w.skills||[]).some(s=>s.toLowerCase().includes(search))
+  );
+
+  if(sort==='rating')   list.sort((a,b)=>(b.rating||0)-(a.rating||0));
+  if(sort==='jobs')     list.sort((a,b)=>(b.totalJobs||0)-(a.totalJobs||0));
+  if(sort==='earnings') list.sort((a,b)=>(b.totalEarnings||0)-(a.totalEarnings||0));
+
+  document.getElementById('workersCount').textContent =
+    list.length+' workers found';
+
+  const cont = document.getElementById('workersTable');
+  if(!list.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">👷</div><div class="es-title">No workers found</div></div>';
+    return;
+  }
+
+  cont.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Worker</th><th>Category</th>
+      <th>Skills</th><th>City</th>
+      <th>Rate</th><th>Rating</th>
+      <th>Jobs</th><th>Earnings</th>
+      <th>Online</th><th>Status</th>
+      <th>Joined</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${list.map(w=>`
+    <tr>
+      <td>
+        <div class="td-name">
+          ${avatarHtml(w,'worker')}
+          <div>
+            <div>${w.fullName||'—'}</div>
+            <div style="font-size:10px;color:var(--muted);">${w.email||'—'}</div>
+            <div style="font-size:10px;color:var(--muted);">${w.phone||''}</div>
+          </div>
+        </div>
+      </td>
+      <td>${w.category||'—'}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+        ${(w.skills||[]).join(', ')||'—'}
+      </td>
+      <td>${[w.city,w.country].filter(Boolean).join(', ')||'—'}</td>
+      <td style="font-weight:600;color:var(--rose);">
+        ${w.rate ? 'Rs.'+Number(w.rate).toLocaleString() : '—'}
+        ${w.rateType ? '<br/><span style="font-size:9px;color:var(--muted);">'+w.rateType+'</span>' : ''}
+      </td>
+      <td style="color:#F59E0B;font-weight:700;">
+        ${w.rating ? '⭐'+Number(w.rating).toFixed(1)+' ('+w.totalReviews+')' : '—'}
+      </td>
+      <td style="font-weight:700;">${w.totalJobs||0}</td>
+      <td style="color:var(--green);font-weight:700;">
+        Rs.${(w.totalEarnings||0).toLocaleString()}
+      </td>
+      <td>${w.isOnline
+        ? '<span style="color:var(--green);font-weight:700;">🟢</span>'
+        : '<span style="color:var(--muted);">⚫</span>'}</td>
+      <td>
+        <span class="badge ${statusBadge(w.status,'worker')}">
+          ${w.status||'unknown'}
+        </span>
+      </td>
+      <td style="font-size:11px;">${fmtDate(w.createdAt)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="act-btn ab-view"
+                  onclick="viewWorker('${w.id}')">👁️</button>
+          <button class="act-btn ab-edit"
+                  onclick="editWorker('${w.id}')">✏️</button>
+          ${w.status==='pending'
+            ? `<button class="act-btn ab-approve"
+                       onclick="cfmAction('approve','${w.id}','${esc(w.fullName||'')}')">✅</button>
+               <button class="act-btn ab-reject"
+                       onclick="cfmAction('reject','${w.id}','${esc(w.fullName||'')}')">❌</button>`
+            : ''}
+          ${w.status==='active'
+            ? `<button class="act-btn ab-ban"
+                       onclick="cfmAction('ban','${w.id}','${esc(w.fullName||'')}')">🚫</button>` : ''}
+          ${w.status==='banned'
+            ? `<button class="act-btn ab-unban"
+                       onclick="cfmAction('unban','${w.id}','${esc(w.fullName||'')}')">🔓</button>` : ''}
+          <button class="act-btn ab-delete"
+                  onclick="cfmAction('deleteWorker','${w.id}','${esc(w.fullName||'')}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
+
+// ════════════════════
+// LOAD CLIENTS
+// ════════════════════
+window.loadClients = async function(){
+  document.getElementById('clientsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'clients'), orderBy('createdAt','desc'))
+    );
+    window._D.clients = [];
+    snap.forEach(d => window._D.clients.push({id:d.id,...d.data()}));
+    renderClients();
+  } catch(err){
+    document.getElementById('clientsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+window.renderClients = function(){
+  const search = (document.getElementById('clientSearch')?.value||'').toLowerCase();
+  const sort   = document.getElementById('clientSort')?.value||'newest';
+  const status = window._filters.client;
+
+  let list = [...window._D.clients];
+  if(status) list = list.filter(c=>(c.status||'active')===status);
+  if(search) list = list.filter(c=>
+    (c.fullName||'').toLowerCase().includes(search)||
+    (c.email||'').toLowerCase().includes(search)||
+    (c.city||'').toLowerCase().includes(search)
+  );
+  if(sort==='jobs') list.sort((a,b)=>(b.totalJobs||0)-(a.totalJobs||0));
+
+  document.getElementById('clientsCount').textContent = list.length+' clients found';
+
+  const cont = document.getElementById('clientsTable');
+  if(!list.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">👤</div><div class="es-title">No clients found</div></div>';
+    return;
+  }
+
+  cont.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Client</th><th>Phone</th>
+      <th>City</th><th>Jobs Posted</th>
+      <th>Status</th><th>Joined</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${list.map(c=>`
+    <tr>
+      <td>
+        <div class="td-name">
+          ${avatarHtml(c,'client')}
+          <div>
+            <div>${c.fullName||'—'}</div>
+            <div style="font-size:10px;color:var(--muted);">${c.email||'—'}</div>
+          </div>
+        </div>
+      </td>
+      <td>${c.phone||'—'}</td>
+      <td>${c.city||'—'}</td>
+      <td style="font-weight:700;">${c.totalJobs||0}</td>
+      <td>
+        <span class="badge ${(c.status||'active')==='banned' ? 'b-banned':'b-active'}">
+          ${c.status||'active'}
+        </span>
+      </td>
+      <td style="font-size:11px;">${fmtDate(c.createdAt)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="act-btn ab-view"
+                  onclick="viewClient('${c.id}')">👁️</button>
+          ${(c.status||'active')==='banned'
+            ? `<button class="act-btn ab-unban"
+                       onclick="cfmAction('unbanClient','${c.id}','${esc(c.fullName||'')}')">🔓</button>`
+            : `<button class="act-btn ab-ban"
+                       onclick="cfmAction('banClient','${c.id}','${esc(c.fullName||'')}')">🚫</button>`}
+          <button class="act-btn ab-delete"
+                  onclick="cfmAction('deleteClient','${c.id}','${esc(c.fullName||'')}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
+
+// ════════════════════
+// LOAD JOBS
+// ════════════════════
+window.loadJobs = async function(){
+  document.getElementById('jobsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'jobs'), orderBy('createdAt','desc'), limit(500))
+    );
+    window._D.jobs = [];
+    snap.forEach(d => window._D.jobs.push({id:d.id,...d.data()}));
+    renderJobs();
+  } catch(err){
+    document.getElementById('jobsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+window.renderJobs = function(){
+  const search = (document.getElementById('jobSearch')?.value||'').toLowerCase();
+  const sort   = document.getElementById('jobSort')?.value||'newest';
+  const status = window._filters.job;
+
+  let list = [...window._D.jobs];
+  if(status) list = list.filter(j=>j.status===status);
+  if(search) list = list.filter(j=>
+    (j.title||'').toLowerCase().includes(search)||
+    (j.category||'').toLowerCase().includes(search)||
+    (j.city||'').toLowerCase().includes(search)
+  );
+  if(sort==='budget-high') list.sort((a,b)=>(b.budget||0)-(a.budget||0));
+  if(sort==='budget-low')  list.sort((a,b)=>(a.budget||0)-(b.budget||0));
+  if(sort==='bids')        list.sort((a,b)=>(b.bidsCount||0)-(a.bidsCount||0));
+
+  document.getElementById('jobsCount').textContent = list.length+' jobs found';
+
+  const cont = document.getElementById('jobsTable');
+  if(!list.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">📋</div><div class="es-title">No jobs found</div></div>';
+    return;
+  }
+
+  cont.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Title</th><th>Category</th>
+      <th>Budget</th><th>City</th>
+      <th>Bids</th><th>Posted By</th>
+      <th>Status</th><th>Date</th>
+      <th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${list.map(j=>`
+    <tr>
+      <td style="font-weight:700;color:var(--dark);max-width:160px;
+                 overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+        ${j.title||'Untitled'}
+      </td>
+      <td>${j.category||'—'}</td>
+      <td style="font-weight:700;color:var(--rose);">
+        Rs.${(j.budget||0).toLocaleString()}
+      </td>
+      <td>${j.city||'—'}</td>
+      <td style="font-weight:700;">${j.bidsCount||0}</td>
+      <td style="font-size:11px;">${j.clientName||'—'}</td>
+      <td>
+        <span class="badge ${statusBadge(j.status,'job')}">${j.status||'open'}</span>
+      </td>
+      <td style="font-size:11px;">${fmtDate(j.createdAt)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="act-btn ab-view"
+                  onclick="viewJob('${j.id}')">👁️</button>
+          ${j.status==='open'
+            ? `<button class="act-btn ab-close"
+                       onclick="cfmAction('closeJob','${j.id}','${esc(j.title||'')}')">🔒</button>` : ''}
+          <button class="act-btn ab-delete"
+                  onclick="cfmAction('deleteJob','${j.id}','${esc(j.title||'')}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
+
+// ════════════════════
+// LOAD BIDS
+// ════════════════════
+window.loadBids = async function(){
+  document.getElementById('bidsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'bids'), orderBy('createdAt','desc'), limit(500))
+    );
+    window._D.bids = [];
+    snap.forEach(d => window._D.bids.push({id:d.id,...d.data()}));
+    renderBids();
+  } catch(err){
+    document.getElementById('bidsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+window.renderBids = function(){
+  const search = (document.getElementById('bidSearch')?.value||'').toLowerCase();
+  const sort   = document.getElementById('bidSort')?.value||'newest';
+  const status = window._filters.bid;
+
+  let list = [...window._D.bids];
+  if(status) list = list.filter(b=>b.status===status);
+  if(search) list = list.filter(b=>
+    (b.workerName||'').toLowerCase().includes(search)||
+    (b.jobTitle||'').toLowerCase().includes(search)
+  );
+  if(sort==='price-high') list.sort((a,b)=>(b.myPrice||0)-(a.myPrice||0));
+  if(sort==='price-low')  list.sort((a,b)=>(a.myPrice||0)-(b.myPrice||0));
+
+  document.getElementById('bidsCount').textContent = list.length+' bids found';
+
+  const cont = document.getElementById('bidsTable');
+  if(!list.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">📬</div><div class="es-title">No bids found</div></div>';
+    return;
+  }
+
+  cont.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Worker</th><th>Job Title</th>
+      <th>Price</th><th>Client Budget</th>
+      <th>Time Est.</th><th>Message</th>
+      <th>Rating</th><th>Status</th>
+      <th>Date</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${list.map(b=>`
+    <tr>
+      <td>
+        <div style="font-weight:700;color:var(--dark);">${b.workerName||'—'}</div>
+        <div style="font-size:10px;color:var(--muted);">${b.workerId||''}</div>
+      </td>
+      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">
+        ${b.jobTitle||'—'}
+      </td>
+      <td style="font-weight:700;color:var(--rose);">
+        Rs.${(b.myPrice||0).toLocaleString()}
+      </td>
+      <td style="font-size:11px;color:var(--muted);">
+        Rs.${(b.jobBudget||0).toLocaleString()}
+      </td>
+      <td>${b.timeEstimate||'—'}</td>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;
+                 white-space:nowrap;font-size:11px;color:var(--mid);">
+        ${b.message||'—'}
+      </td>
+      <td style="color:#F59E0B;font-weight:600;">
+        ${b.workerRating ? '⭐'+Number(b.workerRating).toFixed(1) : '—'}
+      </td>
+      <td>
+        <span class="badge ${statusBadge(b.status,'bid')}">${b.status||'pending'}</span>
+      </td>
+      <td style="font-size:11px;">${fmtDate(b.createdAt)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="act-btn ab-delete"
+                  onclick="cfmAction('deleteBid','${b.id}','bid')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
+
+// ════════════════════
+// LOAD REVIEWS
+// ════════════════════
+window.loadReviews = async function(){
+  document.getElementById('reviewsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'reviews'), orderBy('createdAt','desc'))
+    );
+    window._D.reviews = [];
+    snap.forEach(d => window._D.reviews.push({id:d.id,...d.data()}));
+    renderReviews();
+  } catch(err){
+    document.getElementById('reviewsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+window.renderReviews = function(){
+  const search = (document.getElementById('reviewSearch')?.value||'').toLowerCase();
+  const rating = document.getElementById('reviewRating')?.value||'';
+
+  let list = [...window._D.reviews];
+  if(rating) list = list.filter(r=>String(r.rating)===rating);
+  if(search) list = list.filter(r=>
+    (r.clientName||'').toLowerCase().includes(search)||
+    (r.workerName||'').toLowerCase().includes(search)||
+    (r.comment||'').toLowerCase().includes(search)
+  );
+
+  const cont = document.getElementById('reviewsTable');
+  if(!list.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">⭐</div><div class="es-title">No reviews found</div></div>';
+    return;
+  }
+
+  cont.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Client</th><th>Worker</th>
+      <th>Rating</th><th>Comment</th>
+      <th>Date</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${list.map(r=>`
+    <tr>
+      <td style="font-weight:600;">${r.clientName||'—'}</td>
+      <td style="font-weight:600;">${r.workerName||'—'}</td>
+      <td style="color:#F59E0B;font-weight:700;white-space:nowrap;">
+        ${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))} ${r.rating||0}/5
+      </td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;
+                 white-space:nowrap;font-size:12px;">
+        ${r.comment||'—'}
+      </td>
+      <td style="font-size:11px;">${fmtDate(r.createdAt)}</td>
+      <td>
+        <button class="act-btn ab-delete"
+                onclick="cfmAction('deleteReview','${r.id}','review')">🗑️</button>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
+
+// ════════════════════
+// LOAD CHATS
+// ════════════════════
+window.loadChats = async function(){
+  document.getElementById('chatsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'chats'), orderBy('lastTime','desc'), limit(200))
+    );
+    window._D.chats = [];
+    snap.forEach(d => window._D.chats.push({id:d.id,...d.data()}));
+
+    const list = window._D.chats;
+    if(!list.length){
+      document.getElementById('chatsTable').innerHTML =
+        '<div class="empty-state"><div class="es-icon">💬</div><div class="es-title">No chats yet</div></div>';
+      return;
+    }
+
+    document.getElementById('chatsTable').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>Worker</th><th>Client</th>
+        <th>Job</th><th>Last Message</th>
+        <th>Worker Unread</th><th>Client Unread</th>
+        <th>Last Active</th>
+      </tr></thead>
+      <tbody>
+      ${list.map(c=>`
+      <tr>
+        <td style="font-weight:600;">${c.workerName||'—'}</td>
+        <td style="font-weight:600;">${c.clientName||'—'}</td>
+        <td style="font-size:11px;color:var(--muted);">
+          ${c.jobTitle ? truncate(c.jobTitle,24) : '—'}
+        </td>
+        <td style="font-size:11px;max-width:160px;overflow:hidden;
+                   text-overflow:ellipsis;white-space:nowrap;">
+          ${c.lastMessage||'—'}
+        </td>
+        <td style="font-weight:700;color:${(c.workerUnread||0)>0 ? 'var(--rose)' : 'var(--muted)'};">
+          ${c.workerUnread||0}
+        </td>
+        <td style="font-weight:700;color:${(c.clientUnread||0)>0 ? 'var(--rose)' : 'var(--muted)'};">
+          ${c.clientUnread||0}
+        </td>
+        <td style="font-size:11px;">${fmtDate(c.lastTime)}</td>
+      </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(err){
+    document.getElementById('chatsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+// ════════════════════
+// LOAD CALLS
+// ════════════════════
+window.loadCalls = async function(){
+  document.getElementById('callsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'calls'), orderBy('startedAt','desc'), limit(200))
+    );
+    window._D.calls = [];
+    snap.forEach(d => window._D.calls.push({id:d.id,...d.data()}));
+
+    const list = window._D.calls;
+    if(!list.length){
+      document.getElementById('callsTable').innerHTML =
+        '<div class="empty-state"><div class="es-icon">📞</div><div class="es-title">No calls yet</div></div>';
+      return;
+    }
+
+    document.getElementById('callsTable').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>Caller</th><th>Receiver</th>
+        <th>Job</th><th>Duration</th>
+        <th>Status</th><th>Date</th>
+      </tr></thead>
+      <tbody>
+      ${list.map(c=>`
+      <tr>
+        <td style="font-weight:600;">${c.callerName||'—'}</td>
+        <td style="font-weight:600;">${c.receiverName||'—'}</td>
+        <td style="font-size:11px;color:var(--muted);">${c.jobId||'—'}</td>
+        <td style="font-weight:700;">
+          ${c.duration ? fmtDur(c.duration) : '—'}
+        </td>
+        <td>
+          <span class="badge ${c.status==='ended' ? 'b-done' : 'b-open'}">
+            ${c.status||'—'}
+          </span>
+        </td>
+        <td style="font-size:11px;">${fmtDate(c.startedAt)}</td>
+      </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(err){
+    document.getElementById('callsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+// ════════════════════
+// LOAD REPORTS
+// ════════════════════
+window.loadReports = async function(){
+  document.getElementById('reportsTable').innerHTML = '<div class="spin"></div>';
+  try {
+    const snap = await getDocs(
+      query(collection(db,'reports'), orderBy('createdAt','desc'))
+    );
+    window._D.reports = [];
+    snap.forEach(d => window._D.reports.push({id:d.id,...d.data()}));
+    renderReports();
+  } catch(err){
+    document.getElementById('reportsTable').innerHTML =
+      `<div class="empty-state"><div class="es-title">Error: ${err.message}</div></div>`;
+  }
+};
+
+window.renderReports = function(){
+  const status = window._filters.report;
+  let list = [...window._D.reports];
+  if(status) list = list.filter(r=>r.status===status);
+
+  const cont = document.getElementById('reportsTable');
+  if(!list.length){
+    cont.innerHTML = '<div class="empty-state"><div class="es-icon">🚨</div><div class="es-title">No reports found</div></div>';
+    return;
+  }
+
+  cont.innerHTML = `
+  <table>
+    <thead><tr>
+      <th>Reporter</th><th>Reported User</th>
+      <th>Reason</th><th>Details</th>
+      <th>Status</th><th>Date</th>
+      <th>Actions</th>
+    </tr></thead>
+    <tbody>
+    ${list.map(r=>`
+    <tr>
+      <td style="font-weight:600;">${r.reporterName||'—'}</td>
+      <td style="font-weight:700;color:var(--dark);">${r.reportedName||'—'}</td>
+      <td>
+        <span class="badge b-pending">${r.reason||'—'}</span>
+      </td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;
+                 white-space:nowrap;font-size:11px;">
+        ${r.details||r.description||'—'}
+      </td>
+      <td>
+        <span class="badge ${r.status==='resolved' ? 'b-resolved' : 'b-open'}">
+          ${r.status||'open'}
+        </span>
+      </td>
+      <td style="font-size:11px;">${fmtDate(r.createdAt)}</td>
+      <td>
+        <div class="actions-cell">
+          ${r.status==='open'
+            ? `<button class="act-btn ab-approve"
+                       onclick="cfmAction('resolveReport','${r.id}','report')">
+                 ✅ Resolve
+               </button>`
+            : '<span style="font-size:11px;color:var(--green);font-weight:600;">✅ Done</span>'
+          }
+          ${r.reportedUid
+            ? `<button class="act-btn ab-ban"
+                       onclick="cfmAction('ban','${r.reportedUid}','${esc(r.reportedName||'')}')">
+                 🚫 Ban
+               </button>`
+            : ''}
+          <button class="act-btn ab-delete"
+                  onclick="cfmAction('deleteReport','${r.id}','report')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+};
+
+// ════════════════════
+// VIEW WORKER MODAL
+// ════════════════════
+window.viewWorker = function(wid){
+  const w = window._D.workers.find(x=>x.id===wid); if(!w) return;
+  document.getElementById('modalTitle').textContent = '👷 Worker Details';
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;padding:12px 0 16px;">
+      <div style="width:64px;height:64px;border-radius:14px;
+                  background:var(--rose-lt);overflow:hidden;
+                  border:2px solid var(--border);flex-shrink:0;
+                  display:flex;align-items:center;justify-content:center;font-size:24px;">
+        ${w.photoURL ? `<img src="${w.photoURL}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>` : (w.fullName||'W').charAt(0)}
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">${w.fullName||'—'}</div>
+        <span class="badge ${statusBadge(w.status,'worker')}">${w.status||'unknown'}</span>
+        ${w.isOnline ? '<span style="color:var(--green);font-size:12px;margin-left:6px;">🟢 Online</span>' : ''}
+      </div>
+    </div>
+    ${[
+      ['Email', w.email||'—'],
+      ['Phone', w.phone||'—'],
+      ['Category', w.category||'—'],
+      ['Skills', (w.skills||[]).join(', ')||'—'],
+      ['Experience', w.experience||'—'],
+      ['Rate', w.rate ? 'Rs.'+Number(w.rate).toLocaleString()+' / '+(w.rateType||'') : '—'],
+      ['City', [w.city,w.province,w.country].filter(Boolean).join(', ')||'—'],
+      ['Rating', w.rating ? '⭐'+Number(w.rating).toFixed(1)+' ('+w.totalReviews+' reviews)' : 'No reviews'],
+      ['Jobs Done', w.totalJobs||0],
+      ['Total Earnings', 'Rs.'+(w.totalEarnings||0).toLocaleString()],
+      ['Bio', w.bio||'—'],
+      ['Registered', w.createdAt?.toDate ? w.createdAt.toDate().toLocaleString() : '—'],
+      ['UID', w.id],
+    ].map(([l,v])=>`
+    <div class="modal-row">
+      <span class="mr-label">${l}</span>
+      <span class="mr-val">${v}</span>
+    </div>`).join('')}`;
+
+  document.getElementById('modalActions').innerHTML = `
+    <button class="ma-btn ma-close-modal" onclick="closeModal()">Close</button>
+    <button class="ma-btn ab-edit ma-btn"
+            onclick="closeModal();editWorker('${w.id}')"
+            style="flex:1;background:var(--purple-lt);color:#5B21B6;">
+      ✏️ Edit
+    </button>
+    ${w.status==='pending'
+      ? `<button class="ma-btn ma-approve"
+                 onclick="closeModal();cfmAction('approve','${w.id}','${esc(w.fullName||'')}')">
+           ✅ Approve
+         </button>` : ''}
+    ${w.status==='active'
+      ? `<button class="ma-btn ma-ban"
+                 onclick="closeModal();cfmAction('ban','${w.id}','${esc(w.fullName||'')}')">
+           🚫 Ban
+         </button>` : ''}
+    ${w.status==='banned'
+      ? `<button class="ma-btn ma-unban"
+                 onclick="closeModal();cfmAction('unban','${w.id}','${esc(w.fullName||'')}')">
+           🔓 Unban
+         </button>` : ''}`;
+  document.getElementById('detailModal').classList.add('show');
+};
+
+// ════════════════════
+// EDIT WORKER MODAL
+// ════════════════════
+window.editWorker = function(wid){
+  const w = window._D.workers.find(x=>x.id===wid); if(!w) return;
+  document.getElementById('editModalTitle').textContent = '✏️ Edit Worker — '+w.fullName;
+  document.getElementById('editModalBody').innerHTML = `
+  <div class="edit-form">
+    <div class="frow">
+      <div class="fgroup">
+        <label>First Name</label>
+        <input type="text" id="ew-first" value="${w.firstName||''}"/>
+      </div>
+      <div class="fgroup">
+        <label>Last Name</label>
+        <input type="text" id="ew-last" value="${w.lastName||''}"/>
+      </div>
+    </div>
+    <div class="fgroup">
+      <label>Email</label>
+      <input type="email" id="ew-email" value="${w.email||''}"/>
+    </div>
+    <div class="fgroup">
+      <label>Phone</label>
+      <input type="tel" id="ew-phone" value="${w.phone||''}"/>
+    </div>
+    <div class="frow">
+      <div class="fgroup">
+        <label>Category</label>
+        <select id="ew-cat">
+          ${['🔧 Home Repairs','📚 Education','🏥 Health','💄 Beauty',
+             '🧹 Cleaning','💻 IT & Tech','🚗 Auto Services','Other']
+            .map(c=>`<option ${w.category===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="fgroup">
+        <label>Status</label>
+        <select id="ew-status">
+          ${['pending','active','banned','rejected']
+            .map(s=>`<option value="${s}" ${w.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="fgroup">
+      <label>Skill 1</label>
+      <input type="text" id="ew-s1" value="${w.skills?.[0]||''}"/>
+    </div>
+    <div class="fgroup">
+      <label>Skill 2</label>
+      <input type="text" id="ew-s2" value="${w.skills?.[1]||''}"/>
+    </div>
+    <div class="fgroup">
+      <label>Skill 3</label>
+      <input type="text" id="ew-s3" value="${w.skills?.[2]||''}"/>
+    </div>
+    <div class="frow">
+      <div class="fgroup">
+        <label>Rate (PKR)</label>
+        <input type="number" id="ew-rate" value="${w.rate||''}"/>
+      </div>
+      <div class="fgroup">
+        <label>Rate Type</label>
+        <select id="ew-rateType">
+          ${['Per Hour','Per Job (Fixed)','Per Day','Per Month','Negotiable']
+            .map(r=>`<option ${w.rateType===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fgroup">
+        <label>City</label>
+        <input type="text" id="ew-city" value="${w.city||''}"/>
+      </div>
+      <div class="fgroup">
+        <label>Country</label>
+        <input type="text" id="ew-country" value="${w.country||''}"/>
+      </div>
+    </div>
+    <div class="fgroup">
+      <label>Bio</label>
+      <textarea id="ew-bio">${w.bio||''}</textarea>
+    </div>
+    <div class="frow">
+      <div class="fgroup">
+        <label>Total Jobs (override)</label>
+        <input type="number" id="ew-jobs" value="${w.totalJobs||0}"/>
+      </div>
+      <div class="fgroup">
+        <label>Total Earnings (override)</label>
+        <input type="number" id="ew-earn" value="${w.totalEarnings||0}"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button onclick="closeEditModal()"
+              style="flex:1;padding:10px;border:1.5px solid var(--border);
+                     border-radius:9px;background:transparent;color:var(--mid);
+                     font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">
+        Cancel
+      </button>
+      <button onclick="saveWorkerEdit('${w.id}')"
+              style="flex:2;padding:10px;border:none;border-radius:9px;
+                     background:var(--rose);color:#fff;font-size:13px;
+                     font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+        💾 Save Changes
+      </button>
+    </div>
+  </div>`;
+  document.getElementById('editModal').classList.add('show');
+};
+
+window.saveWorkerEdit = async function(wid){
+  try {
+    const first  = document.getElementById('ew-first').value.trim();
+    const last   = document.getElementById('ew-last').value.trim();
+    const skills = [
+      document.getElementById('ew-s1').value.trim(),
+      document.getElementById('ew-s2').value.trim(),
+      document.getElementById('ew-s3').value.trim(),
+    ].filter(Boolean);
+
+    const updates = {
+      firstName:    first,
+      lastName:     last,
+      fullName:     first+' '+last,
+      email:        document.getElementById('ew-email').value.trim(),
+      phone:        document.getElementById('ew-phone').value.trim(),
+      category:     document.getElementById('ew-cat').value,
+      status:       document.getElementById('ew-status').value,
+      skills,
+      rate:         parseInt(document.getElementById('ew-rate').value)||0,
+      rateType:     document.getElementById('ew-rateType').value,
+      city:         document.getElementById('ew-city').value.trim(),
+      country:      document.getElementById('ew-country').value.trim(),
+      bio:          document.getElementById('ew-bio').value.trim(),
+      totalJobs:    parseInt(document.getElementById('ew-jobs').value)||0,
+      totalEarnings:parseInt(document.getElementById('ew-earn').value)||0,
+      updatedAt:    serverTimestamp(),
+      updatedBy:    _uid,
+    };
+
+    await updateDoc(doc(db,'workers',wid), updates);
+    window._D.workers = window._D.workers.map(w=>w.id===wid ? {...w,...updates} : w);
+
+    closeEditModal();
+    showToast('✅ Worker updated!');
+    renderWorkers();
+    updateAllStats();
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+    console.error(err);
+  }
+};
+
+// ════════════════════
+// VIEW CLIENT MODAL
+// ════════════════════
+window.viewClient = function(cid){
+  const c = window._D.clients.find(x=>x.id===cid); if(!c) return;
+  document.getElementById('modalTitle').textContent = '👤 Client Details';
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;padding:12px 0 16px;">
+      <div style="width:64px;height:64px;border-radius:14px;
+                  background:var(--rose-lt);overflow:hidden;
+                  border:2px solid var(--border);flex-shrink:0;
+                  display:flex;align-items:center;justify-content:center;font-size:24px;">
+        ${c.photoURL ? `<img src="${c.photoURL}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>` : (c.fullName||'C').charAt(0)}
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">${c.fullName||'—'}</div>
+        <span class="badge ${(c.status||'active')==='banned' ? 'b-banned':'b-active'}">${c.status||'active'}</span>
+      </div>
+    </div>
+    ${[
+      ['Email', c.email||'—'],
+      ['Phone', c.phone||'—'],
+      ['City', c.city||'—'],
+      ['Gender', c.gender||'—'],
+      ['Jobs Posted', c.totalJobs||0],
+      ['Total Spent', 'Rs.'+(c.totalSpent||0).toLocaleString()],
+      ['Registered', c.createdAt?.toDate ? c.createdAt.toDate().toLocaleString() : '—'],
+      ['UID', c.id],
+    ].map(([l,v])=>`
+    <div class="modal-row">
+      <span class="mr-label">${l}</span>
+      <span class="mr-val">${v}</span>
+    </div>`).join('')}`;
+
+  document.getElementById('modalActions').innerHTML = `
+    <button class="ma-btn ma-close-modal" onclick="closeModal()">Close</button>
+    ${(c.status||'active')==='banned'
+      ? `<button class="ma-btn ma-unban"
+                 onclick="closeModal();cfmAction('unbanClient','${c.id}','${esc(c.fullName||'')}')">
+           🔓 Unban
+         </button>`
+      : `<button class="ma-btn ma-ban"
+                 onclick="closeModal();cfmAction('banClient','${c.id}','${esc(c.fullName||'')}')">
+           🚫 Ban
+         </button>`}`;
+  document.getElementById('detailModal').classList.add('show');
+};
+
+// ════════════════════
+// VIEW JOB MODAL
+// ════════════════════
+window.viewJob = function(jid){
+  const j = window._D.jobs.find(x=>x.id===jid); if(!j) return;
+  document.getElementById('modalTitle').textContent = '📋 Job Details';
+  document.getElementById('modalBody').innerHTML = `
+    ${[
+      ['Title', j.title||'—'],
+      ['Description', j.description||'—'],
+      ['Category', j.category||'—'],
+      ['Budget', 'Rs.'+(j.budget||0).toLocaleString()],
+      ['City', j.city||'—'],
+      ['Bids Received', j.bidsCount||0],
+      ['Posted By', j.clientName||'—'],
+      ['Client ID', j.clientId||'—'],
+      ['Status', j.status||'open'],
+      ['Posted', j.createdAt?.toDate ? j.createdAt.toDate().toLocaleString() : '—'],
+      ['Job ID', j.id],
+    ].map(([l,v])=>`
+    <div class="modal-row">
+      <span class="mr-label">${l}</span>
+      <span class="mr-val">${v}</span>
+    </div>`).join('')}`;
+
+  document.getElementById('modalActions').innerHTML = `
+    <button class="ma-btn ma-close-modal" onclick="closeModal()">Close</button>
+    ${j.status==='open'
+      ? `<button class="ma-btn"
+                 style="flex:1;background:var(--yellow);color:#000;"
+                 onclick="closeModal();cfmAction('closeJob','${j.id}','${esc(j.title||'')}')">
+           🔒 Close Job
+         </button>` : ''}
+    <button class="ma-btn ma-ban"
+            onclick="closeModal();cfmAction('deleteJob','${j.id}','${esc(j.title||'')}')">
+      🗑️ Delete
+    </button>`;
+  document.getElementById('detailModal').classList.add('show');
+};
+
+// ════════════════════
+// PRICING CONFIG
+// ════════════════════
+const CAT_RATES = [
+  {key:'home',  label:'🔧 Home Repairs',  default:300},
+  {key:'edu',   label:'📚 Education',     default:400},
+  {key:'health',label:'🏥 Health',        default:1000},
+  {key:'beauty',label:'💄 Beauty',        default:500},
+  {key:'clean', label:'🧹 Cleaning',      default:250},
+  {key:'it',    label:'💻 IT & Tech',     default:600},
+  {key:'auto',  label:'🚗 Auto Services', default:350},
+  {key:'other', label:'✨ Other',         default:200},
+];
+
+window.loadPricingConfig = async function(){
+  try {
+    const snap = await getDoc(doc(db,'config','pricing'));
+    const cfg  = snap.exists() ? snap.data() : {};
+    window._D.config.pricing = cfg;
+
+    document.getElementById('cfg-commission').value = cfg.commission ?? 10;
+    document.getElementById('cfg-minBid').value     = cfg.minBid     ?? 100;
+    document.getElementById('cfg-maxBid').value     = cfg.maxBid     ?? 500000;
+    document.getElementById('cfg-minBudget').value  = cfg.minBudget  ?? 200;
+    document.getElementById('cfg-freeJobs').value   = cfg.freeJobs   ?? 5;
+
+    document.getElementById('categoryRates').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:0;">
+    ${CAT_RATES.map(r=>`
+      <div class="ss-row">
+        <div>
+          <div class="ss-label">${r.label}</div>
+          <div class="ss-sub">Min rate per hour for this category</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--muted);">Rs.</span>
+          <input class="ss-input" type="number"
+                 id="cr-${r.key}"
+                 value="${cfg['catRate_'+r.key] ?? r.default}"
+                 style="min-width:100px;"/>
+          <span style="font-size:11px;color:var(--muted);">/hr</span>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  } catch(err){
+    console.error('loadPricingConfig:', err);
+  }
+};
+
+window.savePricingConfig = async function(){
+  try {
+    const data = {
+      commission: parseInt(document.getElementById('cfg-commission').value)||10,
+      minBid:     parseInt(document.getElementById('cfg-minBid').value)||100,
+      maxBid:     parseInt(document.getElementById('cfg-maxBid').value)||500000,
+      minBudget:  parseInt(document.getElementById('cfg-minBudget').value)||200,
+      freeJobs:   parseInt(document.getElementById('cfg-freeJobs').value)||5,
+      updatedAt:  serverTimestamp(),
+      updatedBy:  _uid,
+    };
+    CAT_RATES.forEach(r=>{
+      const el = document.getElementById('cr-'+r.key);
+      if(el) data['catRate_'+r.key] = parseInt(el.value)||r.default;
+    });
+
+    await setDoc(doc(db,'config','pricing'), data);
+    showToast('✅ Pricing config saved!');
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+  }
+};
+
+// ════════════════════
+// PLATFORM SETTINGS
+// ════════════════════
+window.loadPlatformSettings = async function(){
+  try {
+    const snap = await getDoc(doc(db,'config','settings'));
+    const cfg  = snap.exists() ? snap.data() : {};
+
+    document.getElementById('cfg-platformName').value   = cfg.platformName   || 'DoorSkill';
+    document.getElementById('cfg-supportEmail').value   = cfg.supportEmail   || '';
+    document.getElementById('cfg-bidMsgLimit').value    = cfg.bidMsgLimit    || 300;
+    document.getElementById('cfg-confirmWindow').value  = cfg.confirmWindow  || 20;
+    document.getElementById('cfg-agoraAppId').value     = cfg.agoraAppId     || '';
+  } catch(err){ console.error('loadPlatformSettings:', err); }
+};
+
+window.savePlatformSettings = async function(){
+  try {
+    await setDoc(doc(db,'config','settings'),{
+      platformName:  document.getElementById('cfg-platformName').value.trim(),
+      supportEmail:  document.getElementById('cfg-supportEmail').value.trim(),
+      bidMsgLimit:   parseInt(document.getElementById('cfg-bidMsgLimit').value)||300,
+      confirmWindow: parseInt(document.getElementById('cfg-confirmWindow').value)||20,
+      agoraAppId:    document.getElementById('cfg-agoraAppId').value.trim(),
+      updatedAt:     serverTimestamp(),
+      updatedBy:     _uid,
+    });
+    showToast('✅ Platform settings saved!');
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+  }
+};
+
+// ════════════════════
+// CONFIRM / EXECUTE ACTIONS
+// ════════════════════
+window.cfmAction = function(action, id='', name=''){
+  _pendingAction = {action, id, name};
+  const C = {
+    approve:             {icon:'✅',title:'Approve Worker?',    sub:`Approve <strong>${name}</strong>? They can receive jobs.`,           ok:'✅ Approve',  col:'#10B981'},
+    reject:              {icon:'❌',title:'Reject Worker?',     sub:`Reject <strong>${name}</strong>'s application.`,                    ok:'❌ Reject',   col:'#F59E0B'},
+    ban:                 {icon:'🚫',title:'Ban Worker?',        sub:`Ban <strong>${name}</strong>? They cannot login or bid.`,           ok:'🚫 Ban',      col:'#EF4444'},
+    unban:               {icon:'🔓',title:'Unban Worker?',      sub:`Unban <strong>${name}</strong>? Full access restored.`,             ok:'🔓 Unban',    col:'#10B981'},
+    deleteWorker:        {icon:'🗑️',title:'Delete Worker?',    sub:`Permanently delete <strong>${name}</strong>. Cannot undo!`,         ok:'🗑️ Delete',   col:'#EF4444'},
+    banClient:           {icon:'🚫',title:'Ban Client?',        sub:`Ban <strong>${name}</strong>?`,                                     ok:'🚫 Ban',      col:'#EF4444'},
+    unbanClient:         {icon:'🔓',title:'Unban Client?',      sub:`Unban <strong>${name}</strong>?`,                                   ok:'🔓 Unban',    col:'#10B981'},
+    deleteClient:        {icon:'🗑️',title:'Delete Client?',    sub:`Delete <strong>${name}</strong> permanently?`,                      ok:'🗑️ Delete',   col:'#EF4444'},
+    closeJob:            {icon:'🔒',title:'Close Job?',         sub:`Close job: <strong>${name}</strong>?`,                              ok:'🔒 Close',    col:'#F59E0B'},
+    deleteJob:           {icon:'🗑️',title:'Delete Job?',       sub:`Delete job: <strong>${name}</strong> permanently?`,                 ok:'🗑️ Delete',   col:'#EF4444'},
+    deleteBid:           {icon:'🗑️',title:'Delete Bid?',       sub:'Delete this bid permanently?',                                      ok:'🗑️ Delete',   col:'#EF4444'},
+    deleteReview:        {icon:'🗑️',title:'Delete Review?',    sub:'Delete this review permanently?',                                   ok:'🗑️ Delete',   col:'#EF4444'},
+    deleteReport:        {icon:'🗑️',title:'Delete Report?',    sub:'Delete this report permanently?',                                   ok:'🗑️ Delete',   col:'#EF4444'},
+    resolveReport:       {icon:'✅',title:'Resolve Report?',   sub:'Mark this report as resolved?',                                     ok:'✅ Resolve',  col:'#10B981'},
+    deleteClosedJobs:    {icon:'⚠️',title:'Delete Closed Jobs?',sub:'Delete ALL closed/done jobs? This CANNOT be undone!',              ok:'🗑️ Delete All',col:'#EF4444'},
+    deleteRejectedWorkers:{icon:'⚠️',title:'Delete Rejected Workers?',sub:'Delete all rejected worker accounts permanently?',           ok:'🗑️ Delete All',col:'#EF4444'},
+  };
+  const c = C[action]||{icon:'⚠️',title:'Confirm',sub:'Are you sure?',ok:'Confirm',col:'var(--rose)'};
+  document.getElementById('cfmIcon').textContent   = c.icon;
+  document.getElementById('cfmTitle').textContent  = c.title;
+  document.getElementById('cfmSub').innerHTML      = c.sub;
+  const btn = document.getElementById('cfmOkBtn');
+  btn.textContent      = c.ok;
+  btn.style.background = c.col;
+  document.getElementById('cfmOverlay').classList.add('show');
+};
+
+window.closeCfm = function(){
+  document.getElementById('cfmOverlay').classList.remove('show');
+  _pendingAction = null;
+};
+
+window.executeCfm = async function(){
+  if(!_pendingAction) return;
+  const {action, id} = _pendingAction;
+  closeCfm();
+
+  try {
+    // WORKERS
+    if(action==='approve'){
+      await updateDoc(doc(db,'workers',id),{status:'active',approvedAt:serverTimestamp(),approvedBy:_uid});
+      mutateWorker(id,{status:'active'}); showToast('✅ Worker approved!');
+    }
+    else if(action==='reject'){
+      await updateDoc(doc(db,'workers',id),{status:'rejected',rejectedAt:serverTimestamp()});
+      mutateWorker(id,{status:'rejected'}); showToast('❌ Worker rejected.');
+    }
+    else if(action==='ban'){
+      await updateDoc(doc(db,'workers',id),{status:'banned',bannedAt:serverTimestamp(),bannedBy:_uid});
+      mutateWorker(id,{status:'banned'}); showToast('🚫 Worker banned.');
+    }
+    else if(action==='unban'){
+      await updateDoc(doc(db,'workers',id),{status:'active'});
+      mutateWorker(id,{status:'active'}); showToast('🔓 Worker unbanned!');
+    }
+    else if(action==='deleteWorker'){
+      await deleteDoc(doc(db,'workers',id));
+      window._D.workers = window._D.workers.filter(w=>w.id!==id);
+      showToast('🗑️ Worker deleted.');
+    }
+    // CLIENTS
+    else if(action==='banClient'){
+      await updateDoc(doc(db,'clients',id),{status:'banned',bannedAt:serverTimestamp()});
+      window._D.clients = window._D.clients.map(c=>c.id===id?{...c,status:'banned'}:c);
+      showToast('🚫 Client banned.');
+    }
+    else if(action==='unbanClient'){
+      await updateDoc(doc(db,'clients',id),{status:'active'});
+      window._D.clients = window._D.clients.map(c=>c.id===id?{...c,status:'active'}:c);
+      showToast('🔓 Client unbanned!');
+    }
+    else if(action==='deleteClient'){
+      await deleteDoc(doc(db,'clients',id));
+      window._D.clients = window._D.clients.filter(c=>c.id!==id);
+      showToast('🗑️ Client deleted.');
+    }
+    // JOBS
+    else if(action==='closeJob'){
+      await updateDoc(doc(db,'jobs',id),{status:'closed'});
+      window._D.jobs = window._D.jobs.map(j=>j.id===id?{...j,status:'closed'}:j);
+      showToast('🔒 Job closed.');
+    }
+    else if(action==='deleteJob'){
+      await deleteDoc(doc(db,'jobs',id));
+      window._D.jobs = window._D.jobs.filter(j=>j.id!==id);
+      showToast('🗑️ Job deleted.');
+    }
+    // BIDS
+    else if(action==='deleteBid'){
+      await deleteDoc(doc(db,'bids',id));
+      window._D.bids = window._D.bids.filter(b=>b.id!==id);
+      showToast('🗑️ Bid deleted.');
+    }
+    // REVIEWS
+    else if(action==='deleteReview'){
+      await deleteDoc(doc(db,'reviews',id));
+      window._D.reviews = window._D.reviews.filter(r=>r.id!==id);
+      showToast('🗑️ Review deleted.');
+    }
+    // REPORTS
+    else if(action==='deleteReport'){
+      await deleteDoc(doc(db,'reports',id));
+      window._D.reports = window._D.reports.filter(r=>r.id!==id);
+      showToast('🗑️ Report deleted.');
+    }
+    else if(action==='resolveReport'){
+      await updateDoc(doc(db,'reports',id),{status:'resolved',resolvedAt:serverTimestamp(),resolvedBy:_uid});
+      window._D.reports = window._D.reports.map(r=>r.id===id?{...r,status:'resolved'}:r);
+      showToast('✅ Report resolved.');
+    }
+    // DANGER
+    else if(action==='deleteClosedJobs'){
+      const del = window._D.jobs.filter(j=>j.status==='closed'||j.status==='done');
+      await Promise.all(del.map(j=>deleteDoc(doc(db,'jobs',j.id))));
+      window._D.jobs = window._D.jobs.filter(j=>j.status!=='closed'&&j.status!=='done');
+      showToast(`🗑️ Deleted ${del.length} jobs.`);
+    }
+    else if(action==='deleteRejectedWorkers'){
+      const del = window._D.workers.filter(w=>w.status==='rejected');
+      await Promise.all(del.map(w=>deleteDoc(doc(db,'workers',w.id))));
+      window._D.workers = window._D.workers.filter(w=>w.status!=='rejected');
+      showToast(`🗑️ Deleted ${del.length} rejected workers.`);
+    }
+
+    // Refresh
+    refreshPage();
+    updateAllStats();
+    const pend = window._D.workers.filter(w=>w.status==='pending').length;
+    document.getElementById('pendingBadge').textContent = pend;
+    document.getElementById('reportsBadge').textContent =
+      window._D.reports.filter(r=>r.status==='open').length;
+
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+    console.error(err);
+  }
+};
+
+function mutateWorker(id,updates){
+  window._D.workers = window._D.workers.map(w=>w.id===id?{...w,...updates}:w);
+}
+
+function refreshPage(){
+  const id = document.querySelector('.page.active')?.id?.replace('page-','');
+  if(id==='overview') { renderOverviewPendingTable(); renderOverviewRecentJobs(); renderActivityFeed(); renderQuickStats(); }
+  if(id==='workers')  renderWorkers();
+  if(id==='clients')  renderClients();
+  if(id==='jobs')     renderJobs();
+  if(id==='bids')     renderBids();
+  if(id==='reviews')  renderReviews();
+  if(id==='reports')  renderReports();
+  if(id==='analytics')renderAnalytics();
+  if(id==='finance')  renderFinance();
+}
+
+// ════════════════════
+// LOGOUT
+// ════════════════════
+window.doLogout = async function(){
+  if(confirm('Logout from Admin Panel?')){
+    await signOut(auth);
+    localStorage.clear();
+    window.location.href = 'auth/login.html';
+  }
+};
+
+// ════════════════════
+// HELPERS
+// ════════════════════
+window.copyUID = function(){
+  navigator.clipboard.writeText(_uid||'')
+    .then(()=>showToast('📋 UID copied!'));
+};
+
+window.showToast = function(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 4000);
+};
+
+function avatarHtml(u, type){
+  const emoji = type==='worker' ? '👷' : '👤';
+  const init  = (u.fullName||emoji).charAt(0).toUpperCase();
+  return `<div class="td-avatar">
+    ${u.photoURL
+      ? `<img src="${u.photoURL}" alt=""
+              onload="this.style.display='block'"
+              onerror="this.style.display='none'"/>`
+      : ''}
+    ${init}
+  </div>`;
+}
+
+function statusBadge(s, type){
+  if(type==='worker'){
+    return s==='active'?'b-active':s==='pending'?'b-pending':s==='banned'?'b-banned':'b-rejected';
+  }
+  if(type==='job'){
+    return s==='open'?'b-open':s==='done'?'b-done':'b-closed';
+  }
+  if(type==='bid'){
+    return s==='accepted'?'b-accepted':s==='rejected'?'b-banned':s==='done'?'b-done':'b-pending';
+  }
+  return 'b-pending';
+}
+
+function fmtDate(ts){
+  if(!ts) return '—';
+  try {
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+  } catch(e){ return '—'; }
+}
+
+function fmtDur(secs){
+  const m = Math.floor(secs/60);
+  const s = secs%60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function tsAgo(ts){
+  if(!ts) return '—';
+  const sec = Math.floor(Date.now()/1000 - ts);
+  if(sec < 60)    return sec+'s ago';
+  if(sec < 3600)  return Math.floor(sec/60)+'m ago';
+  if(sec < 86400) return Math.floor(sec/3600)+'h ago';
+  return Math.floor(sec/86400)+'d ago';
+}
+
+function truncate(s,n){ return s&&s.length>n ? s.slice(0,n)+'...' : (s||''); }
+function esc(s){ return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+console.log('✅ DoorSkill Admin Panel v2 loaded!');
+</script>
+
+<!-- ── UI SCRIPT ── -->
+<script>
+const PAGE_META = {
+  overview:  ['Admin Dashboard','DoorSkill Full Control Panel'],
+  analytics: ['Analytics','Platform statistics & insights'],
+  workers:   ['Workers','Manage all registered workers'],
+  clients:   ['Clients','Manage all registered clients'],
+  jobs:      ['All Jobs','Monitor & manage job posts'],
+  bids:      ['All Bids','Monitor all worker bids'],
+  reviews:   ['Reviews','Manage client reviews'],
+  chats:     ['Chat Logs','All conversations'],
+  calls:     ['Call Logs','Audio call history'],
+  reports:   ['Reports','Handle user reports'],
+  finance:   ['Finance','Earnings & revenue'],
+  pricing:   ['Pricing Config','Set platform fees & rates'],
+  settings:  ['Settings','Admin & platform configuration'],
+};
+
+window.showPage = function(name, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  const m = PAGE_META[name]||[name,''];
+  document.getElementById('topbarTitle').textContent = m[0];
+  document.getElementById('topbarSub').textContent   = m[1];
+  document.getElementById('sidebar').classList.remove('open');
+
+  // Load on navigate
+  if(name==='workers') loadWorkers();
+  if(name==='clients') loadClients();
+  if(name==='jobs')    loadJobs();
+  if(name==='bids')    loadBids();
+  if(name==='reviews') loadReviews();
+  if(name==='chats')   loadChats();
+  if(name==='calls')   loadCalls();
+  if(name==='reports') loadReports();
+};
+
+// PILL TABS filter
+window.filterByStatus = function(s, el, type){
+  window._filters[type] = s;
+  el.closest('.pill-tabs')
+    .querySelectorAll('.pill-tab')
+    .forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+
+  if(type==='worker') renderWorkers();
+  if(type==='client') renderClients();
+  if(type==='job')    renderJobs();
+  if(type==='bid')    renderBids();
+  if(type==='report') renderReports();
+};
+
+// MODALS
+window.closeModal     = ()=>document.getElementById('detailModal').classList.remove('show');
+window.closeEditModal = ()=>document.getElementById('editModal').classList.remove('show');
+
+document.getElementById('detailModal')
+  .addEventListener('click', e=>{
+    if(e.target===document.getElementById('detailModal')) closeModal();
+  });
+document.getElementById('editModal')
+  .addEventListener('click', e=>{
+    if(e.target===document.getElementById('editModal')) closeEditModal();
+  });
+
+// SIDEBAR
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+document.addEventListener('click', e=>{
+  const sb = document.getElementById('sidebar');
+  if(sb.classList.contains('open') &&
+     !sb.contains(e.target) &&
+     !e.target.closest('.topbar-hamburger')){
+    sb.classList.remove('open');
+  }
+});
+
+// LIVE CLOCK
+setInterval(()=>{
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString([],{
+      hour:'2-digit',minute:'2-digit',second:'2-digit'
+    });
+}, 1000);
+<script src="assets/ai-helper.js"></script>
+</body>
+</html>
