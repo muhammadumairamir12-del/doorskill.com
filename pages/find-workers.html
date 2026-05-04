@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoorSkill — Find Professionals</title>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": "https://doorskill.com"
+  },{
+    "@type": "ListItem",
+    "position": 2,
+    "name": "Find Workers",
+    "item": "https://doorskill.com/pages/find-workers.html"
+  }]
+}
+</script>
+
+<meta name="description" content="Search and find top-rated professionals for any job globally. Plumbers, Electricians, Doctors, Tutors, and more on DoorSkill."/>
+<meta name="keywords" content="hire professionals, find workers, freelance, plumbers, electricians, global workers, local services"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --rose:#F43F5E; --rose-lt:#FFE4EC; --rose-md:#FB7185;
+  --dark:#1A0A14; --mid:#5C3D4E; --muted:#9D7589;
+  --border:#F3D6E0; --green:#10B981; --blue:#3B82F6;
+  --pink-bg:#FFF0F5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#FFF5F7; color:var(--dark);
+  min-height:100vh; display:flex; flex-direction:column;
+}
+.top-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 5%;background:#fff;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.logo{
+  display:inline-flex;align-items:center;
+  text-decoration:none;
+}
+.logo img { height: 28px; width: auto; }
+
+.page-wrap{
+  flex:1;padding:40px 5% 60px;max-width:1100px;margin:0 auto;width:100%;
+}
+.header{
+  margin-bottom:24px;
+}
+.header h1{
+  font-family:'Playfair Display',serif;font-size:32px;
+  font-weight:900;color:var(--dark);
+}
+.filters{
+  display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;
+}
+.filter-sel{
+  padding:10px 16px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:14px;color:var(--mid);
+  outline:none;background:#fff;cursor:pointer;
+}
+.filter-sel:focus{border-color:var(--rose);}
+
+.workers-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;
+}
+.worker-card{
+  background:#fff;border-radius:16px;padding:20px;
+  border:1.5px solid var(--border);transition:all .2s;
+}
+.worker-card:hover{
+  border-color:var(--rose-md);box-shadow:0 8px 24px rgba(244,63,94,.1);
+}
+.wc-top{
+  display:flex;align-items:center;gap:14px;margin-bottom:14px;
+}
+.wc-avatar{
+  width:50px;height:50px;border-radius:12px;
+  background:var(--pink-bg);flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--rose-lt);font-size:24px;
+}
+.wc-avatar img{width:100%;height:100%;object-fit:cover;}
+.wc-name{font-size:16px;font-weight:700;color:var(--dark);}
+.wc-cat{font-size:13px;color:var(--muted);}
+.wc-rating{
+  display:flex;align-items:center;gap:4px;
+  font-size:13px;color:#F59E0B;margin-top:4px;
+}
+.wc-skills{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;
+}
+.skill-chip{
+  padding:4px 10px;border-radius:999px;
+  background:var(--rose-lt);color:var(--rose);
+  font-size:11px;font-weight:600;
+}
+.wc-btn{
+  width:100%;padding:10px;border:none;border-radius:10px;
+  background:var(--rose);color:#fff;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;
+  display:block;
+}
+.wc-btn:hover{background:#e0334f;}
+.spin{
+  width:36px;height:36px;border:3px solid var(--rose-lt);
+  border-top-color:var(--rose);border-radius:50%;
+  animation:spin .7s linear infinite;margin:40px auto;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{text-align:center;padding:40px;color:var(--muted);}
+</style>
+  <link rel="icon" href="../assets/logo.png" type="image/png"/>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+<span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
+</div>
+
+<div class="page-wrap">
+  <div class="header">
+    <h1>Find the Best Professionals</h1>
+    <p style="color:var(--muted);margin-top:8px;">Search by skill, category, and rank by client ratings.</p>
+  </div>
+
+  <div class="filters">
+    <input type="text" id="searchQ" class="filter-sel" placeholder="Search skills (e.g. Plumber)" oninput="debouncedLoad()" style="flex:1;min-width:200px;"/>
+    <select id="sortSel" class="filter-sel" onchange="loadWorkers()">
+      <option value="rating">Sort by Rating (High to Low)</option>
+      <option value="reviews">Sort by Most Reviews</option>
+      <option value="newest">Newest Workers</option>
+    </select>
+  </div>
+
+  <div id="workersList">
+    <div class="spin"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy, where, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain: "doorskill-beff1.firebaseapp.com",
+  databaseURL: "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId: "doorskill-beff1",
+  storageBucket: "doorskill-beff1.firebasestorage.app",
+});
+const db = getFirestore(app);
+
+let timeout = null;
+window.debouncedLoad = function() {
+  clearTimeout(timeout);
+  timeout = setTimeout(loadWorkers, 300);
+}
+
+// Check URL params
+const urlParams = new URLSearchParams(window.location.search);
+const q = urlParams.get('q');
+const targetWorker = urlParams.get('worker');
+if (q) {
+  document.getElementById('searchQ').value = q;
+}
+
+window.loadWorkers = async function() {
+  const container = document.getElementById('workersList');
+  container.innerHTML = '<div class="spin"></div>';
+  
+  const searchQ = document.getElementById('searchQ').value.toLowerCase();
+  const sortSel = document.getElementById('sortSel').value;
+  
+  try {
+    const qParams = [collection(db, 'workers')];
+    if (sortSel === 'newest') qParams.push(orderBy('createdAt', 'desc'));
+    
+    const snap = await getDocs(query(...qParams));
+    let workers = [];
+    snap.forEach(d => {
+      const data = d.data();
+      if (data.status !== 'pending') workers.push({id: d.id, ...data});
+    });
+    
+    // Direct worker link
+    if (targetWorker) {
+      workers = workers.filter(w => w.id === targetWorker);
+    }
+    // Search filtering
+    else if (searchQ) {
+      workers = workers.filter(w => {
+        const text = ((w.fullName||'') + ' ' + (w.category||'') + ' ' + (w.skills||[]).join(' ')).toLowerCase();
+        return text.includes(searchQ);
+      });
+    }
+    
+    // Sorting
+    if (sortSel === 'rating') {
+      workers.sort((a,b) => (b.rating || 0) - (a.rating || 0));
+    } else if (sortSel === 'reviews') {
+      workers.sort((a,b) => (b.totalReviews || 0) - (a.totalReviews || 0));
+    }
+    
+    if (workers.length === 0) {
+      container.innerHTML = `<div class="empty">No workers found matching your criteria.</div>`;
+      return;
+    }
+    
+    let html = '';
+    workers.forEach(w => {
+      const stars = w.totalReviews > 0 ? `★ ${(w.rating||0).toFixed(1)} (${w.totalReviews} reviews)` : '☆ No reviews yet';
+      const skillsHtml = (w.skills||[]).slice(0,3).map(s => `<span class="skill-chip">${s}</span>`).join('');
+      const imgHtml = w.photoURL ? `<img src="${w.photoURL}"/>` : '👷';
+      
+      const btnLink = targetWorker ? `../pages/chat.html?uid=${w.id}` : `../pages/post-job.html?invite=${w.id}`;
+      const btnText = targetWorker ? `💬 Message Worker` : `Post a Job to Invite`;
+      
+      html += `
+        <div class="worker-card">
+          <div class="wc-top">
+            <div class="wc-avatar">${imgHtml}</div>
+            <div>
+              <div class="wc-name">${w.fullName || 'Professional'}</div>
+              <div class="wc-cat">${w.category || 'Service Worker'}</div>
+              <div class="wc-rating">${stars}</div>
+            </div>
+          </div>
+          <div class="wc-skills">${skillsHtml}</div>
+          <div style="display:flex; gap:8px;">
+            <a href="${btnLink}" class="wc-btn" style="flex:1;">${btnText}</a>
+            <button class="wc-btn" style="background:var(--pink-bg); color:var(--rose); padding:10px 14px; flex-shrink:0; border:1.5px solid var(--rose-lt);" onclick="alert('Profile shared on Social Media!\\n(Link copied to clipboard)'); navigator.clipboard.writeText(window.location.origin + window.location.pathname + '?worker=' + '${w.id}');" title="Share on Social Media">🔗 Share</button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = `<div class="workers-grid">${html}</div>`;
+    
+  } catch(e) {
+    console.error(e);
+    container.innerHTML = `<div class="empty">Failed to load workers.</div>`;
+  }
+}
+
+loadWorkers();
+</script>
+<script src="../assets/ai-helper.js"></script>
+</body>
+</html>
