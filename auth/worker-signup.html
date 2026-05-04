@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoorSkill — Register as Worker</title>
+<meta name="description" content="Join DoorSkill as a professional worker and get hired globally. Offer your skills and build your freelance or local service business."/>
+<meta name="keywords" content="DoorSkill worker, freelance jobs, professional signup, offer services, find clients globally"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="../assets/logo.png" type="image/png"/>
+<style>
+:root{
+  --rose:#F43F5E;
+  --rose-lt:#FFE4EC;
+  --rose-md:#FB7185;
+  --pink-bg:#FFF0F5;
+  --dark:#1A0A14;
+  --mid:#5C3D4E;
+  --muted:#9D7589;
+  --border:#F3D6E0;
+  --green:#10B981;
+  --green-lt:#D1FAE5;
+  --red:#EF4444;
+  --red-lt:#FEE2E2;
+  --white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:linear-gradient(135deg,#fff 0%,#FFF0F5 50%,#FFE4EC 100%);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── TOP NAV ── */
+.top-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 5%;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.logo{
+  display:inline-flex;align-items:center;
+  text-decoration:none;
+}
+.logo img { height: 28px; width: auto; }
+.nav-right{
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;color:var(--muted);
+}
+.nav-right a{
+  color:var(--rose);font-weight:600;
+  text-decoration:none;
+}
+.nav-right a:hover{text-decoration:underline;}
+
+/* ── WRAPPER ── */
+.page-wrap{
+  flex:1;display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:40px 16px 60px;
+}
+
+/* ── CARD ── */
+.card{
+  background:#fff;border-radius:24px;
+  padding:40px 36px;width:100%;max-width:580px;
+  box-shadow:0 24px 80px rgba(244,63,94,.13);
+  border:1.5px solid var(--border);
+}
+
+/* ── HEADER ── */
+.card-header{text-align:center;margin-bottom:32px;}
+.card-header .logo{font-size:24px;display:block;margin-bottom:6px;}
+.card-header h2{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:900;
+  color:var(--dark);margin-bottom:6px;
+}
+.card-header p{font-size:14px;color:var(--muted);}
+
+/* ── PROGRESS ── */
+.progress-wrap{margin-bottom:32px;}
+.steps-row{
+  display:flex;align-items:center;
+  justify-content:center;gap:0;
+  margin-bottom:10px;
+}
+.sdot{
+  width:34px;height:34px;
+  border-radius:50%;border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--muted);
+  background:#fff;transition:all .35s;
+  flex-shrink:0;position:relative;z-index:1;
+}
+.sdot.active{
+  border-color:var(--rose);
+  color:var(--rose);
+  box-shadow:0 0 0 4px var(--rose-lt);
+}
+.sdot.done{
+  background:var(--rose);border-color:var(--rose);
+  color:#fff;
+}
+.sline{
+  flex:1;height:2px;background:var(--border);
+  max-width:80px;transition:background .35s;
+}
+.sline.done{background:var(--rose);}
+.step-labels{
+  display:flex;justify-content:space-between;
+  padding:0 2px;
+}
+.step-labels span{
+  font-size:11px;color:var(--muted);
+  text-align:center;width:34px;
+}
+.step-labels span.active{color:var(--rose);font-weight:600;}
+
+/* ── FORM STEPS ── */
+.fstep{display:none;}
+.fstep.active{display:block;}
+
+/* ── FORM ELEMENTS ── */
+.fgroup{margin-bottom:18px;}
+.fgroup label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--mid);margin-bottom:7px;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.fgroup input,
+.fgroup select,
+.fgroup textarea{
+  width:100%;padding:12px 14px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  color:var(--dark);outline:none;transition:border .2s;
+  background:#fff;
+}
+.fgroup input:focus,
+.fgroup select:focus,
+.fgroup textarea:focus{
+  border-color:var(--rose);
+  box-shadow:0 0 0 3px var(--rose-lt);
+}
+.fgroup textarea{resize:vertical;min-height:90px;line-height:1.6;}
+.fgroup .hint{
+  font-size:11px;color:var(--muted);
+  margin-top:5px;display:flex;
+  align-items:center;gap:4px;
+}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.optional-badge{
+  display:inline-block;
+  background:var(--pink-bg);color:var(--rose-md);
+  font-size:10px;font-weight:600;padding:2px 8px;
+  border-radius:999px;margin-left:6px;
+  vertical-align:middle;text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+/* ── PROFILE PHOTO UPLOAD ── */
+.dp-upload-wrap{
+  display:flex;flex-direction:column;
+  align-items:center;margin-bottom:8px;
+}
+.dp-circle{
+  width:96px;height:96px;border-radius:50%;
+  border:3px dashed var(--border);
+  background:var(--pink-bg);
+  display:flex;align-items:center;
+  justify-content:center;font-size:32px;
+  cursor:pointer;overflow:hidden;
+  transition:all .2s;position:relative;
+}
+.dp-circle:hover{border-color:var(--rose);}
+.dp-circle input[type=file]{
+  position:absolute;inset:0;opacity:0;
+  cursor:pointer;width:100%;height:100%;
+}
+.dp-circle img{
+  width:100%;height:100%;object-fit:cover;
+  display:none;
+}
+.dp-circle .dp-icon{
+  display:flex;flex-direction:column;
+  align-items:center;gap:4px;
+  pointer-events:none;
+}
+.dp-circle .dp-icon span{
+  font-size:11px;color:var(--muted);font-weight:500;
+}
+.dp-hint{
+  font-size:12px;color:var(--muted);
+  margin-top:8px;text-align:center;
+}
+
+/* ── FILE UPLOAD BOX ── */
+.upload-box{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:18px;text-align:center;
+  cursor:pointer;transition:all .2s;
+  position:relative;background:var(--pink-bg);
+}
+.upload-box:hover{
+  border-color:var(--rose);
+  background:var(--rose-lt);
+}
+.upload-box input[type=file]{
+  position:absolute;inset:0;opacity:0;
+  cursor:pointer;width:100%;height:100%;
+}
+.upload-box-icon{font-size:26px;margin-bottom:6px;}
+.upload-box-text{font-size:13px;color:var(--mid);font-weight:500;}
+.upload-box-hint{font-size:11px;color:var(--muted);margin-top:4px;}
+.file-chosen{
+  display:none;align-items:center;gap:8px;
+  margin-top:10px;padding:8px 12px;
+  background:var(--green-lt);border-radius:8px;
+}
+.file-chosen span{font-size:12px;color:#065F46;font-weight:600;}
+.file-remove{
+  margin-left:auto;background:none;border:none;
+  cursor:pointer;color:#065F46;font-size:16px;
+  line-height:1;
+}
+
+/* ── SKILLS ── */
+.skill-wrap{margin-bottom:8px;}
+.skill-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:10px;
+}
+.skill-row input{flex:1;}
+.skill-num{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--rose-lt);color:var(--rose);
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.skill-del{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--red-lt);color:var(--red);
+  border:none;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s;
+}
+.skill-del:hover{background:var(--red);color:#fff;}
+.add-skill-btn{
+  width:100%;padding:10px;
+  border:2px dashed var(--border);
+  border-radius:10px;background:transparent;
+  color:var(--muted);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.add-skill-btn:hover{
+  border-color:var(--rose);color:var(--rose);
+  background:var(--rose-lt);
+}
+.add-skill-btn:disabled{
+  opacity:.45;cursor:not-allowed;
+}
+.char-bar{
+  display:flex;align-items:center;
+  justify-content:flex-end;
+  font-size:11px;color:var(--muted);
+  margin-top:4px;
+}
+.char-bar.warn{color:var(--rose);}
+
+/* ── RANGE SLIDER ── */
+.rate-display{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:900;
+  color:var(--rose);text-align:center;
+  margin-bottom:6px;
+}
+input[type=range]{
+  width:100%;-webkit-appearance:none;
+  height:6px;border-radius:999px;
+  background:linear-gradient(90deg,var(--rose) 0%,var(--border) 0%);
+  outline:none;cursor:pointer;
+  border:none!important;padding:0!important;
+  box-shadow:none!important;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--rose);cursor:pointer;
+  box-shadow:0 2px 8px rgba(244,63,94,.4);
+  border:2px solid #fff;
+}
+
+/* ── GPS BUTTON ── */
+.gps-btn{
+  width:100%;padding:12px;
+  border:1.5px solid var(--rose);
+  border-radius:10px;background:var(--rose-lt);
+  color:var(--rose);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;
+}
+.gps-btn:hover{background:var(--rose);color:#fff;}
+.gps-status{
+  font-size:12px;margin-top:6px;
+  text-align:center;color:var(--muted);
+}
+.gps-status.ok{color:var(--green);}
+.gps-status.err{color:var(--red);}
+
+/* ── TERMS ── */
+.terms-row{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:13px;color:var(--mid);line-height:1.5;
+  margin-bottom:4px;
+}
+.terms-row input[type=checkbox]{
+  width:16px;height:16px;
+  accent-color:var(--rose);
+  cursor:pointer;flex-shrink:0;margin-top:2px;
+}
+.terms-row a{color:var(--rose);text-decoration:none;font-weight:600;}
+
+/* ── BUTTONS ── */
+.btn-row{
+  display:flex;gap:10px;margin-top:24px;
+}
+.btn-back{
+  padding:13px 20px;border:1.5px solid var(--border);
+  border-radius:10px;background:transparent;
+  color:var(--mid);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.btn-back:hover{border-color:var(--rose);color:var(--rose);}
+.btn-next{
+  flex:1;padding:13px;border:none;
+  border-radius:10px;background:var(--rose);
+  color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-next:hover{background:#e0334f;transform:translateY(-1px);}
+.btn-next:disabled{
+  opacity:.6;transform:none;cursor:not-allowed;
+}
+
+/* ── ERROR ── */
+.err-box{
+  background:var(--red-lt);color:#991B1B;
+  border-radius:10px;padding:11px 14px;
+  font-size:13px;margin-top:14px;
+  display:none;align-items:center;gap:8px;
+  border-left:3px solid var(--red);
+}
+.err-box.show{display:flex;}
+
+/* ── SUCCESS ── */
+.success-wrap{
+  display:none;text-align:center;
+  padding:20px 0;
+}
+.success-wrap .s-icon{
+  font-size:72px;margin-bottom:16px;
+  animation:bounce .6s ease;
+}
+@keyframes bounce{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.2);}
+}
+.success-wrap h3{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:900;
+  color:var(--dark);margin-bottom:8px;
+}
+.success-wrap p{
+  font-size:14px;color:var(--muted);
+  line-height:1.7;max-width:380px;
+  margin:0 auto 24px;
+}
+.s-steps{
+  background:var(--pink-bg);border-radius:14px;
+  padding:16px 20px;text-align:left;
+  margin-bottom:24px;
+}
+.s-step{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;color:var(--mid);
+  padding:6px 0;
+}
+.s-step-icon{font-size:18px;}
+.go-dashboard-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 32px;border-radius:10px;
+  background:var(--rose);color:#fff;
+  font-size:15px;font-weight:700;
+  text-decoration:none;transition:all .2s;
+}
+.go-dashboard-btn:hover{
+  background:#e0334f;
+  transform:translateY(-1px);
+}
+
+/* ── SPINNER ── */
+.spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .6s linear infinite;
+  flex-shrink:0;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── LOADING OVERLAY ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,10,20,.5);
+  backdrop-filter:blur(4px);
+  z-index:999;align-items:center;
+  justify-content:center;flex-direction:column;gap:16px;
+}
+.overlay.show{display:flex;}
+.overlay-card{
+  background:#fff;border-radius:20px;
+  padding:32px 40px;text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.2);
+}
+.overlay-spinner{
+  width:48px;height:48px;
+  border:4px solid var(--rose-lt);
+  border-top-color:var(--rose);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  margin:0 auto 16px;
+}
+.overlay-title{
+  font-size:16px;font-weight:700;color:var(--dark);
+}
+.overlay-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .card{padding:24px 16px; border-radius:16px;}
+  .frow{grid-template-columns:1fr; gap:12px;}
+  .btn-row{flex-direction:column; gap:12px;}
+  .btn-back{order:2; width:100%; justify-content:center; padding:14px;}
+  .btn-next{order:1; width:100%; justify-content:center; padding:14px;}
+  .input-wrap input, .select-wrap select{padding:14px 44px 14px 14px; font-size:16px;}
+  .card-header h2{font-size:22px;}
+  .sdot{width:28px; height:28px; font-size:12px;}
+  .nav-right{font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div class="overlay-spinner"></div>
+    <div class="overlay-title" id="overlay-title">Creating Your Account...</div>
+    <div class="overlay-sub" id="overlay-sub">Uploading your information</div>
+  </div>
+</div>
+
+<!-- Top Nav -->
+<div class="top-nav">
+  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+<span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
+  <div class="nav-right">
+    Already registered?
+    <a href="login.html">Login →</a>
+  </div>
+</div>
+
+<!-- Page Wrap -->
+<div class="page-wrap">
+<div class="card">
+
+  <!-- Header -->
+  <div class="card-header">
+    <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+<span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
+    <h2>Join as a Worker 👷</h2>
+    <p>Register your skills and start earning globally</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="steps-row">
+      <div class="sdot active" id="dot1">1</div>
+      <div class="sline" id="line1"></div>
+      <div class="sdot" id="dot2">2</div>
+      <div class="sline" id="line2"></div>
+      <div class="sdot" id="dot3">3</div>
+      <div class="sline" id="line3"></div>
+      <div class="sdot" id="dot4">4</div>
+    </div>
+    <div class="step-labels">
+      <span class="active" id="lbl1">Location</span>
+      <span id="lbl2">You</span>
+      <span id="lbl3">Skills</span>
+      <span id="lbl4">Docs</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       STEP 1 — LOCATION (Global)
+  ══════════════════════════════ -->
+  <div class="fstep active" id="step1">
+    <div class="fgroup">
+      <label>Country *</label>
+      <select id="country" onchange="updateCountryCode()">
+        <option value="" data-code="">Select Country</option>
+        <option value="Pakistan" data-code="+92">🇵🇰 Pakistan</option>
+        <option value="United States" data-code="+1">🇺🇸 United States</option>
+        <option value="United Kingdom" data-code="+44">🇬🇧 United Kingdom</option>
+        <option value="United Arab Emirates" data-code="+971">🇦🇪 United Arab Emirates</option>
+        <option value="Saudi Arabia" data-code="+966">🇸🇦 Saudi Arabia</option>
+        <option value="India" data-code="+91">🇮🇳 India</option>
+        <option value="Canada" data-code="+1">🇨🇦 Canada</option>
+        <option value="Australia" data-code="+61">🇦🇺 Australia</option>
+        <option value="Other" data-code="">🌍 Other (Global)</option>
+      </select>
+    </div>
+
+    <div class="frow">
+      <div class="fgroup">
+        <label>Mobile Code *</label>
+        <input type="text" id="mobileCode" placeholder="+92" readonly style="background:#f5f5f5;" />
+      </div>
+      <div class="fgroup">
+        <label>Mobile Number *</label>
+        <input type="tel" id="phone" placeholder="300 1234567" oninput="formatPhone(this)" />
+      </div>
+    </div>
+
+    <div id="recaptcha-container" style="margin-bottom: 10px;"></div>
+    
+    <button class="gps-btn" id="sendOtpBtn" onclick="sendOTP()" style="margin-bottom:16px;">
+      📱 Send OTP to Verify Phone
+    </button>
+
+    <div class="fgroup" id="otpGroup" style="display:none; margin-bottom:16px;">
+      <label>Enter 6-Digit OTP *</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="otpInput" placeholder="123456" maxlength="6" style="flex:1;" />
+        <button class="btn-next" id="verifyOtpBtn" onclick="verifyOTP()" style="width:auto; padding:0 20px;">Verify</button>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="fgroup">
+        <label>Province / State *</label>
+        <input type="text" id="province" placeholder="e.g. Sindh, Texas, etc." />
+      </div>
+      <div class="fgroup">
+        <label>City *</label>
+        <input type="text" id="city" placeholder="e.g. Karachi, New York, etc." />
+      </div>
+    </div>
+
+    <div class="fgroup">
+      <label>Complete Address *</label>
+      <input type="text" id="address" placeholder="House No / Flat / Street / Area" />
+    </div>
+
+    <!-- GPS -->
+    <div class="fgroup" style="margin-top:10px;">
+      <label>📍 Auto Detect Location <span class="optional-badge">Optional</span></label>
+      <button class="gps-btn" id="gpsBtn" onclick="detectGPS()">
+        📍 Detect My Location Automatically
+      </button>
+      <div class="gps-status" id="gpsStatus">
+        This helps clients find you on the map
+      </div>
+    </div>
+
+    <div class="err-box" id="err1">
+      <span>⚠️</span><span id="err1msg"></span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="v1()">
+        Next — About You →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       STEP 2 — BASIC INFO
+  ══════════════════════════════ -->
+  <div class="fstep" id="step2">
+    <!-- Profile Photo -->
+    <div class="fgroup">
+      <label>Profile Photo *</label>
+      <div class="dp-upload-wrap">
+        <div class="dp-circle" id="dpCircle">
+          <input type="file" id="dpFile" accept="image/*" onchange="previewDP(this)"/>
+          <img id="dpPreview" alt="Profile"/>
+          <div class="dp-icon" id="dpIcon">
+            📸
+            <span>Add Photo</span>
+          </div>
+        </div>
+        <div class="dp-hint">Tap to upload — JPG or PNG</div>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="fgroup">
+        <label>First Name *</label>
+        <input type="text" id="firstName" placeholder="John" />
+      </div>
+      <div class="fgroup">
+        <label>Last Name *</label>
+        <input type="text" id="lastName" placeholder="Doe" />
+      </div>
+    </div>
+
+    <div class="fgroup">
+      <label>Email Address <span class="optional-badge">Optional</span></label>
+      <input type="email" id="email" placeholder="you@example.com" />
+    </div>
+
+    <div class="err-box" id="err2">
+      <span>⚠️</span><span id="err2msg"></span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(1)">← Back</button>
+      <button class="btn-next" onclick="v2()">
+        Next — Skills →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       STEP 3 — SKILLS & RATE
+  ══════════════════════════════ -->
+  <div class="fstep" id="step3">
+    <div class="fgroup">
+      <label>Main Category *</label>
+      <select id="category">
+        <option value="">Select your main category</option>
+        <option>🔧 Home Repairs</option>
+        <option>📚 Education</option>
+        <option>🏥 Health & Medical</option>
+        <option>💄 Beauty & Salon</option>
+        <option>🧹 Cleaning & Maintenance</option>
+        <option>💻 IT, Web & Tech</option>
+        <option>🚗 Auto Services</option>
+        <option>🍳 Food & Chef</option>
+        <option>🏗️ Construction</option>
+        <option>📈 Business Services</option>
+        <option>🎨 Creative & Design</option>
+        <option>🚚 Transport & Delivery</option>
+        <option>Other (Custom)</option>
+      </select>
+      <div class="hint">🌍 Any category — DoorSkill accepts all businesses worldwide</div>
+    </div>
+
+    <div class="fgroup">
+      <label>Your Skills * <span style="font-size:11px;color:var(--muted);text-transform:none;letter-spacing:0;">(Min 1 — Max 3)</span></label>
+      <div class="skill-wrap" id="skillWrap">
+        <div class="skill-row" id="skillRow1">
+          <div class="skill-num">1</div>
+          <input type="text" class="skill-input" id="skill1" placeholder="e.g. Plumber, SEO Expert, Tutor..." maxlength="30" oninput="updateCharBar(this,'cb1')" />
+        </div>
+        <div class="char-bar" id="cb1">0/30</div>
+      </div>
+      <button class="add-skill-btn" id="addSkillBtn" onclick="addSkill()">
+        <span>＋</span> Add Another Skill (Max 3)
+      </button>
+    </div>
+
+    <div class="frow">
+      <div class="fgroup">
+        <label>Experience *</label>
+        <select id="experience">
+          <option value="">Select</option>
+          <option>Less than 1 year</option>
+          <option>1-2 years</option>
+          <option>3-5 years</option>
+          <option>5-10 years</option>
+          <option>10+ years</option>
+        </select>
+      </div>
+      <div class="fgroup">
+        <label>Gender <span class="optional-badge">Optional</span></label>
+        <select id="gender">
+          <option value="">Prefer not to say</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fgroup">
+      <label>Your Rate (Estimate) *</label>
+      <div class="rate-display" id="rateDisplay">Rs. 500</div>
+      <input type="range" id="rateSlider" min="100" max="50000" step="100" value="500" oninput="updateRate(this.value)" style="margin-bottom:8px;"/>
+      <div class="hint">
+        Or type exact amount:
+        <input type="number" id="rateInput" value="500" min="100" max="500000" oninput="rateTyped(this.value)" style="width:120px;padding:6px 10px; margin-left:8px;border:1.5px solid var(--border); border-radius:8px;font-size:13px;outline:none;"/>
+      </div>
+    </div>
+    
+    <div class="fgroup">
+      <label>Rate Type *</label>
+      <select id="rateType">
+        <option>Per Hour</option>
+        <option>Per Job (Fixed)</option>
+        <option>Per Day</option>
+        <option>Per Month</option>
+        <option>Negotiable</option>
+      </select>
+    </div>
+
+    <div class="err-box" id="err3">
+      <span>⚠️</span><span id="err3msg"></span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <button class="btn-next" onclick="v3()">
+        Next — Documents →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       STEP 4 — DOCUMENTS & VIDEO
+  ══════════════════════════════ -->
+  <div class="fstep" id="step4">
+    <div class="fgroup">
+      <label>National ID / CNIC Number *</label>
+      <input type="text" id="cnic" placeholder="Your National ID" />
+    </div>
+
+    <div class="frow">
+      <div class="fgroup">
+        <label>ID Photo (FRONT) *</label>
+        <div class="upload-box" id="cnicFrontBox">
+          <input type="file" id="cnicFrontFile" accept="image/*" onchange="fileChosen(this,'cnicFrontBox','cnicFrontName')"/>
+          <div class="upload-box-icon">🪪</div>
+          <div class="upload-box-text">Front Side</div>
+        </div>
+        <div class="file-chosen" id="cnicFrontChosen">
+          <span>✅</span><span id="cnicFrontName">file.jpg</span>
+          <button class="file-remove" onclick="removeFile('cnicFrontFile','cnicFrontBox','cnicFrontChosen')">×</button>
+        </div>
+      </div>
+      <div class="fgroup">
+        <label>ID Photo (BACK) *</label>
+        <div class="upload-box" id="cnicBackBox">
+          <input type="file" id="cnicBackFile" accept="image/*" onchange="fileChosen(this,'cnicBackBox','cnicBackName')"/>
+          <div class="upload-box-icon">🪪</div>
+          <div class="upload-box-text">Back Side</div>
+        </div>
+        <div class="file-chosen" id="cnicBackChosen">
+          <span>✅</span><span id="cnicBackName">file.jpg</span>
+          <button class="file-remove" onclick="removeFile('cnicBackFile','cnicBackBox','cnicBackChosen')">×</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fgroup" style="margin-top:16px;">
+      <label>Portfolio / Service Video (Max 100MB) <span class="optional-badge">Recommended</span></label>
+      <div class="upload-box" id="videoBox" style="background:#f0f9ff; border-color:#bae6fd;">
+        <input type="file" id="videoFile" accept="video/mp4,video/x-m4v,video/*" onchange="fileChosen(this,'videoBox','videoName')"/>
+        <div class="upload-box-icon">🎥</div>
+        <div class="upload-box-text">Upload a video showcasing your work</div>
+        <div class="upload-box-hint">MP4, WebM — Max 100MB</div>
+      </div>
+      <div class="file-chosen" id="videoChosen">
+        <span>✅</span><span id="videoName">video.mp4</span>
+        <button class="file-remove" onclick="removeFile('videoFile','videoBox','videoChosen')">×</button>
+      </div>
+      <div class="hint">A video drastically increases your chances of getting hired!</div>
+    </div>
+
+    <div class="fgroup" style="margin-top:16px;">
+      <div class="terms-row">
+        <input type="checkbox" id="termsCheck"/>
+        <label for="termsCheck" style="text-transform:none;letter-spacing:0;font-size:13px;">
+          I agree to DoorSkill's <a href="#">Terms &amp; Conditions</a>. I confirm all information provided is accurate.
+        </label>
+      </div>
+    </div>
+
+    <div class="err-box" id="err4">
+      <span>⚠️</span><span id="err4msg"></span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <button class="btn-next" id="submitBtn" onclick="submitWorker()">
+        🚀 Create My Account
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SUCCESS
+  ══════════════════════════════ -->
+  <div class="success-wrap" id="successWrap">
+    <div class="s-icon">🎉</div>
+    <h3>Account Created!</h3>
+    <p>
+      Welcome to DoorSkill! Your profile has been submitted
+      for verification. You'll be notified once approved.
+    </p>
+    <div class="s-steps">
+      <div class="s-step">
+        <span class="s-step-icon">✅</span>
+        Account created successfully
+      </div>
+      <div class="s-step">
+        <span class="s-step-icon">🔍</span>
+        Admin will verify your documents (24 hrs)
+      </div>
+      <div class="s-step">
+        <span class="s-step-icon">📱</span>
+        You'll get notified when approved
+      </div>
+      <div class="s-step">
+        <span class="s-step-icon">💰</span>
+        Start receiving job requests near you!
+      </div>
+    </div>
+    <a href="../dashboard/worker.html"
+       class="go-dashboard-btn">
+      Go to My Dashboard →
+    </a>
+  </div>
+
+</div><!-- end .card -->
+</div><!-- end .page-wrap -->
+
+<!-- ═══════════════════════════════════════
+     FIREBASE SCRIPT (Mock Logic Maintained)
+════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+// ── Init ──
+const app = initializeApp({
+  apiKey:            "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain:        "doorskill-beff1.firebaseapp.com",
+  databaseURL:       "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId:         "doorskill-beff1",
+  storageBucket:     "doorskill-beff1.firebasestorage.app",
+  messagingSenderId: "620272735898",
+  appId:             "1:620272735898:web:b35d24737ef79c01a67123"
+});
+
+const auth    = getAuth(app);
+const db      = getFirestore(app);
+const storage = getStorage(app);
+
+// ── MAIN SUBMIT ──
+window.submitWorker = async function(){
+
+  if(!document.getElementById('cnic').value.trim()) return showErr('err4','Please enter your National ID / CNIC.');
+  if(!document.getElementById('cnicFrontFile').files[0]) return showErr('err4','Please upload ID Front photo.');
+  if(!document.getElementById('cnicBackFile').files[0]) return showErr('err4','Please upload ID Back photo.');
+  if(!document.getElementById('termsCheck').checked) return showErr('err4','Please agree to Terms & Conditions.');
+
+  // Show loading overlay
+  showOverlay('Creating Your Account...','Please wait...');
+
+  try {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const first    = document.getElementById('firstName').value.trim();
+    const last     = document.getElementById('lastName').value.trim();
+
+    // ── 1. Firebase Auth ──
+    const user = auth.currentUser;
+    if(!user) {
+      hideOverlay();
+      return showErr('err4','Authentication missing. Please verify OTP in Step 1 again.');
+    }
+    const uid = user.uid;
+    await updateProfile(user,{displayName: first+' '+last});
+
+    // ── 2. Upload Profile Photo ──
+    updateOverlay('Step 2/4','Uploading profile photo...');
+    let photoURL = '';
+    const dpF = document.getElementById('dpFile').files[0];
+    if(dpF){
+      const r = ref(storage,`workers/${uid}/profile.jpg`);
+      await uploadBytes(r, dpF);
+      photoURL = await getDownloadURL(r);
+    }
+
+    // ── 3. Upload CNIC ──
+    updateOverlay('Step 3/4','Uploading documents...');
+    let cnicFrontURL = '';
+    const cnicFrontF = document.getElementById('cnicFrontFile').files[0];
+    if(cnicFrontF){
+      const r = ref(storage,`workers/${uid}/id_front.jpg`);
+      await uploadBytes(r, cnicFrontF);
+      cnicFrontURL = await getDownloadURL(r);
+    }
+    
+    let cnicBackURL = '';
+    const cnicBackF = document.getElementById('cnicBackFile').files[0];
+    if(cnicBackF){
+      const r = ref(storage,`workers/${uid}/id_back.jpg`);
+      await uploadBytes(r, cnicBackF);
+      cnicBackURL = await getDownloadURL(r);
+    }
+
+    let videoURL = '';
+    const videoF = document.getElementById('videoFile').files[0];
+    if(videoF){
+      const r = ref(storage,`workers/${uid}/portfolio_video.mp4`);
+      await uploadBytes(r, videoF);
+      videoURL = await getDownloadURL(r);
+    }
+
+    // ── 4. Collect Skills ──
+    const skillInputs = document.querySelectorAll('.skill-input');
+    const skills = [];
+    skillInputs.forEach(inp => {
+      if(inp.value.trim()) skills.push(inp.value.trim());
+    });
+
+    // ── 5. Save to Firestore ──
+    updateOverlay('Step 4/4','Saving your profile...');
+    const rate = document.getElementById('rateInput').value || '500';
+
+    await setDoc(doc(db,'workers',uid),{
+      uid,
+      firstName:  first,
+      lastName:   last,
+      fullName:   first+' '+last,
+      email,
+      phone:      document.getElementById('mobileCode').value + document.getElementById('phone').value.trim(),
+      country:    document.getElementById('country').value,
+      province:   document.getElementById('province').value,
+      city:       document.getElementById('city').value,
+      address:    document.getElementById('address').value.trim(),
+      category:   document.getElementById('category').value,
+      skills,
+      experience: document.getElementById('experience').value,
+      gender:     document.getElementById('gender').value,
+      cnic:       document.getElementById('cnic').value.trim(),
+      rate:       parseInt(rate),
+      rateType:   document.getElementById('rateType').value,
+      photoURL,
+      cnicFrontURL,
+      cnicBackURL,
+      videoURL,
+      location:{
+        lat: window._GPS?.lat || null,
+        lng: window._GPS?.lng || null,
+      },
+      status:       'pending',
+      isOnline:     false,
+      rating:       0,
+      totalReviews: 0,
+      totalJobs:    0,
+      totalEarnings:0,
+      role:         'worker',
+      createdAt:    serverTimestamp(),
+    });
+
+    // ── 6. Save to localStorage ──
+    localStorage.setItem('ds_uid',  uid);
+    localStorage.setItem('ds_role', 'worker');
+    localStorage.setItem('ds_name', first+' '+last);
+    if(videoURL) localStorage.setItem('ds_video', videoURL);
+
+    // ── 7. Show Success ──
+    hideOverlay();
+    document.getElementById('progressWrap').style.display = 'none';
+    document.querySelectorAll('.fstep').forEach(s=>s.style.display='none');
+    document.getElementById('successWrap').style.display = 'block';
+
+  } catch(err){
+    hideOverlay();
+    let msg = 'Something went wrong. Please try again.';
+    if(err.code === 'auth/network-request-failed') msg = 'No internet connection. Please check your network.';
+    showErr('err4', msg);
+    console.error('Firebase Error:', err);
+  }
+};
+
+window.sendOTP = async function() {
+  const code = document.getElementById('mobileCode').value;
+  const ph = document.getElementById('phone').value.trim();
+  if(!code || !ph) return showErr('err1', 'Please enter your mobile number.');
+  
+  const fullPhone = code + ph;
+  const btn = document.getElementById('sendOtpBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    if(!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible'
+      });
+    }
+    const confirmationResult = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier);
+    window.confirmationResult = confirmationResult;
+    
+    document.getElementById('otpGroup').style.display = 'block';
+    btn.textContent = '✅ OTP Sent';
+    showErr('err1', 'OTP Sent to ' + fullPhone + ' (check your messages)');
+    document.getElementById('err1').className = 'err-box show';
+    document.getElementById('err1').style.background = 'var(--green-lt)';
+    document.getElementById('err1').style.color = '#065F46';
+    document.getElementById('err1').style.borderLeftColor = 'var(--green)';
+    setTimeout(()=>{
+      document.getElementById('err1').className = 'err-box';
+      document.getElementById('err1').style.cssText = '';
+    }, 5000);
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = '📱 Send OTP to Verify Phone';
+    showErr('err1', 'Failed to send OTP: ' + err.message);
+    if(window.recaptchaVerifier) window.recaptchaVerifier.clear();
+  }
+};
+
+window.verifyOTP = async function() {
+  const otp = document.getElementById('otpInput').value.trim();
+  if(!otp || otp.length < 6) return showErr('err1', 'Please enter the 6-digit OTP.');
+  
+  const btn = document.getElementById('verifyOtpBtn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  try {
+    const result = await window.confirmationResult.confirm(otp);
+    window.isPhoneVerified = true;
+    document.getElementById('otpGroup').innerHTML = '<div style="color:var(--green);font-weight:700;">✅ Phone Verified Successfully!</div>';
+    document.getElementById('phone').readOnly = true;
+    document.getElementById('sendOtpBtn').style.display = 'none';
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = 'Verify';
+    showErr('err1', 'Invalid OTP. Try again.');
+  }
+};
+
+function showOverlay(title, sub){
+  document.getElementById('overlay-title').textContent = title;
+  document.getElementById('overlay-sub').textContent   = sub;
+  document.getElementById('overlay').classList.add('show');
+}
+function updateOverlay(title, sub){
+  document.getElementById('overlay-title').textContent = title;
+  document.getElementById('overlay-sub').textContent   = sub;
+}
+function hideOverlay(){
+  document.getElementById('overlay').classList.remove('show');
+}
+window._showOverlay  = showOverlay;
+window._hideOverlay  = hideOverlay;
+</script>
+
+<!-- ── UI LOGIC ── -->
+<script>
+// ─── Step Navigation ───
+let currentStep = 1;
+window._GPS = { lat: null, lng: null };
+
+function updateCountryCode() {
+  const sel = document.getElementById('country');
+  const code = sel.options[sel.selectedIndex].getAttribute('data-code');
+  document.getElementById('mobileCode').value = code || '';
+}
+
+function goStep(n){
+  document.getElementById('step'+currentStep).classList.remove('active');
+  document.getElementById('step'+n).classList.add('active');
+
+  for(let i=1;i<=4;i++){
+    const dot = document.getElementById('dot'+i);
+    const lbl = document.getElementById('lbl'+i);
+    if(i < n){
+      dot.className='sdot done';
+      dot.textContent='✓';
+    } else if(i === n){
+      dot.className='sdot active';
+      dot.textContent=i;
+    } else {
+      dot.className='sdot';
+      dot.textContent=i;
+    }
+    if(lbl) lbl.className = i===n ? 'active' : '';
+  }
+  for(let i=1;i<=3;i++){
+    document.getElementById('line'+i).className = 'sline' + (i < n ? ' done' : '');
+  }
+
+  currentStep = n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── Step 1 Validate ───
+function v1(){
+  const c = document.getElementById('country').value;
+  const ph = document.getElementById('phone').value.trim();
+  const prov = document.getElementById('province').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const addr = document.getElementById('address').value.trim();
+
+  if(!window.isPhoneVerified) return showErr('err1','Please verify your phone number with OTP first.');
+  if(!c) return showErr('err1','Please select a country.');
+  if(!ph) return showErr('err1','Please enter your mobile number.');
+  if(!prov) return showErr('err1','Please enter your province/state.');
+  if(!city) return showErr('err1','Please enter your city.');
+  if(!addr) return showErr('err1','Please enter your complete address.');
+
+  goStep(2);
+}
+
+// ─── Step 2 Validate ───
+function v2(){
+  const dp = document.getElementById('dpFile').files[0];
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  const em = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value;
+  const cp = document.getElementById('confirmPass').value;
+
+  if(!dp) return showErr('err2','Please upload your profile photo.');
+  if(!fn) return showErr('err2','Please enter your first name.');
+  if(!ln) return showErr('err2','Please enter your last name.');
+
+  goStep(3);
+}
+
+// ─── Step 3 Validate ───
+function v3(){
+  const cat = document.getElementById('category').value;
+  const exp = document.getElementById('experience').value;
+  const skills = Array.from(document.querySelectorAll('.skill-input')).map(i=>i.value.trim()).filter(Boolean);
+
+  if(!cat) return showErr('err3','Please select your main category.');
+  if(skills.length === 0) return showErr('err3','Please add at least 1 skill.');
+  if(!exp) return showErr('err3','Please select your experience level.');
+
+  goStep(4);
+}
+
+// ─── Error Display ───
+function showErr(id, msg){
+  const box = document.getElementById(id);
+  document.getElementById(id+'msg').textContent = msg;
+  box.classList.add('show');
+  setTimeout(()=>box.classList.remove('show'), 5000);
+}
+
+// ─── Profile Photo Preview ───
+function previewDP(input){
+  const file = input.files[0];
+  if(!file) return;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById('dpPreview');
+  const icon= document.getElementById('dpIcon');
+  img.src = url;
+  img.style.display = 'block';
+  icon.style.display = 'none';
+  document.getElementById('dpCircle').style.border = '3px solid var(--rose)';
+}
+
+// ─── Skill Fields ───
+let skillCount = 1;
+
+function addSkill(){
+  if(skillCount >= 3){
+    alert('Maximum 3 skills allowed!'); return;
+  }
+  skillCount++;
+  const wrap = document.getElementById('skillWrap');
+  const div  = document.createElement('div');
+  div.id = 'skillRowWrap'+skillCount;
+  div.innerHTML = `
+    <div class="skill-row" id="skillRow${skillCount}">
+      <div class="skill-num">${skillCount}</div>
+      <input type="text" class="skill-input" id="skill${skillCount}" placeholder="Skill ${skillCount}" maxlength="30" oninput="updateCharBar(this,'cb${skillCount}')"/>
+      <button class="skill-del" onclick="removeSkill(${skillCount})" title="Remove">×</button>
+    </div>
+    <div class="char-bar" id="cb${skillCount}">0/30</div>
+  `;
+  wrap.appendChild(div);
+
+  if(skillCount >= 3){
+    document.getElementById('addSkillBtn').disabled = true;
+    document.getElementById('addSkillBtn').innerHTML = '<span>✓</span> Maximum 3 skills added';
+  }
+}
+
+function removeSkill(n){
+  const el = document.getElementById('skillRowWrap'+n);
+  if(el) el.remove();
+  skillCount--;
+  document.getElementById('addSkillBtn').disabled = false;
+  document.getElementById('addSkillBtn').innerHTML = '<span>＋</span> Add Another Skill (Max 3)';
+}
+
+function updateCharBar(input, barId){
+  const len = input.value.length;
+  const bar = document.getElementById(barId);
+  if(bar){
+    bar.textContent = len+'/30';
+    bar.className = 'char-bar' + (len > 24 ? ' warn' : '');
+  }
+}
+
+// ─── Phone Format ───
+function formatPhone(input){
+  let v = input.value.replace(/[^\d]/g,'');
+  input.value = v;
+}
+
+// ─── File Upload ───
+function fileChosen(input, boxId, nameId){
+  const file = input.files[0];
+  if(!file) return;
+  
+  // validate 100mb limit for video
+  if(boxId === 'videoBox' && file.size > 100 * 1024 * 1024) {
+      alert("File is larger than 100MB. Please choose a smaller video.");
+      input.value = "";
+      return;
+  }
+
+  const chosenId = boxId.replace('Box', 'Chosen');
+  const chosen = document.getElementById(chosenId);
+  document.getElementById(nameId).textContent = file.name;
+  chosen.style.display = 'flex';
+}
+
+function removeFile(fileId, boxId, chosenId){
+  document.getElementById(fileId).value = '';
+  document.getElementById(chosenId).style.display = 'none';
+}
+
+// ─── Rate Slider ───
+function updateRate(val){
+  const v = parseInt(val);
+  document.getElementById('rateDisplay').textContent = 'Rs. '+v.toLocaleString();
+  document.getElementById('rateInput').value = v;
+  const pct = ((v-100)/(50000-100))*100;
+  document.getElementById('rateSlider').style.background = `linear-gradient(90deg,var(--rose) ${pct}%,var(--border) ${pct}%)`;
+}
+function rateTyped(val){
+  const v = Math.min(Math.max(parseInt(val)||100, 100), 500000);
+  document.getElementById('rateDisplay').textContent = 'Rs. '+v.toLocaleString();
+  const sliderMax = Math.min(v, 50000);
+  document.getElementById('rateSlider').value = sliderMax;
+  const pct = ((sliderMax-100)/(50000-100))*100;
+  document.getElementById('rateSlider').style.background = `linear-gradient(90deg,var(--rose) ${pct}%,var(--border) ${pct}%)`;
+}
+
+// ─── GPS ───
+function detectGPS(){
+  const btn    = document.getElementById('gpsBtn');
+  const status = document.getElementById('gpsStatus');
+  btn.textContent  = '🔍 Detecting your location...';
+  btn.disabled     = true;
+  status.textContent = '';
+
+  if(!navigator.geolocation){
+    status.textContent = '❌ GPS not supported on this device.';
+    status.className   = 'gps-status err';
+    btn.textContent    = '📍 Detect My Location Automatically';
+    btn.disabled       = false;
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      window._GPS.lat = pos.coords.latitude;
+      window._GPS.lng = pos.coords.longitude;
+      status.textContent = '✅ Location detected! ('+pos.coords.latitude.toFixed(4)+', '+pos.coords.longitude.toFixed(4)+')';
+      status.className   = 'gps-status ok';
+      btn.textContent    = '✅ Location Detected — Detect Again';
+      btn.disabled       = false;
+      localStorage.setItem('ds_lat', pos.coords.latitude);
+      localStorage.setItem('ds_lng', pos.coords.longitude);
+    },
+    err => {
+      status.textContent = '❌ Could not detect location. Please fill address manually.';
+      status.className   = 'gps-status err';
+      btn.textContent    = '📍 Try Again';
+      btn.disabled       = false;
+    },
+    { timeout:10000, enableHighAccuracy:true }
+  );
+}
+
+// ─── Password Match Indicator ───
+function checkPass(){
+  const p1 = document.getElementById('password').value;
+  const p2 = document.getElementById('confirmPass').value;
+  const hint = document.getElementById('passHint');
+  if(!p2) { hint.textContent=''; return; }
+  if(p1 === p2){
+    hint.textContent = '✅ Passwords match';
+    hint.style.color = 'var(--green)';
+  } else {
+    hint.textContent = '❌ Passwords do not match';
+    hint.style.color = 'var(--red)';
+  }
+}
+
+// ─── Init ───
+window.addEventListener('load',()=>{
+  updateRate(500);
+});
+</script>
+<script src="../assets/ai-helper.js"></script>
+</body>
+</html>
