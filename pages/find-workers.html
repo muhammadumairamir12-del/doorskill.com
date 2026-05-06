@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoorSkill — Find Workers Worldwide</title>
+<meta name="description" content="Search and hire top-rated professionals globally. Plumbers, Electricians, Doctors, Tutors and more on DoorSkill."/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+/* ══════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════ */
+:root{
+  --rose:#F43F5E; --rose-lt:#FFE4EC; --rose-md:#FB7185;
+  --pink-bg:#FFF0F5; --dark:#1A0A14; --mid:#5C3D4E;
+  --muted:#9D7589; --border:#F3D6E0;
+  --green:#10B981; --green-lt:#D1FAE5;
+  --blue:#3B82F6; --blue-lt:#DBEAFE;
+  --white:#fff;
+  --sidebar-w:400px;
+  --topbar-h:62px;
+  --radius:12px;
+  --shadow-sm:0 2px 10px rgba(244,63,94,.07);
+  --shadow-md:0 6px 24px rgba(244,63,94,.13);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
+
+/* ═══ TOPBAR ═══ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:var(--topbar-h);
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  padding:0 16px;
+  box-shadow:0 1px 12px rgba(244,63,94,.06);
+}
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:21px;font-weight:900;color:var(--rose);
+  text-decoration:none;white-space:nowrap;flex-shrink:0;
+}
+.logo span{color:var(--dark);}
+
+/* Search bar */
+.search-bar{
+  flex:1;display:flex;align-items:center;gap:0;
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  max-width:620px;
+  box-shadow:var(--shadow-sm);
+  transition:border-color .2s,box-shadow .2s;
+}
+.search-bar:focus-within{
+  border-color:var(--rose);
+  box-shadow:var(--shadow-md);
+}
+.sb-skill{
+  flex:1;display:flex;align-items:center;gap:8px;padding:0 12px;
+}
+.sb-icon{font-size:14px;color:var(--muted);flex-shrink:0;}
+.sb-input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-size:13.5px;font-family:'DM Sans',sans-serif;
+  color:var(--dark);padding:0;
+}
+.sb-input::placeholder{color:var(--muted);}
+.sb-divider{width:1px;height:28px;background:var(--border);flex-shrink:0;}
+.sb-loc{
+  display:flex;align-items:center;gap:6px;padding:0 10px;
+  cursor:pointer;
+}
+.sb-loc-input{
+  border:none;outline:none;background:transparent;
+  font-size:13px;font-family:'DM Sans',sans-serif;
+  color:var(--mid);width:140px;
+}
+.sb-loc-input::placeholder{color:var(--muted);}
+.sb-gps{
+  background:none;border:none;cursor:pointer;font-size:15px;
+  padding:3px;color:var(--muted);transition:color .2s,transform .2s;
+}
+.sb-gps:hover{color:var(--rose);transform:scale(1.2);}
+.sb-btn{
+  background:var(--rose);color:#fff;border:none;
+  padding:0 20px;height:100%;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;white-space:nowrap;
+  transition:background .2s;min-height:40px;
+}
+.sb-btn:hover{background:#e0334f;}
+
+.topbar-right{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.tb-btn{
+  padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+  text-decoration:none;white-space:nowrap;border:none;
+}
+.tb-outline{border:1.5px solid var(--border);background:#fff;color:var(--mid);}
+.tb-outline:hover{border-color:var(--rose);color:var(--rose);}
+.tb-fill{background:var(--rose);color:#fff;}
+.tb-fill:hover{background:#e0334f;}
+
+.mobile-toggle{
+  display:none;width:36px;height:36px;border-radius:8px;
+  border:1.5px solid var(--border);background:#fff;
+  align-items:center;justify-content:center;cursor:pointer;
+  font-size:18px;color:var(--dark);flex-shrink:0;
+}
+
+/* ═══ LAYOUT ═══ */
+.layout{
+  display:flex;height:100vh;
+  padding-top:var(--topbar-h);
+}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar{
+  width:var(--sidebar-w);height:100%;
+  display:flex;flex-direction:column;
+  background:#fff;border-right:1px solid var(--border);
+  flex-shrink:0;position:relative;z-index:100;
+}
+
+/* Filters */
+.filter-bar{
+  padding:12px 14px 10px;border-bottom:1px solid var(--border);
+  background:#fff;
+}
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;}
+.cat-chip{
+  padding:5px 11px;border-radius:999px;
+  border:1.5px solid var(--border);background:#fff;
+  font-size:11.5px;font-weight:600;color:var(--mid);
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.cat-chip:hover{border-color:var(--rose);color:var(--rose);}
+.cat-chip.active{background:var(--rose);border-color:var(--rose);color:#fff;}
+.filter-row{display:flex;gap:7px;}
+.fsel{
+  flex:1;padding:7px 10px;border:1.5px solid var(--border);
+  border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;
+  color:var(--mid);outline:none;background:#fff;cursor:pointer;
+}
+.fsel:focus{border-color:var(--rose);}
+
+/* Results header */
+.results-hdr{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.res-count{font-size:13px;font-weight:700;color:var(--dark);}
+.res-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.view-btns{display:flex;gap:4px;}
+.vbtn{
+  width:28px;height:28px;border-radius:6px;
+  border:1.5px solid var(--border);background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:13px;transition:all .2s;
+}
+.vbtn.active{background:var(--rose);border-color:var(--rose);}
+
+/* Workers list scroll area */
+.workers-scroll{flex:1;overflow-y:auto;padding:10px;}
+.workers-scroll::-webkit-scrollbar{width:3px;}
+.workers-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* Worker card */
+.wcard{
+  border:1.5px solid var(--border);border-radius:14px;
+  padding:14px;margin-bottom:10px;
+  background:#fff;cursor:pointer;transition:all .22s;
+  position:relative;
+}
+.wcard:hover{
+  border-color:var(--rose-md);
+  box-shadow:var(--shadow-md);transform:translateY(-1px);
+}
+.wcard.selected{border-color:var(--rose);box-shadow:var(--shadow-md);}
+
+.wc-top{display:flex;gap:11px;align-items:flex-start;margin-bottom:10px;}
+.wc-avatar{
+  width:50px;height:50px;border-radius:12px;
+  background:linear-gradient(135deg,var(--rose-lt),var(--pink-bg));
+  flex-shrink:0;overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;border:2px solid var(--border);
+}
+.wc-avatar img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.online-dot{
+  position:absolute;bottom:2px;right:2px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--green);border:2px solid #fff;
+}
+.wc-info{flex:1;min-width:0;}
+.wc-name{
+  font-size:14px;font-weight:700;color:var(--dark);
+  display:flex;align-items:center;gap:6px;
+}
+.v-badge{
+  font-size:10px;background:var(--blue-lt);color:var(--blue);
+  padding:2px 6px;border-radius:4px;font-weight:600;white-space:nowrap;
+}
+.wc-cat{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.wc-rating{
+  display:flex;align-items:center;gap:4px;
+  font-size:11.5px;color:var(--muted);margin-top:3px;
+}
+.stars{color:#F59E0B;letter-spacing:-1px;font-size:12px;}
+.wc-price-wrap{text-align:right;flex-shrink:0;}
+.wc-price{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:900;color:var(--rose);
+}
+.wc-price-type{font-size:10px;color:var(--muted);}
+
+.skill-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.stag{
+  padding:3px 9px;border-radius:999px;
+  background:var(--pink-bg);color:var(--rose);font-size:10.5px;font-weight:600;
+}
+.wc-loc{
+  font-size:11px;color:var(--muted);margin-bottom:9px;
+  display:flex;align-items:center;gap:4px;
+}
+.wc-actions{display:flex;gap:6px;}
+.wbtn{
+  flex:1;padding:7px;border-radius:8px;font-size:11.5px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  text-decoration:none;border:none;
+}
+.wbtn-primary{background:var(--rose);color:#fff;}
+.wbtn-primary:hover{background:#e0334f;}
+.wbtn-outline{background:#fff;color:var(--mid);border:1.5px solid var(--border);}
+.wbtn-outline:hover{border-color:var(--rose);color:var(--rose);}
+.wbtn-green{background:var(--green-lt);color:#065F46;}
+.wbtn-green:hover{background:#A7F3D0;}
+
+/* No results / loading */
+.no-results{text-align:center;padding:48px 20px;color:var(--muted);}
+.nr-icon{font-size:44px;margin-bottom:12px;}
+.nr-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.nr-sub{font-size:12.5px;line-height:1.6;}
+.spin{
+  width:30px;height:30px;margin:36px auto;
+  border:3px solid var(--rose-lt);border-top-color:var(--rose);
+  border-radius:50%;animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ═══ MAP ═══ */
+.map-wrap{flex:1;position:relative;background:#f0e8e8;}
+#map{width:100%;height:100%;}
+
+.map-stats{
+  position:absolute;top:12px;left:12px;z-index:500;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
+  border-radius:12px;padding:10px 16px;
+  border:1.5px solid var(--border);
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  display:flex;gap:16px;
+}
+.mstat{text-align:center;}
+.mstat-num{
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-weight:900;color:var(--rose);line-height:1;
+}
+.mstat-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+
+.map-ctrls{
+  position:absolute;top:12px;right:12px;z-index:500;
+  display:flex;flex-direction:column;gap:7px;
+}
+.mctrl{
+  width:36px;height:36px;border-radius:9px;
+  background:#fff;border:1.5px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;color:var(--dark);transition:all .2s;
+}
+.mctrl:hover{border-color:var(--rose);color:var(--rose);}
+
+.map-legend{
+  position:absolute;bottom:20px;left:12px;z-index:500;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+  border-radius:10px;padding:9px 13px;
+  border:1.5px solid var(--border);
+  box-shadow:0 4px 12px rgba(0,0,0,.07);
+}
+.leg-item{
+  display:flex;align-items:center;gap:7px;
+  font-size:11px;color:var(--mid);margin-bottom:4px;
+}
+.leg-item:last-child{margin-bottom:0;}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* map popup */
+.worker-popup{min-width:190px;}
+.wp-name{font-weight:700;font-size:13.5px;color:var(--dark);margin-bottom:3px;}
+.wp-cat{font-size:11.5px;color:var(--muted);margin-bottom:5px;}
+.wp-price{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:900;color:var(--rose);margin-bottom:8px;
+}
+.wp-btn{
+  display:block;width:100%;padding:8px;
+  background:var(--rose);color:#fff;border:none;border-radius:8px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;text-align:center;text-decoration:none;
+  transition:background .2s;
+}
+.wp-btn:hover{background:#e0334f;}
+
+/* ═══ DRAWER ═══ */
+.drawer-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,10,20,.4);backdrop-filter:blur(4px);z-index:2000;
+}
+.drawer-overlay.show{display:block;}
+.drawer{
+  position:fixed;right:0;top:0;bottom:0;width:430px;
+  background:#fff;z-index:2001;overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow:-8px 0 40px rgba(0,0,0,.15);
+}
+.drawer.open{transform:translateX(0);}
+.drawer-hdr{
+  position:sticky;top:0;z-index:10;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);padding:15px 18px;
+  display:flex;align-items:center;gap:12px;
+}
+.d-avatar{
+  width:56px;height:56px;border-radius:14px;
+  border:2px solid var(--rose-lt);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;background:var(--pink-bg);flex-shrink:0;
+}
+.d-avatar img{width:100%;height:100%;object-fit:cover;}
+.d-name{
+  font-family:'Playfair Display',serif;
+  font-size:19px;font-weight:900;color:var(--dark);
+}
+.d-cat{font-size:13px;color:var(--muted);margin-top:2px;}
+.d-close{
+  margin-left:auto;background:var(--pink-bg);border:none;
+  width:32px;height:32px;border-radius:8px;
+  cursor:pointer;font-size:17px;color:var(--rose);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+}
+.d-close:hover{background:var(--rose);color:#fff;}
+.drawer-body{padding:18px;}
+.d-section{margin:16px 0 8px;font-weight:700;font-size:12.5px;color:var(--dark);}
+.d-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.d-card{
+  background:var(--pink-bg);border-radius:10px;
+  padding:11px;text-align:center;
+}
+.d-card-num{
+  font-family:'Playfair Display',serif;
+  font-size:19px;font-weight:900;color:var(--rose);
+}
+.d-card-lbl{font-size:10.5px;color:var(--muted);margin-top:2px;}
+.d-skills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.d-bio{
+  font-size:12.5px;color:var(--mid);line-height:1.7;
+  background:var(--pink-bg);padding:13px;border-radius:10px;margin-bottom:14px;
+}
+.d-review{padding:11px 0;border-bottom:1px solid var(--pink-bg);}
+.d-review:last-child{border-bottom:none;}
+.d-rev-top{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.d-rev-avatar{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--rose-lt);display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:700;color:var(--rose);flex-shrink:0;
+}
+.d-rev-stars{color:#F59E0B;font-size:12px;margin-left:auto;}
+.d-rev-text{font-size:12.5px;color:var(--mid);line-height:1.5;}
+.d-actions{
+  position:sticky;bottom:0;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);padding:13px 18px;
+  display:flex;gap:9px;
+}
+.d-btn{
+  flex:1;padding:11px;border-radius:10px;
+  font-size:13.5px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  text-decoration:none;border:none;
+}
+.d-btn-primary{background:var(--rose);color:#fff;}
+.d-btn-primary:hover{background:#e0334f;}
+.d-btn-secondary{background:var(--green-lt);color:#065F46;}
+.d-btn-secondary:hover{background:#A7F3D0;}
+
+/* ═══ TOAST ═══ */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--dark);color:#fff;
+  padding:11px 17px;border-radius:10px;
+  font-size:13.5px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  border-left:3px solid var(--rose);
+  transform:translateY(20px);opacity:0;transition:all .3s;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ═══ EMPTY STATE for online-only mode ═══ */
+.live-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--green-lt);color:#065F46;
+  font-size:11px;font-weight:700;
+  padding:3px 9px;border-radius:999px;
+  margin-left:8px;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  animation:pulse 1.4s ease infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
+
+/* ═══ MOBILE ═══ */
+@media(max-width:900px){
+  :root{--sidebar-w:100vw;}
+  .sidebar{
+    position:fixed;left:0;top:var(--topbar-h);bottom:0;z-index:200;
+    transform:translateX(-100%);transition:transform .3s;width:100%;
+  }
+  .sidebar.mobile-open{transform:translateX(0);}
+  .map-wrap{width:100%;}
+  .drawer{width:100%;}
+  .mobile-toggle{display:flex!important;}
+  .search-bar{max-width:280px;}
+  .sb-loc-input{width:80px;}
+  .tb-outline.hide-mobile{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ TOPBAR ══════════════════════ -->
+<div class="topbar">
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+  <a href="../index.html" class="logo">Door<span>Skill</span></a>
+
+  <div class="search-bar">
+    <div class="sb-skill">
+      <span class="sb-icon">🔍</span>
+      <input class="sb-input" type="text" id="skillInput"
+             placeholder="Search skill, profession…"
+             autocomplete="off"
+             oninput="debounceSearch()"
+             onkeydown="if(event.key==='Enter')doSearch()"/>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-loc">
+      <span style="font-size:13px;color:var(--muted);">📍</span>
+      <input class="sb-loc-input" type="text" id="locInput"
+             placeholder="Anywhere"
+             onkeydown="if(event.key==='Enter')doSearch()"/>
+      <button class="sb-gps" onclick="detectGPS()" title="Detect location">📡</button>
+    </div>
+    <button class="sb-btn" onclick="doSearch()">Search</button>
+  </div>
+
+  <div class="topbar-right">
+    <a href="../pages/post-job.html" class="tb-btn tb-fill">＋ Post Job</a>
+    <a href="../auth/login.html" class="tb-btn tb-outline hide-mobile">Login</a>
+  </div>
+</div>
+
+<!-- ══════════════════════ LAYOUT ══════════════════════ -->
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <div class="sidebar" id="sidebar">
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <div class="cat-row" id="catRow">
+        <div class="cat-chip active" onclick="setCat('',this)">All</div>
+        <div class="cat-chip" onclick="setCat('Home Repairs',this)">🔧 Home</div>
+        <div class="cat-chip" onclick="setCat('Education',this)">📚 Edu</div>
+        <div class="cat-chip" onclick="setCat('Health',this)">🏥 Health</div>
+        <div class="cat-chip" onclick="setCat('Beauty',this)">💄 Beauty</div>
+        <div class="cat-chip" onclick="setCat('Cleaning',this)">🧹 Clean</div>
+        <div class="cat-chip" onclick="setCat('IT',this)">💻 IT</div>
+        <div class="cat-chip" onclick="setCat('Auto',this)">🚗 Auto</div>
+      </div>
+      <div class="filter-row">
+        <select class="fsel" id="sortSel" onchange="applyFilters()">
+          <option value="rating">⭐ Top Rated</option>
+          <option value="reviews">📊 Most Reviews</option>
+          <option value="price-low">💰 Price ↑</option>
+          <option value="price-high">💰 Price ↓</option>
+          <option value="newest">🆕 Newest</option>
+        </select>
+        <select class="fsel" id="statusSel" onchange="applyFilters()">
+          <option value="">All Status</option>
+          <option value="online">🟢 Online Now</option>
+          <option value="verified">✅ Verified Only</option>
+        </select>
+        <select class="fsel" id="priceSel" onchange="applyFilters()">
+          <option value="">Any Price</option>
+          <option value="0-500">Under Rs.500</option>
+          <option value="500-2000">Rs.500–2K</option>
+          <option value="2000-10000">Rs.2K–10K</option>
+          <option value="10000+">Rs.10K+</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results header -->
+    <div class="results-hdr">
+      <div>
+        <div class="res-count" id="resCount">Loading…</div>
+        <div class="res-sub" id="resSub">🌍 Worldwide</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;">
+        <div class="view-btns">
+          <div class="vbtn active" onclick="setView('list',this)" title="List">☰</div>
+          <div class="vbtn" onclick="setView('grid',this)" title="Grid">⊞</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="workers-scroll" id="workersList">
+      <div class="spin"></div>
+    </div>
+  </div>
+
+  <!-- ═══ MAP ═══ -->
+  <div class="map-wrap">
+    <div id="map"></div>
+
+    <!-- Stats -->
+    <div class="map-stats" id="mapStats">
+      <div class="mstat">
+        <div class="mstat-num" id="ms-total">—</div>
+        <div class="mstat-lbl">Workers</div>
+      </div>
+      <div class="mstat">
+        <div class="mstat-num" id="ms-online">—</div>
+        <div class="mstat-lbl">Online</div>
+      </div>
+      <div class="mstat">
+        <div class="mstat-num" id="ms-countries">—</div>
+        <div class="mstat-lbl">Countries</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="map-ctrls">
+      <div class="mctrl" onclick="detectGPS()" title="My Location">📍</div>
+      <div class="mctrl" onclick="window._map&&window._map.zoomIn()" title="Zoom in">＋</div>
+      <div class="mctrl" onclick="window._map&&window._map.zoomOut()" title="Zoom out">－</div>
+      <div class="mctrl" onclick="resetView()" title="World view">🌍</div>
+    </div>
+
+    <!-- Legend -->
+    <div class="map-legend">
+      <div class="leg-item">
+        <div class="leg-dot" style="background:var(--green);"></div>Online Now
+      </div>
+      <div class="leg-item">
+        <div class="leg-dot" style="background:var(--rose);"></div>Offline
+      </div>
+      <div class="leg-item">
+        <div class="leg-dot" style="background:var(--blue);"></div>Verified ✅
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DRAWER ═══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="workerDrawer">
+  <div class="drawer-hdr">
+    <div class="d-avatar" id="dAvatar">👷</div>
+    <div>
+      <div class="d-name" id="dName">—</div>
+      <div class="d-cat" id="dCat">—</div>
+    </div>
+    <button class="d-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="d-actions">
+    <a class="d-btn d-btn-primary" id="dChatBtn" href="#">💬 Chat Now</a>
+    <a class="d-btn d-btn-secondary" id="dHireBtn" href="#">✅ Hire Worker</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Firebase + App Logic -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, query,
+  where, orderBy, limit, doc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* ─── Firebase init ─── */
+const FB = initializeApp({
+  apiKey:            "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain:        "doorskill-beff1.firebaseapp.com",
+  databaseURL:       "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId:         "doorskill-beff1",
+  storageBucket:     "doorskill-beff1.firebasestorage.app",
+  messagingSenderId: "620272735898",
+  appId:             "1:620272735898:web:b35d24737ef79c01a67123"
+});
+const db   = getFirestore(FB);
+const auth = getAuth(FB);
+
+let _uid = null;
+onAuthStateChanged(auth, u => { _uid = u?.uid || null; });
+
+/* ─── State ─── */
+window._all      = [];   // all fetched workers
+window._filtered = [];   // after filters
+window._markers  = [];   // leaflet markers
+window._selCat   = '';
+window._map      = null;
+
+/* ══════════════════════════════════════
+   LOAD WORKERS — Firebase only, no demo
+══════════════════════════════════════ */
+window.loadWorkers = async () => {
+  setLoading(true);
+  try {
+    const snap = await getDocs(
+      query(collection(db,'workers'), where('status','==','active'), limit(300))
+    );
+    const workers = [];
+    snap.forEach(d => {
+      const w = d.data();
+      workers.push({ id: d.id, ...w });
+    });
+    window._all = workers;
+    updateStats(workers);
+    applyFilters();
+  } catch(err){
+    console.error('Firebase error:', err);
+    showEmptyState('⚠️ Could not load workers. Check your connection.');
+  } finally {
+    setLoading(false);
+  }
+};
+
+/* ─── Update map stats ─── */
+function updateStats(workers){
+  const online    = workers.filter(w => w.isOnline).length;
+  const countries = new Set(workers.map(w => w.country || 'PK')).size;
+  document.getElementById('ms-total').textContent    = workers.length || '0';
+  document.getElementById('ms-online').textContent   = online || '0';
+  document.getElementById('ms-countries').textContent= countries ? countries+'+' : '0';
+}
+
+/* ─── Loading state ─── */
+function setLoading(on){
+  if(on) document.getElementById('workersList').innerHTML =
+    '<div class="spin"></div>';
+}
+
+/* ══════════════════════════════════════
+   RENDER CARDS
+══════════════════════════════════════ */
+window.renderCards = (workers) => {
+  const el = document.getElementById('workersList');
+  const n  = workers.length;
+  document.getElementById('resCount').textContent =
+    n > 0 ? `${n} Worker${n!==1?'s':''} Found` : 'No Workers Found';
+
+  if(n === 0){
+    el.innerHTML = `
+      <div class="no-results">
+        <div class="nr-icon">🔍</div>
+        <div class="nr-title">No workers match your search</div>
+        <div class="nr-sub">
+          Try different keywords or clear filters.<br/>
+          Or <a href="../pages/post-job.html" style="color:var(--rose);font-weight:600;">post a job</a>
+          and let workers come to you!
+        </div>
+      </div>`;
+    return;
+  }
+  el.innerHTML = workers.map(cardHTML).join('');
+};
+
+function showEmptyState(msg){
+  document.getElementById('workersList').innerHTML = `
+    <div class="no-results">
+      <div class="nr-icon">😕</div>
+      <div class="nr-title">${msg}</div>
+    </div>`;
+}
+
+function cardHTML(w){
+  const stars   = Math.min(5, Math.round(w.rating || 0));
+  const sh      = '★'.repeat(stars) + '☆'.repeat(5-stars);
+  const skills  = (w.skills||[]).slice(0,3).map(s=>
+    `<span class="stag">${s}</span>`).join('');
+  const currency= currencyFor(w.country);
+  const rate    = `${currency}${(w.rate||0).toLocaleString()}`;
+  const emoji   = categoryEmoji(w.category);
+
+  return `
+  <div class="wcard" id="card-${w.id}" onclick="selectWorker('${w.id}')">
+    <div class="wc-top">
+      <div class="wc-avatar">
+        ${w.photoURL ? `<img src="${w.photoURL}" alt="${w.fullName}"/>` : emoji}
+        ${w.isOnline ? '<div class="online-dot"></div>' : ''}
+      </div>
+      <div class="wc-info">
+        <div class="wc-name">
+          ${w.fullName || 'Worker'}
+          ${w.status==='active' ? '<span class="v-badge">✅ Verified</span>' : ''}
+        </div>
+        <div class="wc-cat">${w.category || 'Service Provider'}</div>
+        <div class="wc-rating">
+          <span class="stars">${sh}</span>
+          ${(w.rating||0).toFixed(1)}
+          <span style="color:var(--muted)">(${w.totalReviews||0})</span>
+        </div>
+      </div>
+      <div class="wc-price-wrap">
+        <div class="wc-price">${rate}</div>
+        <div class="wc-price-type">${w.rateType||'Per Job'}</div>
+      </div>
+    </div>
+    <div class="skill-tags">${skills}</div>
+    <div class="wc-loc">
+      📍 ${w.city||''}, ${w.country||'Pakistan'}
+      ${w.isOnline
+        ? ' &bull; <span style="color:var(--green);font-weight:600;">🟢 Online</span>'
+        : ' &bull; <span style="color:var(--muted);">⚫ Offline</span>'}
+    </div>
+    <div class="wc-actions">
+      <button class="wbtn wbtn-primary"
+              onclick="event.stopPropagation();goChat('${w.id}')">
+        💬 Chat
+      </button>
+      <button class="wbtn wbtn-green"
+              onclick="event.stopPropagation();goHire('${w.id}')">
+        ✅ Hire
+      </button>
+      <button class="wbtn wbtn-outline"
+              onclick="event.stopPropagation();flyToWorker('${w.id}')">
+        📍 Map
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════
+   MAP — Leaflet + OpenStreetMap (free)
+══════════════════════════════════════ */
+window.initMap = () => {
+  const map = L.map('map', {
+    center: [20, 10], zoom: 2,
+    zoomControl: false, attributionControl: true,
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org">OpenStreetMap</a>',
+    maxZoom: 18,
+  }).addTo(map);
+  window._map = map;
+  loadWorkers();
+};
+
+window.plotMarkers = (workers) => {
+  window._markers.forEach(m => m.remove());
+  window._markers = [];
+
+  workers.forEach(w => {
+    let lat = null, lng = null;
+    if(w.location?.lat && w.location?.lng){
+      lat = w.location.lat; lng = w.location.lng;
+    } else {
+      const cityMap = {
+        'Multan':[30.1575,71.5249],'Lahore':[31.5204,74.3587],
+        'Karachi':[24.8607,67.0011],'Islamabad':[33.6844,73.0479],
+        'Rawalpindi':[33.6007,73.0679],'Faisalabad':[31.4504,73.1350],
+        'Dubai':[25.2048,55.2708],'London':[51.5074,-0.1278],
+        'New York':[40.7128,-74.0060],'Mumbai':[19.0760,72.8777],
+      };
+      const c = cityMap[w.city];
+      if(!c) return;
+      lat = c[0]+(Math.random()-.5)*.05;
+      lng = c[1]+(Math.random()-.5)*.05;
+    }
+
+    const color  = w.isOnline ? '#10B981' : '#F43F5E';
+    const border = w.isOnline ? '#fff'     : '#F3D6E0';
+    const emoji  = categoryEmoji(w.category);
+
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="
+        width:34px;height:34px;border-radius:50%;
+        background:${color};border:3px solid ${border};
+        box-shadow:0 2px 8px rgba(0,0,0,.3);
+        display:flex;align-items:center;justify-content:center;
+        font-size:15px;cursor:pointer;transition:transform .15s;
+      ">${emoji}</div>`,
+      iconSize:[34,34], iconAnchor:[17,17], popupAnchor:[0,-20],
+    });
+
+    const cur = currencyFor(w.country);
+    const marker = L.marker([lat,lng], {icon}).addTo(window._map);
+    marker.bindPopup(`
+      <div class="worker-popup">
+        <div class="wp-name">${w.fullName||'Worker'}</div>
+        <div class="wp-cat">${w.category||'Service Provider'}</div>
+        <div style="font-size:11px;color:#9D7589;margin-bottom:5px;">
+          📍 ${w.city||''}, ${w.country||''}
+          ${w.isOnline ? '&nbsp;🟢 Online' : ''}
+        </div>
+        <div class="wp-price">${cur}${(w.rate||0).toLocaleString()} <span style="font-size:10px;font-weight:400;">${w.rateType||''}</span></div>
+        <button class="wp-btn" onclick="selectWorker('${w.id}')">View Profile →</button>
+      </div>
+    `, { maxWidth:220 });
+    marker.on('click', () => highlightCard(w.id));
+    window._markers.push(marker);
+  });
+};
+
+window.resetView = () => window._map && window._map.setView([20,10],2);
+
+/* ══════════════════════════════════════
+   SEARCH & FILTERS
+══════════════════════════════════════ */
+let _debTimer = null;
+window.debounceSearch = () => {
+  clearTimeout(_debTimer);
+  _debTimer = setTimeout(applyFilters, 280);
+};
+
+window.doSearch = () => {
+  applyFilters();
+  const loc = document.getElementById('locInput').value.trim();
+  if(loc) geocode(loc);
+};
+
+window.setCat = (cat, el) => {
+  window._selCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+};
+
+window.applyFilters = () => {
+  const skill  = document.getElementById('skillInput').value.trim().toLowerCase();
+  const sort   = document.getElementById('sortSel').value;
+  const status = document.getElementById('statusSel').value;
+  const price  = document.getElementById('priceSel').value;
+  const cat    = window._selCat;
+
+  let list = [...window._all];
+
+  if(skill){
+    list = list.filter(w => {
+      const t = [(w.fullName||''),(w.category||''),...(w.skills||[])].join(' ').toLowerCase();
+      return t.includes(skill);
+    });
+  }
+  if(cat){
+    list = list.filter(w => (w.category||'').toLowerCase().includes(cat.toLowerCase()));
+  }
+  if(status === 'online')    list = list.filter(w => w.isOnline);
+  if(status === 'verified')  list = list.filter(w => w.status === 'active');
+
+  if(price){
+    if(price === '10000+'){
+      list = list.filter(w => (w.rate||0) >= 10000);
+    } else {
+      const [mn, mx] = price.split('-').map(Number);
+      list = list.filter(w => { const r = w.rate||0; return r >= mn && r <= (mx||Infinity); });
+    }
+  }
+
+  if(sort === 'rating')     list.sort((a,b) => (b.rating||0)-(a.rating||0));
+  if(sort === 'reviews')    list.sort((a,b) => (b.totalReviews||0)-(a.totalReviews||0));
+  if(sort === 'price-low')  list.sort((a,b) => (a.rate||0)-(b.rate||0));
+  if(sort === 'price-high') list.sort((a,b) => (b.rate||0)-(a.rate||0));
+
+  window._filtered = list;
+  renderCards(list);
+  plotMarkers(list);
+  updateStats(list);
+};
+
+/* ══════════════════════════════════════
+   WORKER SELECTION
+══════════════════════════════════════ */
+window.selectWorker = (id) => {
+  const w = window._all.find(x => x.id === id);
+  if(!w) return;
+  highlightCard(id);
+  if(w.location?.lat && w.location?.lng){
+    window._map.flyTo([w.location.lat, w.location.lng], 13, {duration:1});
+  }
+  openDrawer(w);
+};
+
+window.highlightCard = (id) => {
+  document.querySelectorAll('.wcard').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('card-'+id);
+  if(card){ card.classList.add('selected'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+};
+
+window.flyToWorker = (id) => {
+  const w = window._all.find(x => x.id === id);
+  if(!w?.location?.lat) return;
+  window._map.flyTo([w.location.lat, w.location.lng], 14, {duration:1.2});
+  showToast('📍 Showing '+w.fullName+' on map');
+};
+
+/* ══════════════════════════════════════
+   DRAWER
+══════════════════════════════════════ */
+window.openDrawer = (w) => {
+  const cur   = currencyFor(w.country);
+  const stars = '★'.repeat(Math.min(5,Math.round(w.rating||0)))
+              + '☆'.repeat(5-Math.min(5,Math.round(w.rating||0)));
+  const skills= (w.skills||[]).map(s=>`<span class="stag">${s}</span>`).join('');
+
+  // Avatar
+  const dAv = document.getElementById('dAvatar');
+  dAv.innerHTML = w.photoURL
+    ? `<img src="${w.photoURL}" alt="${w.fullName}" style="width:100%;height:100%;object-fit:cover;"/>`
+    : categoryEmoji(w.category);
+
+  document.getElementById('dName').textContent = w.fullName || 'Worker';
+  document.getElementById('dCat').textContent  = w.category || 'Service Provider';
+
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="d-grid">
+      <div class="d-card">
+        <div class="d-card-num" style="color:#F59E0B;font-size:14px;">${stars}</div>
+        <div class="d-card-lbl">${(w.rating||0).toFixed(1)} Rating</div>
+      </div>
+      <div class="d-card">
+        <div class="d-card-num">${w.totalReviews||0}</div>
+        <div class="d-card-lbl">Reviews</div>
+      </div>
+      <div class="d-card">
+        <div class="d-card-num">${cur}${(w.rate||0).toLocaleString()}</div>
+        <div class="d-card-lbl">${w.rateType||'Per Job'}</div>
+      </div>
+      <div class="d-card">
+        <div class="d-card-num">${w.isOnline ? '🟢' : '⚫'}</div>
+        <div class="d-card-lbl">${w.isOnline?'Online Now':'Offline'}</div>
+      </div>
+    </div>
+
+    <div style="font-size:12.5px;color:var(--mid);margin-bottom:14px;
+                display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+      📍 <strong>${w.city||'Unknown'}, ${w.country||'Pakistan'}</strong>
+      ${w.status==='active'
+        ? '<span class="v-badge" style="margin-left:4px;">✅ Verified</span>'
+        : ''}
+    </div>
+
+    <div class="d-section">🛠️ Skills</div>
+    <div class="d-skills">${skills||'<span style="color:var(--muted);font-size:12px;">No skills listed</span>'}</div>
+
+    ${w.bio ? `<div class="d-section">👤 About</div><div class="d-bio">${w.bio}</div>` : ''}
+    ${w.experience ? `<div style="font-size:12.5px;color:var(--mid);margin-bottom:10px;">📅 <strong>Experience:</strong> ${w.experience}</div>` : ''}
+    ${w.education  ? `<div style="font-size:12.5px;color:var(--mid);margin-bottom:10px;">🎓 <strong>Education:</strong> ${w.education}</div>` : ''}
+
+    <div class="d-section">⭐ Recent Reviews</div>
+    <div id="drawerReviews">
+      <div class="spin" style="width:22px;height:22px;margin:16px auto;"></div>
+    </div>
+  `;
+
+  document.getElementById('dChatBtn').href = `../pages/chat.html?worker=${w.id}`;
+  document.getElementById('dHireBtn').href = `../pages/post-job.html?worker=${w.id}`;
+
+  fetchReviews(w.id);
+
+  document.getElementById('drawerOverlay').classList.add('show');
+  document.getElementById('workerDrawer').classList.add('open');
+};
+
+window.closeDrawer = () => {
+  document.getElementById('drawerOverlay').classList.remove('show');
+  document.getElementById('workerDrawer').classList.remove('open');
+};
+
+async function fetchReviews(wId){
+  const el = document.getElementById('drawerReviews');
+  if(!el) return;
+  try {
+    const snap = await getDocs(
+      query(collection(db,'reviews'),
+            where('workerId','==',wId),
+            orderBy('createdAt','desc'),
+            limit(5))
+    );
+    if(snap.empty){
+      el.innerHTML = `<div style="font-size:12.5px;color:var(--muted);text-align:center;padding:12px;">No reviews yet — be the first client!</div>`;
+      return;
+    }
+    let html = '';
+    snap.forEach(d => {
+      const r = d.data();
+      const rs = '★'.repeat(r.rating||0)+'☆'.repeat(5-(r.rating||0));
+      const dt = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString() : '';
+      const init = (r.clientName||'C').charAt(0).toUpperCase();
+      html += `
+        <div class="d-review">
+          <div class="d-rev-top">
+            <div class="d-rev-avatar">${init}</div>
+            <div>
+              <div style="font-size:12.5px;font-weight:600;color:var(--dark);">${r.clientName||'Anonymous'}</div>
+              <div style="font-size:10.5px;color:var(--muted);">${dt}</div>
+            </div>
+            <div class="d-rev-stars">${rs}</div>
+          </div>
+          <div class="d-rev-text">"${r.comment||'Great worker!'}"</div>
+        </div>`;
+    });
+    el.innerHTML = html;
+  } catch(_){
+    if(el) el.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:10px;">Reviews unavailable</div>`;
+  }
+}
+
+/* ══════════════════════════════════════
+   QUICK ACTIONS
+══════════════════════════════════════ */
+window.goChat = (id) => { window.location.href = `../pages/chat.html?worker=${id}`; };
+window.goHire = (id) => { window.location.href = `../pages/post-job.html?worker=${id}`; };
+
+/* ══════════════════════════════════════
+   GPS DETECT
+══════════════════════════════════════ */
+window.detectGPS = () => {
+  if(!navigator.geolocation){ showToast('❌ GPS not supported'); return; }
+  showToast('📡 Detecting location…');
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude:lat, longitude:lng } = pos.coords;
+      window._map.setView([lat,lng], 10);
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+        .then(r=>r.json())
+        .then(data => {
+          const city    = data.address?.city || data.address?.town || data.address?.state || '';
+          const country = data.address?.country || '';
+          document.getElementById('locInput').value = city + (country ? ', '+country : '');
+          document.getElementById('resSub').textContent = '📍 Near ' + city;
+          showToast('✅ Location: ' + city);
+        });
+    },
+    () => showToast('❌ Could not detect location'),
+    { timeout:10000, enableHighAccuracy:true }
+  );
+};
+
+/* ══════════════════════════════════════
+   GEOCODE (Nominatim — free)
+══════════════════════════════════════ */
+async function geocode(q){
+  try {
+    const res  = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`,
+      { headers:{'Accept-Language':'en'} }
+    );
+    const data = await res.json();
+    if(data?.[0]){
+      window._map.setView([parseFloat(data[0].lat), parseFloat(data[0].lon)], 10);
+      document.getElementById('resSub').textContent = '📍 ' + (data[0].display_name || q);
+      showToast('📍 Moved to: ' + q);
+    } else {
+      showToast('❌ Location not found');
+    }
+  } catch(e){ console.error(e); }
+}
+
+/* ══════════════════════════════════════
+   VIEW TOGGLE
+══════════════════════════════════════ */
+window.setView = (type, el) => {
+  document.querySelectorAll('.vbtn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const list = document.getElementById('workersList');
+  list.style.display = type === 'grid' ? 'grid' : 'block';
+  list.style.gridTemplateColumns = type === 'grid' ? '1fr 1fr' : '';
+  list.style.gap = type === 'grid' ? '8px' : '';
+};
+
+/* ══════════════════════════════════════
+   MOBILE SIDEBAR
+══════════════════════════════════════ */
+window.toggleSidebar = () => {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+};
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+window.showToast = (msg) => {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+};
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+function currencyFor(country){
+  return ({
+    'Pakistan':'Rs.','India':'₹','UAE':'AED ',
+    'Saudi Arabia':'SAR ','UK':'£','USA':'$',
+    'Canada':'C$','Australia':'A$','Germany':'€',
+    'Turkey':'₺','Japan':'¥','Nigeria':'₦',
+    'Bangladesh':'৳','Malaysia':'RM ','South Africa':'R','Brazil':'R$',
+  }[country]) || 'Rs.';
+}
+function categoryEmoji(cat=''){
+  if(cat.includes('Home')||cat.includes('Repair')) return '🔧';
+  if(cat.includes('Education')||cat.includes('Teach')) return '📚';
+  if(cat.includes('Health')||cat.includes('Doctor')) return '🏥';
+  if(cat.includes('Beauty')) return '💄';
+  if(cat.includes('Clean')) return '🧹';
+  if(cat.includes('IT')||cat.includes('Tech')) return '💻';
+  if(cat.includes('Auto')||cat.includes('Car')) return '🚗';
+  return '👷';
+}
+
+/* ══════════════════════════════════════
+   BOOT
+══════════════════════════════════════ */
+window.addEventListener('load', () => {
+  initMap();
+
+  // URL params support (?q=plumber&category=IT)
+  const p   = new URLSearchParams(window.location.search);
+  const q   = p.get('q');
+  const cat = p.get('category');
+
+  if(q)   document.getElementById('skillInput').value = q;
+  if(cat) window._selCat = cat;
+
+  // Restore saved GPS
+  const lat = localStorage.getItem('ds_lat');
+  const lng = localStorage.getItem('ds_lng');
+  if(lat && lng){
+    setTimeout(() => window._map?.setView([+lat,+lng], 10), 1200);
+  }
+});
+</script>
+</body>
+</html>
