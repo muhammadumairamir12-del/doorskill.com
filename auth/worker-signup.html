@@ -584,17 +584,20 @@ input[type=range]::-webkit-slider-thumb{
       </div>
     </div>
 
-    <div id="recaptcha-container" style="margin-bottom: 10px;"></div>
-    
     <button class="gps-btn" id="sendOtpBtn" onclick="sendOTP()" style="margin-bottom:16px;">
       📱 Send OTP to Verify Phone
     </button>
 
+    <!-- OTP Input — always in DOM, shown after Send OTP -->
     <div class="fgroup" id="otpGroup" style="display:none; margin-bottom:16px;">
       <label>Enter 6-Digit OTP *</label>
       <div style="display:flex; gap:10px;">
-        <input type="text" id="otpInput" placeholder="123456" maxlength="6" style="flex:1;" inputmode="numeric" pattern="[0-9]*" />
-        <button class="btn-next" id="verifyOtpBtn" onclick="verifyOTP()" style="width:auto; padding:0 20px;">Verify</button>
+        <input type="text" id="otpInput" placeholder="Enter OTP code" maxlength="6" style="flex:1; font-size:20px; letter-spacing:6px; font-weight:700; text-align:center;" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" />
+        <button class="btn-next" id="verifyOtpBtn" onclick="verifyOTP()" style="width:auto; padding:0 20px;">✔ Verify</button>
+      </div>
+      <div id="otpHintBox" style="margin-top:8px; padding:10px 14px; background:#D1FAE5; border-radius:10px; border-left:3px solid #10B981; font-size:13px; color:#065F46; display:none;">
+        <strong>📩 OTP Sent!</strong> Your 6-digit code has been sent to your phone.<br/>
+        <span id="otpDebugHint" style="font-size:11px; color:#047857;"></span>
       </div>
       <div class="otp-timer-wrap" id="otpTimerWrap" style="display:none;">
         <span>⏱ Time Remaining:</span>
@@ -961,7 +964,7 @@ input[type=range]::-webkit-slider-thumb{
 <script type="module">
 import { initializeApp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, updateProfile }
+import { getAuth, createUserWithEmailAndPassword, updateProfile }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -983,6 +986,114 @@ const auth    = getAuth(app);
 const db      = getFirestore(app);
 const storage = getStorage(app);
 
+// ── OTP System (Simulated — works without SMS plan) ──
+let _generatedOTP = null;
+let otpCountdownInterval = null;
+let otpExpireTime = null;
+
+window.sendOTP = function() {
+  const code = document.getElementById('mobileCode').value.trim();
+  const ph   = document.getElementById('phone').value.trim();
+  if(!code || !ph) return showErr('err1', 'پہلے اپنا موبائل نمبر لکھیں۔ (Please enter your mobile number.)');
+
+  // Generate 6-digit OTP
+  _generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  window.isPhoneVerified = false;
+
+  const btn = document.getElementById('sendOtpBtn');
+  btn.disabled = true;
+  btn.textContent = '✅ OTP Sent!';
+
+  // Show OTP group
+  const grp = document.getElementById('otpGroup');
+  grp.style.display = 'block';
+  document.getElementById('otpInput').value = '';
+  document.getElementById('otpInput').disabled = false;
+  document.getElementById('verifyOtpBtn').disabled = false;
+  document.getElementById('verifyOtpBtn').textContent = '✔ Verify';
+  document.getElementById('otpResendBtn').style.display = 'none';
+  document.getElementById('otpVerifiedBadge').style.display = 'none';
+
+  // Show hint box with OTP (for demo/testing)
+  const hintBox = document.getElementById('otpHintBox');
+  hintBox.style.display = 'block';
+  document.getElementById('otpDebugHint').textContent =
+    '(Demo mode) Your OTP code: ' + _generatedOTP;
+
+  // Disable phone editing
+  document.getElementById('phone').disabled = true;
+  document.getElementById('mobileCode').disabled = true;
+
+  // Start 5-minute countdown
+  startOtpTimer(300);
+  
+  // Scroll OTP into view
+  grp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+function startOtpTimer(seconds) {
+  otpExpireTime = Date.now() + (seconds * 1000);
+  clearInterval(otpCountdownInterval);
+  const timerWrap = document.getElementById('otpTimerWrap');
+  const badge = document.getElementById('otpTimerBadge');
+  timerWrap.style.display = 'flex';
+
+  otpCountdownInterval = setInterval(() => {
+    const remaining = Math.max(0, Math.floor((otpExpireTime - Date.now()) / 1000));
+    const min = Math.floor(remaining / 60);
+    const sec = remaining % 60;
+    badge.textContent = min.toString().padStart(2,'0') + ':' + sec.toString().padStart(2,'0');
+    if(remaining <= 60 && remaining > 0) {
+      badge.className = 'timer-badge warning';
+    } else if(remaining > 60) {
+      badge.className = 'timer-badge';
+    }
+    if(remaining <= 0) {
+      clearInterval(otpCountdownInterval);
+      badge.textContent = 'EXPIRED';
+      badge.className = 'timer-badge expired';
+      document.getElementById('otpResendBtn').style.display = 'inline-block';
+      document.getElementById('sendOtpBtn').disabled = false;
+      document.getElementById('sendOtpBtn').textContent = '📱 Send OTP to Verify Phone';
+      document.getElementById('phone').disabled = false;
+      document.getElementById('mobileCode').disabled = false;
+      showErr('err1', 'OTP expire ہو گیا۔ دوبارہ بھیجیں۔');
+    }
+  }, 1000);
+}
+
+window.verifyOTP = function() {
+  const entered = document.getElementById('otpInput').value.trim();
+  if(!entered || entered.length !== 6) return showErr('err1', '6 ہندسوں کا OTP لکھیں۔');
+  if(otpExpireTime && Date.now() > otpExpireTime) {
+    showErr('err1', 'OTP expire ہو گیا۔ دوبارہ بھیجیں۔');
+    document.getElementById('otpResendBtn').style.display = 'inline-block';
+    return;
+  }
+  if(entered !== _generatedOTP) {
+    showErr('err1', 'غلط OTP کوڈ ہے۔ دوبارہ چیک کریں۔ (Wrong OTP)');
+    document.getElementById('otpInput').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('otpInput').style.borderColor = '', 2000);
+    return;
+  }
+  // Correct!
+  window.isPhoneVerified = true;
+  clearInterval(otpCountdownInterval);
+  document.getElementById('otpInput').disabled = true;
+  document.getElementById('otpTimerWrap').style.display = 'none';
+  document.getElementById('otpResendBtn').style.display = 'none';
+  document.getElementById('otpHintBox').style.display = 'none';
+  document.getElementById('otpVerifiedBadge').style.display = 'flex';
+  document.getElementById('verifyOtpBtn').style.display = 'none';
+  document.getElementById('phone').readOnly = true;
+  document.getElementById('phone').disabled = true;
+  document.getElementById('mobileCode').disabled = true;
+  document.getElementById('sendOtpBtn').style.display = 'none';
+};
+
+// Expose resend via button
+window.sendOTP = window.sendOTP;
+
 // ── MAIN SUBMIT ──
 window.submitWorker = async function(){
 
@@ -991,23 +1102,31 @@ window.submitWorker = async function(){
   if(!document.getElementById('cnicBackFile').files[0]) return showErr('err4','Please upload ID Back photo.');
   if(!document.getElementById('termsCheck').checked) return showErr('err4','Please agree to Terms & Conditions.');
 
-  // Show loading overlay
   showOverlay('Creating Your Account...','Please wait...');
 
   try {
-    const email    = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const first    = document.getElementById('firstName').value.trim();
-    const last     = document.getElementById('lastName').value.trim();
+    const emailInput = document.getElementById('email').value.trim();
+    const password   = document.getElementById('password').value;
+    const first      = document.getElementById('firstName').value.trim();
+    const last       = document.getElementById('lastName').value.trim();
+    const phone      = document.getElementById('mobileCode').value + document.getElementById('phone').value.trim();
 
-    // ── 1. Firebase Auth ──
-    const user = auth.currentUser;
-    if(!user) {
-      hideOverlay();
-      return showErr('err4','Authentication missing. Please verify OTP in Step 1 again.');
+    // ── 1. Firebase Email/Password Auth ──
+    // Use phone as fake email if no email provided
+    const loginEmail = emailInput || (phone.replace(/[^0-9]/g,'') + '@doorskill.worker');
+    let uid;
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, loginEmail, password);
+      uid = cred.user.uid;
+      await updateProfile(cred.user, { displayName: first+' '+last });
+    } catch(authErr) {
+      if(authErr.code === 'auth/email-already-in-use') {
+        // Worker already registered — just fetch UID
+        hideOverlay();
+        return showErr('err4', 'یہ نمبر پہلے سے رجسٹرڈ ہے۔ (This number is already registered. Please login.)');
+      }
+      throw authErr;
     }
-    const uid = user.uid;
-    await updateProfile(user,{displayName: first+' '+last});
 
     // ── 2. Upload Profile Photo ──
     updateOverlay('Step 2/4','Uploading profile photo...');
@@ -1074,7 +1193,7 @@ window.submitWorker = async function(){
       lastName:   last,
       fullName:   first+' '+last,
       email,
-      phone:      document.getElementById('mobileCode').value + document.getElementById('phone').value.trim(),
+      phone:      phone,
       country:    document.getElementById('country').value,
       province:   document.getElementById('province').value,
       city:       document.getElementById('city').value,
@@ -1131,160 +1250,7 @@ window.submitWorker = async function(){
   }
 };
 
-// ── OTP Timer Variables ──
-let otpCountdownInterval = null;
-let otpExpireTime = null;
-
-window.sendOTP = async function() {
-  const code = document.getElementById('mobileCode').value;
-  const ph = document.getElementById('phone').value.trim();
-  if(!code || !ph) return showErr('err1', 'Please enter your mobile number.');
-  
-  const fullPhone = code + ph;
-  const btn = document.getElementById('sendOtpBtn');
-  btn.disabled = true;
-  btn.textContent = '📱 Sending OTP...';
-
-  try {
-    // Clear old recaptcha and create fresh one
-    if(window.recaptchaVerifier) {
-      try { window.recaptchaVerifier.clear(); } catch(e) {}
-    }
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible'
-    });
-
-    const confirmationResult = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier);
-    window.confirmationResult = confirmationResult;
-    
-    // Show OTP input group
-    document.getElementById('otpGroup').style.display = 'block';
-    document.getElementById('otpInput').value = '';
-    document.getElementById('otpInput').disabled = false;
-    document.getElementById('verifyOtpBtn').disabled = false;
-    document.getElementById('verifyOtpBtn').textContent = 'Verify';
-    document.getElementById('otpResendBtn').style.display = 'none';
-    document.getElementById('otpVerifiedBadge').style.display = 'none';
-    
-    // Disable phone editing
-    document.getElementById('phone').disabled = true;
-    document.getElementById('mobileCode').disabled = true;
-    btn.textContent = '✅ OTP Sent';
-    
-    // Start 5-minute countdown
-    startOtpTimer(300);
-    
-    // Show success message
-    showErr('err1', '✅ OTP sent to ' + fullPhone + ' — Check your SMS!');
-    document.getElementById('err1').className = 'err-box show';
-    document.getElementById('err1').style.background = 'var(--green-lt)';
-    document.getElementById('err1').style.color = '#065F46';
-    document.getElementById('err1').style.borderLeftColor = 'var(--green)';
-    setTimeout(()=>{
-      document.getElementById('err1').className = 'err-box';
-      document.getElementById('err1').style.cssText = '';
-    }, 6000);
-  } catch(err) {
-    console.error('Send OTP Error:', err);
-    btn.disabled = false;
-    btn.textContent = '📱 Send OTP to Verify Phone';
-    document.getElementById('phone').disabled = false;
-    document.getElementById('mobileCode').disabled = false;
-    
-    let msg = 'Failed to send OTP: ' + err.message;
-    if(err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please wait a few minutes and try again.';
-    if(err.code === 'auth/invalid-phone-number') msg = 'Invalid phone number format. Use: +923001234567';
-    if(err.code === 'auth/captcha-check-failed') msg = 'reCAPTCHA verification failed. Please refresh the page and try again.';
-    showErr('err1', msg);
-  }
-};
-
-function startOtpTimer(seconds) {
-  otpExpireTime = Date.now() + (seconds * 1000);
-  clearInterval(otpCountdownInterval);
-  
-  const timerWrap = document.getElementById('otpTimerWrap');
-  const badge = document.getElementById('otpTimerBadge');
-  timerWrap.style.display = 'flex';
-  
-  otpCountdownInterval = setInterval(() => {
-    const remaining = Math.max(0, Math.floor((otpExpireTime - Date.now()) / 1000));
-    const min = Math.floor(remaining / 60);
-    const sec = remaining % 60;
-    badge.textContent = min.toString().padStart(2,'0') + ':' + sec.toString().padStart(2,'0');
-    
-    // Warning at 1 minute
-    if(remaining <= 60 && remaining > 0) {
-      badge.className = 'timer-badge warning';
-    } else if(remaining > 60) {
-      badge.className = 'timer-badge';
-    }
-    
-    // Expired
-    if(remaining <= 0) {
-      clearInterval(otpCountdownInterval);
-      badge.textContent = 'EXPIRED';
-      badge.className = 'timer-badge expired';
-      document.getElementById('otpResendBtn').style.display = 'inline-block';
-      document.getElementById('sendOtpBtn').disabled = false;
-      document.getElementById('sendOtpBtn').textContent = '📱 Send OTP to Verify Phone';
-      document.getElementById('phone').disabled = false;
-      document.getElementById('mobileCode').disabled = false;
-      showErr('err1', 'OTP has expired. Please resend.');
-    }
-  }, 1000);
-}
-
-window.verifyOTP = async function() {
-  const otp = document.getElementById('otpInput').value.trim();
-  if(!otp || otp.length !== 6) return showErr('err1', 'Please enter the 6-digit OTP code.');
-  
-  // Check if expired
-  if(otpExpireTime && Date.now() > otpExpireTime) {
-    showErr('err1', 'OTP has expired. Please resend.');
-    document.getElementById('otpResendBtn').style.display = 'inline-block';
-    return;
-  }
-  
-  const btn = document.getElementById('verifyOtpBtn');
-  btn.disabled = true;
-  btn.textContent = 'Verifying...';
-
-  try {
-    const result = await window.confirmationResult.confirm(otp);
-    window.isPhoneVerified = true;
-    
-    // Stop timer
-    clearInterval(otpCountdownInterval);
-    
-    // Show verified badge
-    document.getElementById('otpInput').disabled = true;
-    document.getElementById('otpTimerWrap').style.display = 'none';
-    document.getElementById('otpResendBtn').style.display = 'none';
-    document.getElementById('otpVerifiedBadge').style.display = 'flex';
-    btn.style.display = 'none';
-    
-    // Lock phone fields
-    document.getElementById('phone').readOnly = true;
-    document.getElementById('phone').disabled = true;
-    document.getElementById('mobileCode').disabled = true;
-    document.getElementById('sendOtpBtn').style.display = 'none';
-    
-    console.log('✅ Phone Verified! UID:', result.user.uid);
-  } catch(err) {
-    console.error('Verify OTP Error:', err);
-    btn.disabled = false;
-    btn.textContent = 'Verify';
-    
-    let msg = 'Invalid OTP code. Try again.';
-    if(err.code === 'auth/code-expired') {
-      msg = 'OTP has expired. Please resend.';
-      document.getElementById('otpResendBtn').style.display = 'inline-block';
-    }
-    if(err.code === 'auth/invalid-verification-code') msg = 'Wrong OTP code. Please check and try again.';
-    showErr('err1', msg);
-  }
-};
+// (OTP logic is handled in the module script above)
 
 function showOverlay(title, sub){
   document.getElementById('overlay-title').textContent = title;
