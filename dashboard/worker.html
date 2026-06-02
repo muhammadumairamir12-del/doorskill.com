@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>DoorSkill — Worker Dashboard</title>
@@ -1069,14 +1070,12 @@ body{
                          border-radius:8px;font-size:13px;color:var(--mid);
                          outline:none;background:#fff;cursor:pointer;">
             <option value="">All Categories</option>
-            <option>🔧 Home Repairs</option>
-            <option>📚 Education</option>
-            <option>🏥 Health</option>
-            <option>💄 Beauty</option>
-            <option>🧹 Cleaning</option>
-            <option>💻 IT &amp; Tech</option>
-            <option>🚗 Auto Services</option>
-            <option>Other</option>
+            <option value="Home Repairs">🔧 Home Repairs</option>
+            <option value="Cleaning">🧹 Cleaning</option>
+            <option value="Auto Services">🚗 Auto Services</option>
+            <option value="Beauty">💄 Beauty</option>
+            <option value="Logistics & Helpers">🚚 Logistics & Helpers</option>
+            <option value="Other Local Services">✨ Other Local Services</option>
           </select>
           <select id="jobSort"
                   onchange="loadJobs()"
@@ -1253,17 +1252,12 @@ body{
           <div class="fgroup">
             <label>Main Category</label>
             <select id="editCategory">
-              <option>🔧 Home Repairs</option>
-              <option>📚 Education</option>
-              <option>🏥 Health</option>
-              <option>💄 Beauty</option>
-              <option>🧹 Cleaning</option>
-              <option>💻 IT &amp; Tech</option>
-              <option>🚗 Auto Services</option>
-              <option>🍳 Food &amp; Chef</option>
-              <option>🏗️ Construction</option>
-              <option>📈 Business Services</option>
-              <option>Other</option>
+              <option value="Home Repairs">🔧 Home Repairs</option>
+              <option value="Cleaning">🧹 Cleaning</option>
+              <option value="Auto Services">🚗 Auto Services</option>
+              <option value="Beauty">💄 Beauty</option>
+              <option value="Logistics & Helpers">🚚 Logistics &amp; Helpers</option>
+              <option value="Other Local Services">✨ Other Local Services</option>
             </select>
           </div>
           <div class="fgroup">
@@ -1543,6 +1537,11 @@ import {
   uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>/g, '');
+}
 
 // ── Init ──
 const app = initializeApp({
@@ -1914,7 +1913,7 @@ window.loadActiveJobs = async function(){
             <span class="job-tag">📂 ${b.jobCategory||'—'}</span>
             <span class="job-tag">📍 ${b.jobCity||'—'}</span>
           </div>
-          <div class="job-actions">
+          <div class="job-actions" style="flex-wrap: wrap; gap: 8px;">
             <span class="status st-active">Active</span>
             <button class="btn-bid"
                     onclick="window.location.href='../pages/chat.html?job=${b.jobId}&client=${b.clientId}'">
@@ -1925,6 +1924,14 @@ window.loadActiveJobs = async function(){
                     onclick="window.location.href='../pages/call.html?job=${b.jobId}&client=${b.clientId}'">
               📞 Call
             </button>
+            \${b.arrivalTime 
+              ? `<span style="font-size:12px;color:var(--green);font-weight:700;margin-top:6px;display:inline-block;">Arriving in \${b.arrivalTime}</span>`
+              : `<button class="btn-bid"
+                         style="background:var(--green);"
+                         onclick="confirmArrival('\${d.id}', '\${b.clientId}', '\${(b.jobTitle||'Job').replace(/'/g,"\\\\'")}')">
+                   ✅ Confirm Arrival
+                 </button>`
+            }
           </div>
         </div>`;
     });
@@ -2125,15 +2132,19 @@ window.submitBid = async function(){
   const errEl   = document.getElementById('bidError');
   const btn     = document.getElementById('bidSubmitBtn');
 
-  if(!price || parseInt(price) < 1){
-    errEl.textContent='Please enter your price.';
+  const cleanPrice = sanitizeInput(price);
+  const cleanTime  = sanitizeInput(time);
+  const cleanMessage = sanitizeInput(message);
+
+  if(!cleanPrice || parseInt(cleanPrice) < 1 || isNaN(parseInt(cleanPrice))){
+    errEl.textContent='Please enter a valid price.';
     errEl.style.display='block'; return;
   }
-  if(!message){
+  if(!cleanMessage){
     errEl.textContent='Please write a message to the client.';
     errEl.style.display='block'; return;
   }
-  if(message.length < 20){
+  if(cleanMessage.length < 20){
     errEl.textContent='Message too short. Write at least 20 characters.';
     errEl.style.display='block'; return;
   }
@@ -2143,6 +2154,27 @@ window.submitBid = async function(){
   btn.innerHTML = '<div style="width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;"></div> Sending...';
 
   try {
+    // 24-hour bid rate limit check (max 10/day)
+    const bidsSnap = await getDocs(query(collection(db, 'bids'), where('workerId', '==', _uid)));
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+    const recentBids = [];
+    bidsSnap.forEach(d => {
+      const data = d.data();
+      const created = data.createdAt?.toDate ? data.createdAt.toDate().getTime() : 0;
+      if (created >= oneDayAgo) {
+        recentBids.push(d);
+      }
+    });
+
+    if (recentBids.length >= 10) {
+      // Flag worker account for suspicious activity (too many bids)
+      await updateDoc(doc(db, 'workers', _uid), { status: 'flagged' });
+      try {
+        await updateDoc(doc(db, 'users', _uid), { role_status: 'flagged', status: 'flagged' });
+      } catch (e) {}
+      throw new Error('You have reached the maximum limit of 10 bids in 24 hours. Your account has been flagged for review.');
+    }
+
     // Get job details
     const jobDoc = await getDoc(doc(db,'jobs',_currentJobId));
     if(!jobDoc.exists()) throw new Error('Job not found.');
@@ -2161,9 +2193,9 @@ window.submitBid = async function(){
       workerPhoto:  _worker?.photoURL || '',
       workerSkills: _worker?.skills   || [],
       workerRating: _worker?.rating   || 0,
-      myPrice:      parseInt(price),
-      timeEstimate: time,
-      message,
+      myPrice:      parseInt(cleanPrice),
+      timeEstimate: cleanTime,
+      message:      cleanMessage,
       status:       'pending',
       createdAt:    serverTimestamp(),
     });
@@ -2178,6 +2210,16 @@ window.submitBid = async function(){
       bidsCount: currentCount + 1,
       bidders,
     });
+
+    // Trigger notification to the client
+    if (typeof window.triggerNotification === 'function') {
+      await window.triggerNotification(jobData.clientId, {
+        title: "New Bid Received!",
+        body: `${_worker?.fullName || 'A professional'} sent a bid of Rs.${parseInt(price).toLocaleString()} for your job "${jobData.title || 'Job'}"`,
+        clickUrl: `../dashboard/client.html?page=bids`,
+        icon: "📬"
+      });
+    }
 
     closeBidModal();
     showToast('✅ Bid sent successfully! Waiting for client response.');
@@ -2218,28 +2260,28 @@ window.saveProfile = async function(){
       document.getElementById('editSkill1').value.trim(),
       document.getElementById('editSkill2').value.trim(),
       document.getElementById('editSkill3').value.trim(),
-    ].filter(Boolean);
+    ].map(sanitizeInput).filter(Boolean);
 
-    const first = document.getElementById('editFirst').value.trim();
-    const last  = document.getElementById('editLast').value.trim();
+    const first = sanitizeInput(document.getElementById('editFirst').value.trim());
+    const last  = sanitizeInput(document.getElementById('editLast').value.trim());
 
     const updates = {
       firstName:  first,
       lastName:   last,
       fullName:   first+' '+last,
-      phone:      document.getElementById('editPhone').value.trim(),
-      bio:        document.getElementById('editBio').value.trim(),
+      phone:      sanitizeInput(document.getElementById('editPhone').value.trim()),
+      bio:        sanitizeInput(document.getElementById('editBio').value.trim()),
       category:   document.getElementById('editCategory').value,
       skills,
       experience: document.getElementById('editExp').value,
       rate:       parseInt(document.getElementById('editRate').value)||0,
       rateType:   document.getElementById('editRateType').value,
-      address:    document.getElementById('editAddress').value.trim(),
+      address:    sanitizeInput(document.getElementById('editAddress').value.trim()),
       city:       document.getElementById('editCity').value,
       province:   document.getElementById('editProvince').value,
-      facebook:   document.getElementById('editFacebook').value.trim(),
-      instagram:  document.getElementById('editInstagram').value.trim(),
-      linkedin:   document.getElementById('editLinkedIn').value.trim(),
+      facebook:   sanitizeInput(document.getElementById('editFacebook').value.trim()),
+      instagram:  sanitizeInput(document.getElementById('editInstagram').value.trim()),
+      linkedin:   sanitizeInput(document.getElementById('editLinkedIn').value.trim()),
       photoURL,
       updatedAt:  serverTimestamp(),
     };
@@ -2436,90 +2478,35 @@ onAuthStateChanged(auth, (user) => {
     });
   }
 });
-// ── NOTIFICATIONS SYSTEM ──
-let _notifs = [];
+// Notifications logic is managed by assets/notifications.js
 
-window.loadNotifications = async function(){
-  if(!_uid) return;
+window.confirmArrival = async function(bidId, clientId, jobTitle) {
+  const time = prompt("Enter your estimated arrival time (e.g., '15 minutes', '1 hour', 'tomorrow at 10 AM'):");
+  if (!time) return;
+
   try {
-    const snap = await getDocs(
-      query(collection(db,'notifications'),
-        where('uid','==',_uid),
-        orderBy('createdAt','desc'),
-        limit(30)
-      )
-    );
-    _notifs = [];
-    snap.forEach(d => _notifs.push({id:d.id,...d.data()}));
-    renderNotifications();
-  } catch(e){
-    console.error('loadNotifications:', e);
+    // Update the bid document with arrivalTime
+    await updateDoc(doc(db, 'bids', bidId), {
+      arrivalTime: time,
+      arrivalConfirmedAt: serverTimestamp()
+    });
+
+    // Trigger notification to the client
+    if (typeof window.triggerNotification === 'function') {
+      await window.triggerNotification(clientId, {
+        title: "Job Confirmed! ✅",
+        body: `${_worker?.fullName || 'Worker'} will arrive at ${time} for your job "${jobTitle}"`,
+        clickUrl: `../dashboard/client.html`,
+        icon: "✅"
+      });
+    }
+
+    showToast("✅ Arrival confirmed and client notified!");
+    loadActiveJobs();
+  } catch (err) {
+    showToast("❌ Error: " + err.message);
+    console.error("Confirm arrival error:", err);
   }
-};
-
-function renderNotifications(){
-  const unread = _notifs.filter(n=>!n.read).length;
-  const countEl = document.getElementById('notifCount');
-  if(unread > 0){
-    countEl.style.display = 'flex';
-    countEl.textContent = unread > 9 ? '9+' : unread;
-  } else {
-    countEl.style.display = 'none';
-  }
-
-  const body = document.getElementById('notifPanelBody');
-  if(!_notifs.length){
-    body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">📭 No notifications yet</div>';
-    return;
-  }
-
-  body.innerHTML = _notifs.map(n => {
-    const ts = n.createdAt?.seconds ? timeAgo(n.createdAt.seconds) : '';
-    return `
-    <div class="notif-item ${n.read?'':'unread'}" onclick="openNotif('${n.id}')">
-      <div class="notif-item-icon">📢</div>
-      <div class="notif-item-content">
-        <div class="notif-item-title">${n.title||'Notification'}</div>
-        <div class="notif-item-msg">${n.message||''}</div>
-        <div class="notif-item-time">${ts}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function timeAgo(seconds){
-  const diff = Math.floor(Date.now()/1000 - seconds);
-  if(diff < 60) return 'Just now';
-  if(diff < 3600) return Math.floor(diff/60)+'m ago';
-  if(diff < 86400) return Math.floor(diff/3600)+'h ago';
-  return Math.floor(diff/86400)+'d ago';
-}
-
-window.toggleNotifPanel = function(){
-  const panel = document.getElementById('notifPanel');
-  panel.classList.toggle('show');
-};
-
-window.openNotif = async function(nid){
-  try {
-    await updateDoc(doc(db,'notifications',nid), {read:true});
-    _notifs = _notifs.map(n=>n.id===nid?{...n,read:true}:n);
-    renderNotifications();
-  } catch(e){ console.error(e); }
-  document.getElementById('notifPanel').classList.remove('show');
-  showPage('home',null);
-};
-
-window.markAllRead = async function(){
-  try {
-    const unread = _notifs.filter(n=>!n.read);
-    await Promise.all(unread.map(n=>
-      updateDoc(doc(db,'notifications',n.id), {read:true})
-    ));
-    _notifs = _notifs.map(n=>({...n,read:true}));
-    renderNotifications();
-    showToast('✅ All notifications marked as read');
-  } catch(e){ console.error(e); }
 };
 
 // Close notif panel on outside click
@@ -2532,5 +2519,7 @@ document.addEventListener('click', e => {
 });
 </script>
 <script src="../assets/ai-helper.js"></script>
+<script type="module" src="../assets/notifications.js"></script>
 </body>
 </html>
+

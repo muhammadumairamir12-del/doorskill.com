@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DoorSkill — Find Workers Worldwide</title>
-<meta name="description" content="Search and hire top-rated professionals globally. Plumbers, Electricians, Doctors, Tutors and more on DoorSkill."/>
+<title>DoorSkill — Find Verified Home Services & Handymen</title>
+<meta name="description" content="Search and hire top-rated home service professionals in your area. Find verified plumbers, electricians, house cleaners, AC mechanics, and handymen on DoorSkill. Fast and secure."/>
+<meta name="keywords" content="find handyman, local plumber, local electrician, house cleaning near me, AC repair, gig economy, DoorSkill"/>
+<link rel="canonical" href="https://www.doorskill.com/pages/find-workers.html"/>
+<meta name="robots" content="index, follow"/>
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="DoorSkill — Find Verified Home Services & Handymen"/>
+<meta property="og:description" content="Search and hire top-rated home service professionals in your area. Find verified plumbers, electricians, house cleaners, AC mechanics, and handymen on DoorSkill."/>
+<meta property="og:image" content="https://www.doorskill.com/assets/logo.png"/>
+<meta property="og:url" content="https://www.doorskill.com/pages/find-workers.html"/>
+<meta property="og:type" content="website"/>
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="DoorSkill — Find Verified Home Services & Handymen"/>
+<meta name="twitter:description" content="Search and hire top-rated home service professionals in your area. Find verified plumbers, electricians, house cleaners, AC mechanics, and handymen on DoorSkill."/>
+<meta name="twitter:image" content="https://www.doorskill.com/assets/logo.png"/>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
@@ -427,6 +445,43 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
 }
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
 
+
+/* Collapsible Accordion & Premium Filter styling */
+.filter-group {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 14px;
+}
+.filter-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--dark);
+}
+.filter-group-content {
+  display: block;
+  margin-top: 8px;
+}
+.filter-group.collapsed .filter-group-content {
+  display: none;
+}
+.acc-arrow {
+  font-size: 10px;
+  color: var(--rose);
+  transition: transform 0.2s;
+}
+
+/* Page Transition animation */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+body {
+  animation: fadeInPage 0.4s ease-out both;
+}
+
 /* ═══ MOBILE ═══ */
 @media(max-width:900px){
   :root{--sidebar-w:100vw;}
@@ -456,7 +511,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
     <div class="sb-skill">
       <span class="sb-icon">🔍</span>
       <input class="sb-input" type="text" id="skillInput"
-             placeholder="Search skill, profession…"
+             placeholder="Search plumber, electrician, cleaner…"
              autocomplete="off"
              oninput="debounceSearch()"
              onkeydown="if(event.key==='Enter')doSearch()"/>
@@ -484,38 +539,78 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
   <!-- ═══ SIDEBAR ═══ -->
   <div class="sidebar" id="sidebar">
 
-    <!-- Filters -->
-    <div class="filter-bar">
-      <div class="cat-row" id="catRow">
-        <div class="cat-chip active" onclick="setCat('',this)">All</div>
-        <div class="cat-chip" onclick="setCat('Home Repairs',this)">🔧 Home</div>
-        <div class="cat-chip" onclick="setCat('Education',this)">📚 Edu</div>
-        <div class="cat-chip" onclick="setCat('Health',this)">🏥 Health</div>
-        <div class="cat-chip" onclick="setCat('Beauty',this)">💄 Beauty</div>
-        <div class="cat-chip" onclick="setCat('Cleaning',this)">🧹 Clean</div>
-        <div class="cat-chip" onclick="setCat('IT',this)">💻 IT</div>
-        <div class="cat-chip" onclick="setCat('Auto',this)">🚗 Auto</div>
+    <!-- Collapsible Accordion Filters -->
+    <div class="filter-bar" style="padding: 0; background: #fff;">
+      <!-- Category Accordion -->
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleAccordion(this)">
+          <span>📂 Categories</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="filter-group-content">
+          <div class="cat-row" id="catRow" style="padding: 4px 0 4px; display: flex; flex-wrap: wrap; gap: 6px;">
+            <div class="cat-chip active" onclick="setCat('',this)">All</div>
+            <div class="cat-chip" onclick="setCat('Home Repairs',this)">🔧 Repairs</div>
+            <div class="cat-chip" onclick="setCat('Cleaning',this)">🧹 Cleaning</div>
+            <div class="cat-chip" onclick="setCat('Auto Services',this)">🚗 Auto &amp; Bike</div>
+            <div class="cat-chip" onclick="setCat('Beauty',this)">💄 Beauty</div>
+            <div class="cat-chip" onclick="setCat('Logistics & Helpers',this)">🚚 Logistics</div>
+            <div class="cat-chip" onclick="setCat('Other Local Services',this)">✨ Other</div>
+          </div>
+        </div>
       </div>
-      <div class="filter-row">
-        <select class="fsel" id="sortSel" onchange="applyFilters()">
-          <option value="rating">⭐ Top Rated</option>
-          <option value="reviews">📊 Most Reviews</option>
-          <option value="price-low">💰 Price ↑</option>
-          <option value="price-high">💰 Price ↓</option>
-          <option value="newest">🆕 Newest</option>
-        </select>
-        <select class="fsel" id="statusSel" onchange="applyFilters()">
-          <option value="">All Status</option>
-          <option value="online">🟢 Online Now</option>
-          <option value="verified">✅ Verified Only</option>
-        </select>
-        <select class="fsel" id="priceSel" onchange="applyFilters()">
-          <option value="">Any Price</option>
-          <option value="0-500">Under Rs.500</option>
-          <option value="500-2000">Rs.500–2K</option>
-          <option value="2000-10000">Rs.2K–10K</option>
-          <option value="10000+">Rs.10K+</option>
-        </select>
+      
+      <!-- Sort & Status Accordion -->
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleAccordion(this)">
+          <span>⚡ Sort &amp; Status</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="filter-group-content">
+          <div class="filter-row" style="padding: 4px 0; display: flex; gap: 8px;">
+            <select class="fsel" id="sortSel" onchange="applyFilters()">
+              <option value="rating">⭐ Top Rated</option>
+              <option value="reviews">📊 Most Reviews</option>
+              <option value="price-low">💰 Price ↑</option>
+              <option value="price-high">💰 Price ↓</option>
+              <option value="newest">🆕 Newest</option>
+            </select>
+            <select class="fsel" id="statusSel" onchange="applyFilters()">
+              <option value="">All Status</option>
+              <option value="online">🟢 Online Now</option>
+              <option value="verified">✅ Verified Only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price & Favorites Accordion -->
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleAccordion(this)">
+          <span>💰 Rates &amp; Preferences</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="filter-group-content">
+          <div style="padding: 4px 0; display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--dark); margin-bottom:4px;">
+                <span>Max Rate limit:</span>
+                <span id="rateLabel">Rs. 10,000</span>
+              </div>
+              <input type="range" id="rateSlider" min="0" max="10000" step="250" value="10000" oninput="updateRateLabel(this.value); applyFilters();" style="width:100%; accent-color:var(--rose);">
+            </div>
+            <div style="display:flex; gap:16px; align-items:center;">
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--mid); cursor:pointer;">
+                <input type="checkbox" id="favOnlyCheck" onchange="applyFilters()" style="cursor:pointer; width:15px; height:15px; accent-color:var(--rose);">
+                ❤️ Saved Only
+              </label>
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--mid); cursor:pointer;">
+                <input type="checkbox" id="verifiedOnlyCheck" onchange="applyFilters()" style="cursor:pointer; width:15px; height:15px; accent-color:var(--rose);">
+                ✅ Verified Only
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -578,6 +673,40 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;}
       <div class="leg-item">
         <div class="leg-dot" style="background:var(--blue);"></div>Verified ✅
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⚖️ COMPARISON BAR ⚖️ -->
+<div id="compareBar" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(26,10,20,0.96); backdrop-filter: blur(10px); color: #fff; padding: 14px 24px; display: none; align-items: center; justify-content: space-between; z-index: 10001; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); border-top: 1.5px solid rgba(255,255,255,0.1);">
+  <div style="display: flex; align-items: center; gap: 16px;">
+    <span style="font-weight: 700; font-size: 14px;">⚖️ Compare Specialists (<span id="compareCount">0</span>/3)</span>
+    <div id="compareThumbnails" style="display: flex; gap: 8px;"></div>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <button onclick="openCompareModal()" style="background: var(--rose); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: background 0.2s;">Compare Now</button>
+    <button onclick="clearComparison()" style="background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;">Clear All</button>
+  </div>
+</div>
+
+<!-- COMPARISON MODAL -->
+<div id="compareModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 10002; display: none; align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: #fff; width: 100%; max-width: 800px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+    <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--pink-bg);">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; color: var(--dark);">⚖️ Compare Professionals</h3>
+      <button onclick="closeCompareModal()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: var(--rose);">✕</button>
+    </div>
+    <div style="padding: 20px; overflow-x: auto; flex-grow: 1;">
+      <table style="width: 100%; border-collapse: collapse; min-width: 500px; text-align: left;">
+        <thead>
+          <tr id="compareTHead" style="border-bottom: 2px solid var(--border);">
+            <th style="padding: 12px; color: var(--muted); font-size: 13px; border:1px solid var(--border);">Feature</th>
+          </tr>
+        </thead>
+        <tbody id="compareTBody">
+          <!-- Rows will be injected -->
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -683,6 +812,7 @@ function setLoading(on){
 /* ══════════════════════════════════════
    RENDER CARDS
 ══════════════════════════════════════ */
+let currentLimit = 10;
 window.renderCards = (workers) => {
   const el = document.getElementById('workersList');
   const n  = workers.length;
@@ -702,8 +832,32 @@ window.renderCards = (workers) => {
       </div>`;
     return;
   }
-  el.innerHTML = workers.map(cardHTML).join('');
+  
+  // Initial batch load
+  currentLimit = 10;
+  el.innerHTML = '';
+  appendBatch(workers.slice(0, currentLimit));
+  
+  // Hook up infinite scroll listener on the list container
+  el.onscroll = () => {
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 50) {
+      if (currentLimit < workers.length) {
+        const nextBatch = workers.slice(currentLimit, currentLimit + 10);
+        appendBatch(nextBatch);
+        currentLimit += 10;
+      }
+    }
+  };
 };
+
+function appendBatch(batch) {
+  const el = document.getElementById('workersList');
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = batch.map(cardHTML).join('');
+  while (tempDiv.firstChild) {
+    el.appendChild(tempDiv.firstChild);
+  }
+}
 
 function showEmptyState(msg){
   document.getElementById('workersList').innerHTML = `
@@ -721,10 +875,18 @@ function cardHTML(w){
   const currency= currencyFor(w.country);
   const rate    = `${currency}${(w.rate||0).toLocaleString()}`;
   const emoji   = categoryEmoji(w.category);
+  
+  const isFav = isBookmarked(w.id);
+  const isComparedChecked = window._comparedIds && window._comparedIds.includes(w.id) ? 'checked' : '';
 
   return `
-  <div class="wcard" id="card-${w.id}" onclick="selectWorker('${w.id}')">
-    <div class="wc-top">
+  <div class="wcard" id="card-${w.id}" onclick="selectWorker('${w.id}')" style="position:relative;">
+    <!-- Bookmark Toggle -->
+    <button class="bookmark-btn" onclick="event.stopPropagation(); toggleBookmark('${w.id}', this)" style="position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 20px; cursor: pointer; transition: transform 0.2s; z-index: 5;">
+      ${isFav ? '❤️' : '🤍'}
+    </button>
+    
+    <div class="wc-top" style="padding-right: 24px;">
       <div class="wc-avatar">
         ${w.photoURL ? `<img src="${w.photoURL}" alt="${w.fullName}"/>` : emoji}
         ${w.isOnline ? '<div class="online-dot"></div>' : ''}
@@ -753,19 +915,23 @@ function cardHTML(w){
         ? ' &bull; <span style="color:var(--green);font-weight:600;">🟢 Online</span>'
         : ' &bull; <span style="color:var(--muted);">⚫ Offline</span>'}
     </div>
-    <div class="wc-actions">
-      <button class="wbtn wbtn-primary"
-              onclick="event.stopPropagation();goChat('${w.id}')">
-        💬 Chat
-      </button>
-      <button class="wbtn wbtn-green"
-              onclick="event.stopPropagation();goHire('${w.id}')">
-        ✅ Hire
-      </button>
-      <button class="wbtn wbtn-outline"
-              onclick="event.stopPropagation();flyToWorker('${w.id}')">
-        📍 Map
-      </button>
+    
+    <!-- Compare check and Actions -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; gap:8px;">
+      <label onclick="event.stopPropagation()" style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--mid); cursor:pointer;">
+        <input type="checkbox" class="compare-check" onchange="toggleCompare('${w.id}', this)" ${isComparedChecked} style="cursor:pointer; width:15px; height:15px; accent-color:var(--rose);">
+        Compare
+      </label>
+      <div class="wc-actions" style="flex:1; justify-content:flex-end;">
+        <button class="wbtn wbtn-primary" style="padding:6px 12px; font-size:11px;"
+                onclick="event.stopPropagation();goChat('${w.id}')">
+          💬 Chat
+        </button>
+        <button class="wbtn wbtn-green" style="padding:6px 12px; font-size:11px;"
+                onclick="event.stopPropagation();goHire('${w.id}')">
+          ✅ Hire
+        </button>
+      </div>
     </div>
   </div>`;
 }
@@ -871,7 +1037,9 @@ window.applyFilters = () => {
   const skill  = document.getElementById('skillInput').value.trim().toLowerCase();
   const sort   = document.getElementById('sortSel').value;
   const status = document.getElementById('statusSel').value;
-  const price  = document.getElementById('priceSel').value;
+  const maxRate = parseInt(document.getElementById('rateSlider').value || '10000');
+  const favOnly = document.getElementById('favOnlyCheck').checked;
+  const verifiedOnly = document.getElementById('verifiedOnlyCheck').checked;
   const cat    = window._selCat;
 
   let list = [...window._all];
@@ -886,15 +1054,15 @@ window.applyFilters = () => {
     list = list.filter(w => (w.category||'').toLowerCase().includes(cat.toLowerCase()));
   }
   if(status === 'online')    list = list.filter(w => w.isOnline);
-  if(status === 'verified')  list = list.filter(w => w.status === 'active');
+  if(status === 'verified' || verifiedOnly)  list = list.filter(w => w.status === 'active');
 
-  if(price){
-    if(price === '10000+'){
-      list = list.filter(w => (w.rate||0) >= 10000);
-    } else {
-      const [mn, mx] = price.split('-').map(Number);
-      list = list.filter(w => { const r = w.rate||0; return r >= mn && r <= (mx||Infinity); });
-    }
+  // Rate Slider Filter
+  list = list.filter(w => (w.rate || 0) <= maxRate);
+
+  // Favorites (Bookmarks) filter
+  if(favOnly) {
+    const favs = getBookmarks();
+    list = list.filter(w => favs.includes(w.id));
   }
 
   if(sort === 'rating')     list.sort((a,b) => (b.rating||0)-(a.rating||0));
@@ -1116,6 +1284,150 @@ window.toggleSidebar = () => {
   document.getElementById('sidebar').classList.toggle('mobile-open');
 };
 
+/* ── Bookmark logic ── */
+window.getBookmarks = () => {
+  try {
+    return JSON.parse(localStorage.getItem('ds_bookmarks') || '[]');
+  } catch(e) {
+    return [];
+  }
+};
+window.isBookmarked = (id) => {
+  return getBookmarks().includes(id);
+};
+window.toggleBookmark = (id, btn) => {
+  let list = getBookmarks();
+  if (list.includes(id)) {
+    list = list.filter(x => x !== id);
+    btn.innerHTML = '🤍';
+    showToast('Removed from Bookmarks');
+  } else {
+    list.push(id);
+    btn.innerHTML = '❤️';
+    showToast('Added to Bookmarks');
+  }
+  localStorage.setItem('ds_bookmarks', JSON.stringify(list));
+  applyFilters();
+};
+
+/* ── Accordion logic ── */
+window.toggleAccordion = (headerEl) => {
+  const group = headerEl.parentElement;
+  group.classList.toggle('collapsed');
+  const arrow = headerEl.querySelector('.acc-arrow');
+  if (group.classList.contains('collapsed')) {
+    arrow.textContent = '▶';
+  } else {
+    arrow.textContent = '▼';
+  }
+};
+
+/* ── Rate Slider Label ── */
+window.updateRateLabel = (val) => {
+  document.getElementById('rateLabel').textContent = 'Rs. ' + parseInt(val).toLocaleString();
+};
+
+/* ── Compare logic ── */
+window._comparedIds = [];
+window.toggleCompare = (id, chk) => {
+  if (chk.checked) {
+    if (window._comparedIds.length >= 3) {
+      chk.checked = false;
+      showToast('❌ Compare max 3 professionals');
+      return;
+    }
+    if (!window._comparedIds.includes(id)) {
+      window._comparedIds.push(id);
+    }
+  } else {
+    window._comparedIds = window._comparedIds.filter(x => x !== id);
+  }
+  updateCompareBar();
+};
+
+window.updateCompareBar = () => {
+  const bar = document.getElementById('compareBar');
+  const countEl = document.getElementById('compareCount');
+  const thumbsEl = document.getElementById('compareThumbnails');
+  
+  if (window._comparedIds.length > 0) {
+    bar.style.display = 'flex';
+    countEl.textContent = window._comparedIds.length;
+    
+    thumbsEl.innerHTML = window._comparedIds.map(id => {
+      const w = window._all.find(x => x.id === id);
+      const emoji = categoryEmoji(w?.category);
+      return `
+        <div style="position:relative; width:32px; height:32px; border-radius:50%; border:2px solid var(--rose); background:#fff; overflow:hidden;" title="${w?.fullName || 'Worker'}">
+          ${w?.photoURL ? `<img src="${w.photoURL}" style="width:100%;height:100%;object-fit:cover;">` : `<div style="font-size:12px;display:flex;align-items:center;justify-content:center;height:100%;height:32px;">${emoji}</div>`}
+        </div>
+      `;
+    }).join('');
+  } else {
+    bar.style.display = 'none';
+  }
+};
+
+window.clearComparison = () => {
+  window._comparedIds = [];
+  document.querySelectorAll('.compare-check').forEach(chk => chk.checked = false);
+  updateCompareBar();
+};
+
+window.openCompareModal = () => {
+  const modal = document.getElementById('compareModal');
+  const thead = document.getElementById('compareTHead');
+  const tbody = document.getElementById('compareTBody');
+  
+  if (window._comparedIds.length === 0) return;
+  
+  const workers = window._comparedIds.map(id => window._all.find(x => x.id === id));
+  
+  // Create table head
+  thead.innerHTML = `
+    <th style="padding: 12px; border:1px solid var(--border); background: #fafafa; font-weight:700; font-size:13px; color:var(--dark);">Feature</th>
+    ${workers.map(w => {
+      const emoji = categoryEmoji(w?.category);
+      return `
+        <th style="padding: 12px; border:1px solid var(--border); text-align:center; background:#fff;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div style="width:50px; height:50px; border-radius:50%; border:2px solid var(--rose); overflow:hidden; background:var(--pink-bg); display:flex; align-items:center; justify-content:center; font-size:22px; position:relative;">
+              ${w.photoURL ? `<img src="${w.photoURL}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : emoji}
+            </div>
+            <div style="font-size:13px; font-weight:700; color:var(--dark);">${w.fullName}</div>
+            <div style="font-size:10px; color:var(--rose); text-transform:uppercase; font-weight:700;">${w.category || 'Specialist'}</div>
+          </div>
+        </th>
+      `;
+    }).join('')}
+  `;
+  
+  // Compare rows
+  const features = [
+    { name: 'Rating', fn: w => `⭐ ${(w.rating || 0).toFixed(1)} (${w.totalReviews || 0} reviews)` },
+    { name: 'Hourly Rate', fn: w => `${currencyFor(w.country)}${(w.rate || 0).toLocaleString()} / ${w.rateType || 'Per Job'}` },
+    { name: 'Location', fn: w => `📍 ${w.city || ''}, ${w.country || ''}` },
+    { name: 'Verified Badge', fn: w => w.status === 'active' || w.cnicVerified ? '✅ Verified Specialist' : '❌ Standard Profile' },
+    { name: 'Online Status', fn: w => w.isOnline ? '🟢 Online' : '⚫ Offline' },
+    { name: 'Key Skills', fn: w => (w.skills || []).join(', ') || 'None listed' }
+  ];
+  
+  tbody.innerHTML = features.map((f, idx) => `
+    <tr style="background:${idx % 2 === 0 ? '#fff' : '#fcfcfc'};">
+      <td style="padding: 12px; border:1px solid var(--border); font-weight:700; font-size:12px; color:var(--mid);">${f.name}</td>
+      ${workers.map(w => `
+        <td style="padding: 12px; border:1px solid var(--border); text-align:center; font-size:12px; color:var(--dark);">${f.fn(w)}</td>
+      `).join('')}
+    </tr>
+  `).join('');
+  
+  modal.style.display = 'flex';
+};
+
+window.closeCompareModal = () => {
+  document.getElementById('compareModal').style.display = 'none';
+};
+
 /* ══════════════════════════════════════
    TOAST
 ══════════════════════════════════════ */
@@ -1140,13 +1452,11 @@ function currencyFor(country){
 }
 function categoryEmoji(cat=''){
   if(cat.includes('Home')||cat.includes('Repair')) return '🔧';
-  if(cat.includes('Education')||cat.includes('Teach')) return '📚';
-  if(cat.includes('Health')||cat.includes('Doctor')) return '🏥';
-  if(cat.includes('Beauty')) return '💄';
   if(cat.includes('Clean')) return '🧹';
-  if(cat.includes('IT')||cat.includes('Tech')) return '💻';
   if(cat.includes('Auto')||cat.includes('Car')) return '🚗';
-  return '👷';
+  if(cat.includes('Beauty')) return '💄';
+  if(cat.includes('Logistics')||cat.includes('Helper')||cat.includes('Transport')) return '🚚';
+  return '✨';
 }
 
 /* ══════════════════════════════════════

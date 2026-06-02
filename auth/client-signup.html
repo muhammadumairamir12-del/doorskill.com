@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>DoorSkill — Client Sign Up</title>
+<link rel="canonical" href="https://www.doorskill.com/auth/client-signup.html"/>
+<meta name="robots" content="index, follow"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="icon" href="../assets/logo.png" type="image/png"/>
 <style>
@@ -509,7 +512,7 @@ body{
 
 <!-- Top Nav -->
 <div class="top-nav">
-  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="42" height="42" style="height:42px;">
 <span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
   <div class="nav-right">
     <a href="worker-signup.html">Join as Worker</a>
@@ -580,10 +583,10 @@ body{
       <div class="benefit-item">
         <div class="benefit-icon">🌍</div>
         <div>
-          <div class="benefit-title">Any Skill, Worldwide</div>
+          <div class="benefit-title">Any Service, Locally</div>
           <div class="benefit-desc">
-            Plumber, doctor, teacher, developer —
-            find any professional near you.
+            Plumber, cleaner, electrician, mechanic —
+            find any skilled professional near you.
           </div>
         </div>
       </div>
@@ -692,7 +695,7 @@ body{
       </div>
 
       <!-- Recaptcha Container -->
-      <div id="client-recaptcha-container" style="margin-bottom:4px;"></div>
+      <div id="recaptcha-container" style="margin-bottom:4px;"></div>
 
       <!-- Send OTP Button -->
       <button type="button" class="otp-send-btn" id="clientSendOtpBtn" onclick="clientSendOTP()">
@@ -886,6 +889,44 @@ const auth     = getAuth(app);
 const db       = getFirestore(app);
 const storage  = getStorage(app);
 
+// ── Security Helpers ──
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>/g, '');
+}
+
+function checkOtpRateLimit(phoneNumber) {
+  const now = Date.now();
+  const key = 'otp_requests_' + phoneNumber;
+  let requests = JSON.parse(localStorage.getItem(key) || '[]');
+  requests = requests.filter(ts => now - ts < 3600000);
+  if (requests.length >= 3) {
+    return false;
+  }
+  requests.push(now);
+  localStorage.setItem(key, JSON.stringify(requests));
+  return true;
+}
+
+function recordFailedOtp(phoneNumber) {
+  const key = 'otp_failed_' + phoneNumber;
+  let data = JSON.parse(localStorage.getItem(key) || '{"count": 0, "blockedUntil": 0}');
+  data.count += 1;
+  if (data.count >= 3) {
+    data.blockedUntil = Date.now() + 3600000; // Block for 1 hour
+  }
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function checkOtpBlocked(phoneNumber) {
+  const key = 'otp_failed_' + phoneNumber;
+  let data = JSON.parse(localStorage.getItem(key) || '{"count": 0, "blockedUntil": 0}');
+  if (data.blockedUntil > Date.now()) {
+    return data.blockedUntil;
+  }
+  return 0;
+}
+
 // ── EMAIL SIGNUP ──
 window.doSignup = async function(){
 
@@ -908,6 +949,36 @@ window.doSignup = async function(){
   if(!first||!last||!email||!phone||!city||!pass||!confirm){
     return showMsg('error','Please fill in all required fields.');
   }
+
+  // Sanitize text inputs
+  const cleanFirst = sanitizeInput(first);
+  const cleanLast = sanitizeInput(last);
+  const cleanEmail = sanitizeInput(email);
+  const cleanPhone = sanitizeInput(phone);
+
+  // Max length validation
+  if (cleanFirst.length > 50 || cleanLast.length > 50) {
+    return showMsg('error', 'First name and last name must be under 50 characters.');
+  }
+  if (cleanEmail.length > 100) {
+    return showMsg('error', 'Email address must be under 100 characters.');
+  }
+  if (cleanPhone.length > 15) {
+    return showMsg('error', 'Phone number must be under 15 characters.');
+  }
+
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(cleanEmail)) {
+    return showMsg('error', 'Please enter a valid email address.');
+  }
+
+  // Phone format validation
+  const phoneRegex = /^\+92\d{10}$/;
+  if (!phoneRegex.test(cleanPhone)) {
+    return showMsg('error', 'Invalid phone format. Must be +923001234567.');
+  }
+
   if(pass.length < 6){
     return showMsg('error','Password must be at least 6 characters.');
   }
@@ -931,10 +1002,10 @@ window.doSignup = async function(){
     }
 
     // Link email/password credential to the phone-authenticated user
-    const emailCredential = EmailAuthProvider.credential(email, pass);
+    const emailCredential = EmailAuthProvider.credential(cleanEmail, pass);
     await linkWithCredential(user, emailCredential);
 
-    const fullName = first + ' ' + last;
+    const fullName = cleanFirst + ' ' + cleanLast;
 
     updateLoad('Uploading Profile...','Setting things up');
 
@@ -953,11 +1024,11 @@ window.doSignup = async function(){
     await setDoc(doc(db,'clients', user.uid), {
       uid: user.uid,
       role: 'client',
-      firstName: first,
-      lastName: last,
+      firstName: cleanFirst,
+      lastName: cleanLast,
       fullName: fullName,
-      email: email,
-      phone: phone,
+      email: cleanEmail,
+      phone: cleanPhone,
       city: city,
       gender: gender,
       photoURL: photoURL,
@@ -1008,30 +1079,56 @@ let clientConfirmation = null;
 let clientOtpTimer = null;
 let clientOtpExpireTime = null;
 
+function formatPakistanPhone(phone) {
+  let cleaned = phone.replace(/[\s\-()]/g, '');
+  if (cleaned.startsWith('0')) {
+    return '+92' + cleaned.substring(1);
+  } else if (cleaned.startsWith('92')) {
+    return '+' + cleaned;
+  } else if (cleaned.startsWith('+92')) {
+    return cleaned;
+  } else {
+    if (cleaned.length === 10) {
+      return '+92' + cleaned;
+    }
+    if (!cleaned.startsWith('+')) {
+      return '+92' + cleaned;
+    }
+    return cleaned;
+  }
+}
+
 window.clientSendOTP = async function() {
-  const phone = document.getElementById('phone').value.trim();
-  if(!phone) return showMsg('error','Please enter your phone number first.');
+  const rawPhone = document.getElementById('phone').value.trim();
+  if(!rawPhone) return showMsg('error','Please enter your phone number first.');
   
-  // Validate phone format (basic check)
-  if(phone.length < 10) return showMsg('error','Please enter a valid phone number with country code (e.g. +923001234567)');
+  const phone = formatPakistanPhone(rawPhone);
+
+  // OTP Rate Limiting Check
+  const blockedTime = checkOtpBlocked(phone);
+  if (blockedTime > Date.now()) {
+    const minLeft = Math.ceil((blockedTime - Date.now()) / 60000);
+    return showMsg('error', `⚠️ Verification blocked. Please wait ${minLeft} minutes.`);
+  }
+  if (!checkOtpRateLimit(phone)) {
+    return showMsg('error', '⚠️ Rate limit exceeded. Maximum 3 OTP requests per hour.');
+  }
   
   const btn = document.getElementById('clientSendOtpBtn');
   btn.disabled = true;
   btn.textContent = '📱 Sending OTP...';
 
   try {
-    // Clear old recaptcha
     if(window.clientRecaptcha) {
       try { window.clientRecaptcha.clear(); } catch(e) {}
     }
-    window.clientRecaptcha = new RecaptchaVerifier(auth, 'client-recaptcha-container', {
+    window.clientRecaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {
       'size': 'invisible'
     });
 
     const result = await signInWithPhoneNumber(auth, phone, window.clientRecaptcha);
-    clientConfirmation = result;
+    window.confirmationResult = result;
 
-    // Show OTP input
     document.getElementById('clientOtpGroup').style.display = 'block';
     document.getElementById('clientOtpInput').value = '';
     document.getElementById('clientOtpInput').disabled = false;
@@ -1040,11 +1137,9 @@ window.clientSendOTP = async function() {
     document.getElementById('clientOtpResendBtn').style.display = 'none';
     document.getElementById('clientOtpVerifiedBadge').style.display = 'none';
 
-    // Lock phone field
     document.getElementById('phone').disabled = true;
     btn.textContent = '✅ OTP Sent';
 
-    // Start 5-min timer
     clientStartTimer(300);
 
     showMsg('success','✅ OTP sent to ' + phone + ' — Check your SMS!');
@@ -1061,6 +1156,9 @@ window.clientSendOTP = async function() {
     if(err.code === 'auth/invalid-phone-number') msg = 'Invalid phone number. Use format: +923001234567';
     if(err.code === 'auth/captcha-check-failed') msg = 'reCAPTCHA failed. Please refresh and try again.';
     showMsg('error', msg);
+    if(window.clientRecaptcha) {
+      try { window.clientRecaptcha.clear(); } catch(e) {}
+    }
   }
 };
 
@@ -1112,20 +1210,17 @@ window.clientVerifyOTP = async function() {
   btn.textContent = 'Verifying...';
 
   try {
-    const result = await clientConfirmation.confirm(code);
+    const result = await window.confirmationResult.confirm(code);
     window.clientPhoneVerified = true;
 
-    // Stop timer
     clearInterval(clientOtpTimer);
 
-    // Show verified badge
     document.getElementById('clientOtpInput').disabled = true;
     document.getElementById('clientOtpTimerWrap').style.display = 'none';
     document.getElementById('clientOtpResendBtn').style.display = 'none';
     document.getElementById('clientOtpVerifiedBadge').style.display = 'flex';
     btn.style.display = 'none';
 
-    // Lock phone
     document.getElementById('phone').readOnly = true;
     document.getElementById('phone').disabled = true;
     document.getElementById('clientSendOtpBtn').style.display = 'none';
@@ -1138,6 +1233,10 @@ window.clientVerifyOTP = async function() {
     console.error('Client Verify Error:', err);
     btn.disabled = false;
     btn.textContent = 'Verify';
+
+    const rawPhone = document.getElementById('phone').value.trim();
+    const phone = formatPakistanPhone(rawPhone);
+    recordFailedOtp(phone);
 
     let msg = 'Invalid OTP code. Try again.';
     if(err.code === 'auth/code-expired') {
@@ -1237,6 +1336,17 @@ function checkMatch(){
 function previewDP(input){
   const file = input.files[0];
   if(file){
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if(!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, and PNG images are allowed.");
+      input.value = "";
+      return;
+    }
+    if(file.size > 5 * 1024 * 1024) {
+      alert("Profile picture size must be less than 5MB.");
+      input.value = "";
+      return;
+    }
     const reader = new FileReader();
     reader.onload = e => {
       document.getElementById('dpImg').src = e.target.result;

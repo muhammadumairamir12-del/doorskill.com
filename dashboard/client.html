@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>DoorSkill — Client Dashboard</title>
@@ -1048,7 +1049,7 @@ body{
                         gap:8px;">
               <a href="../pages/find-workers.html?q=Plumber"
                  class="shortcut-item">
-                <span class="si-icon">🪛</span>
+                <span class="si-icon">🔧</span>
                 <span class="si-label">Plumber</span>
               </a>
               <a href="../pages/find-workers.html?q=Electrician"
@@ -1056,20 +1057,20 @@ body{
                 <span class="si-icon">⚡</span>
                 <span class="si-label">Electrician</span>
               </a>
-              <a href="../pages/find-workers.html?q=Doctor"
+              <a href="../pages/find-workers.html?q=Cleaner"
                  class="shortcut-item">
-                <span class="si-icon">👨‍⚕️</span>
-                <span class="si-label">Doctor</span>
+                <span class="si-icon">🧹</span>
+                <span class="si-label">Cleaning</span>
               </a>
-              <a href="../pages/find-workers.html?q=Teacher"
+              <a href="../pages/find-workers.html?q=Mechanic"
                  class="shortcut-item">
-                <span class="si-icon">📚</span>
-                <span class="si-label">Teacher</span>
+                <span class="si-icon">🚗</span>
+                <span class="si-label">Mechanic</span>
               </a>
-              <a href="../pages/find-workers.html?q=Laptop Repair"
+              <a href="../pages/find-workers.html?q=Mover"
                  class="shortcut-item">
-                <span class="si-icon">💻</span>
-                <span class="si-label">IT Repair</span>
+                <span class="si-icon">🚚</span>
+                <span class="si-label">Mover/Helper</span>
               </a>
               <a href="../pages/find-workers.html"
                  class="shortcut-item">
@@ -1338,13 +1339,18 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   getFirestore,
-  doc, getDoc, getDocs, updateDoc, addDoc,
+  doc, getDoc, getDocs, updateDoc, addDoc, setDoc,
   collection, query, where, orderBy,
   onSnapshot, serverTimestamp, deleteDoc, limit
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>/g, '');
+}
 
 const app = initializeApp({
   apiKey:            "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
@@ -1699,6 +1705,10 @@ window.acceptBid = async function(bidId, workerId, workerName, jobId){
   if(!confirm(`Hire ${workerName} for this job?\n\nYou will have ${window._WAIT_MINUTES||20} minutes to confirm.`)) return;
 
   try {
+    // Fetch job details to get title
+    const jobSnap = await getDoc(doc(db,'jobs',jobId));
+    const jobData = jobSnap.exists() ? jobSnap.data() : { title: 'Job' };
+
     // Update bid status
     await updateDoc(doc(db,'bids',bidId),{
       status: 'accepted',
@@ -1713,6 +1723,16 @@ window.acceptBid = async function(bidId, workerId, workerName, jobId){
       hiredBidId:      bidId,
       hiredAt:         serverTimestamp(),
     });
+
+    // Trigger Notification to worker
+    if (typeof window.triggerNotification === 'function') {
+      await window.triggerNotification(workerId, {
+        title: "You've Been Hired! 🎉",
+        body: `${_client?.fullName || 'Client'} hired you for "${jobData.title || 'Job'}"`,
+        clickUrl: `../dashboard/worker.html`,
+        icon: "🎉"
+      });
+    }
 
     // Reject all other bids for this job
     const otherBids = query(
@@ -1889,9 +1909,35 @@ window.markDone = async function(jobId, workerId, workerName){
       where('workerId','==',workerId)
     );
     const bidSnap = await getDocs(bidQ);
+    let bidPrice = 1000;
     for(const d of bidSnap.docs){
       await updateDoc(doc(db,'bids',d.id),{
         status:'done', completedAt:serverTimestamp()
+      });
+      if(d.data().myPrice) {
+        bidPrice = d.data().myPrice;
+      }
+    }
+
+    // Trigger Notifications
+    if (typeof window.triggerNotification === 'function') {
+      const jobSnap = await getDoc(doc(db,'jobs',jobId));
+      const jobTitle = jobSnap.exists() ? jobSnap.data().title : 'Job';
+      
+      // Client notification (Please rate)
+      await window.triggerNotification(_uid, {
+        title: "Job Done! ⭐ Please rate " + workerName,
+        message: `Your job "${jobTitle}" is marked done. Tap to rate ${workerName}.`,
+        clickUrl: `../dashboard/client.html`,
+        icon: "⭐"
+      });
+
+      // Worker notification (Payment received)
+      await window.triggerNotification(workerId, {
+        title: "Payment Received! 💰",
+        message: `Rs.${bidPrice.toLocaleString()} has been added to your wallet for "${jobTitle}"`,
+        clickUrl: `../dashboard/worker.html`,
+        icon: "💰"
       });
     }
 
@@ -2005,15 +2051,17 @@ window.submitReview = async function(){
   const errEl   = document.getElementById('reviewError');
   const btn     = document.getElementById('reviewSubmitBtn');
 
+  const cleanComment = sanitizeInput(comment);
+
   if(_selectedRating === 0){
     errEl.textContent = 'Please select a star rating.';
     errEl.style.display = 'block'; return;
   }
-  if(!comment){
+  if(!cleanComment){
     errEl.textContent = 'Please write a review comment.';
     errEl.style.display = 'block'; return;
   }
-  if(comment.length < 10){
+  if(cleanComment.length < 10){
     errEl.textContent = 'Review too short. Write at least 10 characters.';
     errEl.style.display = 'block'; return;
   }
@@ -2023,15 +2071,15 @@ window.submitReview = async function(){
   btn.textContent = 'Submitting...';
 
   try {
-    // Save review
-    await addDoc(collection(db,'reviews'),{
+    // Save review with jobId as doc ID to prevent duplicates
+    await setDoc(doc(db, 'reviews', _reviewData.jobId), {
       jobId:      _reviewData.jobId,
       workerId:   _reviewData.workerId,
       workerName: _reviewData.workerName,
       clientId:   _uid,
       clientName: _client?.fullName || 'Client',
       rating:     _selectedRating,
-      comment,
+      comment:    cleanComment,
       createdAt:  serverTimestamp(),
     });
 
@@ -2080,14 +2128,14 @@ window.saveProfile = async function(){
       photoURL = await getDownloadURL(pRef);
     }
 
-    const first = document.getElementById('editFirst').value.trim();
-    const last  = document.getElementById('editLast').value.trim();
+    const first = sanitizeInput(document.getElementById('editFirst').value.trim());
+    const last  = sanitizeInput(document.getElementById('editLast').value.trim());
 
     const updates = {
       firstName: first,
       lastName:  last,
       fullName:  first+' '+last,
-      phone:     document.getElementById('editPhone').value.trim(),
+      phone:     sanitizeInput(document.getElementById('editPhone').value.trim()),
       city:      document.getElementById('editCity').value,
       gender:    document.getElementById('editGender').value,
       photoURL,
@@ -2205,91 +2253,7 @@ document.getElementById('reviewModal').addEventListener('click', e=>{
     closeReviewModal();
   }
 });
-// ── NOTIFICATIONS SYSTEM ──
-let _notifs = [];
-
-window.loadNotifications = async function(){
-  if(!_uid) return;
-  try {
-    const snap = await getDocs(
-      query(collection(db,'notifications'),
-        where('uid','==',_uid),
-        orderBy('createdAt','desc'),
-        limit(30)
-      )
-    );
-    _notifs = [];
-    snap.forEach(d => _notifs.push({id:d.id,...d.data()}));
-    renderNotifications();
-  } catch(e){
-    console.error('loadNotifications:', e);
-  }
-};
-
-function renderNotifications(){
-  const unread = _notifs.filter(n=>!n.read).length;
-  const countEl = document.getElementById('notifCount');
-  if(unread > 0){
-    countEl.style.display = 'flex';
-    countEl.textContent = unread > 9 ? '9+' : unread;
-  } else {
-    countEl.style.display = 'none';
-  }
-
-  const body = document.getElementById('notifPanelBody');
-  if(!_notifs.length){
-    body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">📭 No notifications yet</div>';
-    return;
-  }
-
-  body.innerHTML = _notifs.map(n => {
-    const ts = n.createdAt?.seconds ? ntTimeAgo(n.createdAt.seconds) : '';
-    return `
-    <div class="notif-item ${n.read?'':'unread'}" onclick="openNotif('${n.id}')">
-      <div class="notif-item-icon">📢</div>
-      <div class="notif-item-content">
-        <div class="notif-item-title">${n.title||'Notification'}</div>
-        <div class="notif-item-msg">${n.message||''}</div>
-        <div class="notif-item-time">${ts}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function ntTimeAgo(seconds){
-  const diff = Math.floor(Date.now()/1000 - seconds);
-  if(diff < 60) return 'Just now';
-  if(diff < 3600) return Math.floor(diff/60)+'m ago';
-  if(diff < 86400) return Math.floor(diff/3600)+'h ago';
-  return Math.floor(diff/86400)+'d ago';
-}
-
-window.toggleNotifPanel = function(){
-  const panel = document.getElementById('notifPanel');
-  panel.classList.toggle('show');
-};
-
-window.openNotif = async function(nid){
-  try {
-    await updateDoc(doc(db,'notifications',nid), {read:true});
-    _notifs = _notifs.map(n=>n.id===nid?{...n,read:true}:n);
-    renderNotifications();
-  } catch(e){ console.error(e); }
-  document.getElementById('notifPanel').classList.remove('show');
-  showPage('home',null);
-};
-
-window.markAllRead = async function(){
-  try {
-    const unread = _notifs.filter(n=>!n.read);
-    await Promise.all(unread.map(n=>
-      updateDoc(doc(db,'notifications',n.id), {read:true})
-    ));
-    _notifs = _notifs.map(n=>({...n,read:true}));
-    renderNotifications();
-    showToast('✅ All notifications marked as read');
-  } catch(e){ console.error(e); }
-};
+// Notifications system is managed by assets/notifications.js
 
 // Close notif panel on outside click
 document.addEventListener('click', e => {
@@ -2301,5 +2265,7 @@ document.addEventListener('click', e => {
 });
 </script>
 <script src="../assets/ai-helper.js"></script>
+<script type="module" src="../assets/notifications.js"></script>
 </body>
 </html>
+

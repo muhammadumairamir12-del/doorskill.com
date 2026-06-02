@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>How DoorSkill Works: Post a Job and Get Bids in Minutes | DoorSkill Blog</title>
+<meta name="description" content="Learn how DoorSkill works — post a job online Pakistan, receive bids from nearby verified workers, and get it done fast. Step-by-step guide to secure hiring."/>
+<meta name="keywords" content="post a job online Pakistan, post a job Pakistan, job bidding platform, hire worker online, find professional near me, job marketplace Pakistan, online service booking, get bids online Pakistan, local job platform, post job free Pakistan, service provider app Pakistan, find workers near me, same day service booking, on-demand workers Pakistan, DoorSkill how it works, hire online Pakistan, quick job posting, compare worker bids, best bid service, freelance bidding Pakistan, instant worker booking"/>
+<meta name="robots" content="index, follow"/>
+<meta name="author" content="DoorSkill Editorial Team"/>
+<link rel="canonical" href="https://www.doorskill.com/blog/blog-3.html"/>
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="How DoorSkill Works: Post a Job and Get Bids in Minutes | DoorSkill"/>
+<meta property="og:description" content="Learn how DoorSkill works — post a job online Pakistan, receive bids from nearby verified workers, and get it done fast."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://www.doorskill.com/blog/blog-3.html"/>
+<meta property="og:image" content="https://www.doorskill.com/assets/logo.png"/>
+<meta property="og:site_name" content="DoorSkill"/>
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="How DoorSkill Works: Post a Job and Get Bids in Minutes | DoorSkill"/>
+<meta name="twitter:description" content="Learn how DoorSkill works — post a job online Pakistan, receive bids from nearby verified workers, and get it done fast."/>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="../assets/logo.png" type="image/png"/>
+
+<!-- JSON-LD Schemas -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "How DoorSkill Works: Post a Job and Get Bids in Minutes",
+      "description": "Learn how DoorSkill works — post a job online Pakistan, receive bids from nearby verified workers, and get it done fast. Step-by-step guide to secure hiring.",
+      "author": {
+        "@type": "Organization",
+        "name": "DoorSkill"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "DoorSkill",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.doorskill.com/assets/logo.png"
+        }
+      },
+      "datePublished": "2025-06-01",
+      "url": "https://www.doorskill.com/blog/blog-3.html"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I post a job online Pakistan on DoorSkill?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Simply click 'Post a Job,' fill in the service category, describe your problem, select your location, and set a budget to start receiving bids."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the benefit of a job bidding platform?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A job bidding platform allows multiple local professionals to compete for your task, ensuring you receive transparent quotes and secure the best bid service."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a fee to post job free Pakistan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, you can post job free Pakistan as many times as you like. There are no fees for clients to post tasks or review worker bids."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does DoorSkill how it works protect my payments?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All payments are managed through an escrow vault. The funds are held safely and only released when the service is fully completed and verified by you."
+          }
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.doorskill.com"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.doorskill.com/blog"},
+        {"@type": "ListItem", "position": 3, "name": "How DoorSkill Works: Post a Job and Get Bids in Minutes", "item": "https://www.doorskill.com/blog/blog-3.html"}
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+/* ══════════════════════════════════════════
+   DESIGN TOKENS & BASE
+   ══════════════════════════════════════════ */
+:root{
+  --rose:#F43F5E; --rose-lt:#FFE4EC; --rose-md:#FB7185;
+  --pink-bg:#FFF0F5; --cream:#FFFAF9;
+  --dark:#1A0A14; --mid:#5C3D4E; --muted:#9D7589;
+  --white:#FFFFFF; --border:#F3D6E0;
+  --green:#10B981; --green-lt:#D1FAE5;
+  --blue:#3B82F6; --blue-lt:#DBEAFE;
+  --shadow:0 4px 24px rgba(244,63,94,.10);
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--cream); color:var(--dark);
+  overflow-x:hidden;
+  line-height:1.7;
+}
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:68px;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all .3s;
+}
+.logo{display:inline-flex;align-items:center;text-decoration:none;}
+.logo img{height:32px;width:auto;}
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none;}
+.nav-links a{
+  text-decoration:none;font-size:14px;font-weight:500;color:var(--mid);
+  padding:8px 14px;border-radius:8px;transition:all .2s;
+}
+.nav-links a:hover{background:var(--rose-lt);color:var(--rose);}
+.has-mega{position:relative;}
+.has-mega>a::after{content:' ▾';font-size:11px;}
+.mega-menu{
+  position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:20px;border:1.5px solid var(--border);
+  box-shadow:0 20px 60px rgba(244,63,94,.15);padding:24px;width:700px;
+  display:none;z-index:999; grid-template-columns:repeat(4,1fr);gap:20px;
+}
+.has-mega:hover .mega-menu{display:grid;}
+.mega-col h4{
+  font-size:11px;font-weight:700;color:var(--rose);
+  letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--rose-lt);
+}
+.mega-col a{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--mid);padding:4px 0;
+  text-decoration:none;transition:all .2s;
+}
+.mega-col a:hover{color:var(--rose);padding-left:4px;}
+.mega-footer{
+  grid-column:1/-1;border-top:1px solid var(--border);
+  padding-top:14px;margin-top:4px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mega-footer p{font-size:12px;color:var(--muted);}
+.mega-footer a{font-size:13px;font-weight:600;color:var(--rose);text-decoration:none;}
+.nav-btns{display:flex;gap:8px;align-items:center;}
+.btn-outline{
+  padding:8px 18px;border-radius:8px;border:1.5px solid var(--rose);
+  background:transparent;color:var(--rose);
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;
+  display:inline-flex;align-items:center;
+}
+.btn-outline:hover{background:var(--rose-lt);}
+.btn-fill{
+  padding:8px 20px;border-radius:8px;border:none;background:var(--rose);
+  color:#fff;font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;
+  display:inline-flex;align-items:center;
+}
+.btn-fill:hover{background:#e0334f;transform:translateY(-1px);box-shadow:0 6px 20px rgba(244,63,94,.3);}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;font-size:22px;color:var(--dark);}
+.mobile-menu{
+  display:none;position:fixed;top:68px;left:0;right:0;z-index:999;
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:16px 5%;box-shadow:0 8px 24px rgba(0,0,0,.1);
+}
+.mobile-menu.open{display:block;}
+.mobile-menu a{
+  display:block;padding:12px 0;font-size:15px;font-weight:500;
+  color:var(--dark);text-decoration:none;border-bottom:1px solid var(--border);
+}
+.mobile-menu a:hover{color:var(--rose);}
+
+/* ═════════ BLOG CONTAINER ═════════ */
+.blog-hero {
+  padding: 130px 5% 50px;
+  background: linear-gradient(135deg, var(--rose-lt) 0%, var(--pink-bg) 50%, var(--cream) 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.blog-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(244,63,94,.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.blog-hero-content {
+  position: relative; z-index: 1; max-width: 800px; margin: 0 auto;
+}
+.blog-category {
+  display: inline-block; background: var(--rose); color: #fff;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+.blog-hero h1 {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900; line-height: 1.2; color: var(--dark); margin-bottom: 20px;
+}
+.blog-meta {
+  display: flex; gap: 20px; justify-content: center; align-items: center;
+  font-size: 14px; color: var(--muted); margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.blog-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Breadcrumb */
+.breadcrumb {
+  max-width: 800px; margin: 24px auto 0; padding: 0 20px;
+  font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center;
+}
+.breadcrumb a { color: var(--rose); text-decoration: none; font-weight: 500; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* Article Layout */
+.article-container {
+  max-width: 800px; margin: 0 auto; padding: 40px 20px 80px;
+}
+.article-content {
+  font-size: 16px; line-height: 1.8; color: var(--mid);
+}
+.article-content p { margin-bottom: 24px; text-align: justify; }
+.article-content h2 {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 900; color: var(--dark); margin: 44px 0 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.article-content h3 {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 800; color: var(--dark); margin: 28px 0 16px;
+}
+.article-content ul, .article-content ol { margin-bottom: 24px; padding-left: 24px; }
+.article-content li { margin-bottom: 12px; }
+
+/* Quick Answer & Definition Boxes */
+.quick-answer-box {
+  background: var(--rose-lt); border-left: 5px solid var(--rose);
+  padding: 18px 22px; border-radius: 8px; margin-bottom: 30px;
+}
+.definition-box {
+  background: var(--blue-lt); border-left: 5px solid var(--blue);
+  padding: 18px 22px; border-radius: 8px; margin: 30px 0;
+}
+.info-box {
+  background: var(--pink-bg); border-left: 4px solid var(--rose);
+  padding: 20px; border-radius: 8px; margin: 32px 0;
+}
+.summary-box {
+  background: #fff; border: 1.5px solid var(--border);
+  padding: 24px; border-radius: var(--r); margin-bottom: 40px;
+  box-shadow: var(--shadow);
+}
+.summary-box-title { font-size: 16px; font-weight: 700; color: var(--rose); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;}
+
+/* FAQ Accordion Styling */
+.faq-section { margin-top: 50px; }
+.faq-item { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+.faq-question { padding: 16px 20px; font-weight: 700; color: var(--dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+.faq-answer { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; color: var(--mid); font-size: 15px; }
+.faq-item.active .faq-answer { padding: 16px 20px; max-height: 200px; border-top: 1px solid var(--border); }
+.faq-question::after { content: '+'; font-size: 18px; color: var(--rose); transition: transform 0.3s; }
+.faq-item.active .faq-question::after { content: '-'; }
+
+/* Social Share Row */
+.social-share {
+  display: flex; align-items: center; gap: 12px; margin-top: 40px;
+  padding-top: 24px; border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.social-share span { font-size: 14px; font-weight: 600; color: var(--muted); }
+.share-btn {
+  padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: #fff; text-decoration: none; font-size: 13px; font-weight: 600;
+  color: var(--mid); display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
+}
+.share-btn:hover { border-color: var(--rose); color: var(--rose); background: var(--rose-lt); }
+
+/* Premium CTA Card at the end of article */
+.article-cta {
+  background: linear-gradient(135deg, var(--rose) 0%, #be123c 100%);
+  color: #fff; padding: 40px; border-radius: var(--r); text-align: center;
+  margin: 50px 0 60px; position: relative; overflow: hidden;
+  box-shadow: 0 12px 32px rgba(244,63,94,.2);
+}
+.article-cta h3 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 12px; color: #fff; }
+.article-cta p { color: rgba(255,255,255,.85); margin-bottom: 24px; font-size: 15px; }
+.article-cta .btn-fill { background: #fff; color: var(--rose); font-size: 16px; padding: 12px 30px; border-radius: 10px;}
+.article-cta .btn-fill:hover { background: var(--rose-lt); color: var(--rose); }
+
+/* Newsletter Signup */
+.newsletter-box {
+  background: #fff; border: 1.5px solid var(--border); padding: 32px; border-radius: var(--r);
+  box-shadow: var(--shadow); text-align: center; margin-bottom: 60px;
+}
+.newsletter-box h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; color: var(--dark); }
+.newsletter-box p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+.newsletter-form { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+.newsletter-form input {
+  flex: 1; padding: 12px 18px; border-radius: 8px; border: 1.5px solid var(--border);
+  outline: none; font-family: inherit; font-size: 14px;
+}
+.newsletter-form button {
+  background: var(--rose); border: none; border-radius: 8px; padding: 0 24px;
+  font-weight: 700; color: #fff; cursor: pointer; transition: background 0.2s;
+}
+.newsletter-form button:hover { background: #e0334f; }
+.newsletter-success { color: var(--green); font-weight: 600; margin-top: 10px; display: none; }
+
+/* Related Posts Section */
+.related-section { margin-bottom: 80px; }
+.related-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: var(--dark); margin-bottom: 24px; }
+.related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.related-card {
+  background: #fff; border: 1.5px solid var(--border); border-radius: var(--r); overflow: hidden;
+  text-decoration: none; color: inherit; transition: all 0.2s; display: flex; flex-direction: column;
+}
+.related-card:hover { transform: translateY(-3px); border-color: var(--rose-md); box-shadow: var(--shadow); }
+.related-img { height: 120px; background: linear-gradient(135deg, var(--rose-lt), var(--pink-bg)); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.related-info { padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.related-card h4 { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--dark); margin-bottom: 8px; line-height: 1.4; }
+.related-card p { font-size: 13px; color: var(--muted); margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.related-card span { font-size: 11px; font-weight: 700; color: var(--rose); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ══ FOOTER ══ */
+.footer-divider{height:80px;background:linear-gradient(135deg,var(--rose),#be123c);clip-path:polygon(0 0,100% 40%,100% 100%,0 100%);margin-bottom:-2px;}
+footer{background:var(--dark);color:#fff;padding:56px 5% 28px;position:relative;overflow:hidden;}
+footer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(244,63,94,.15) 0%,transparent 70%);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;position:relative;margin-bottom:44px;}
+.footer-brand .logo{font-size:24px;display:block;margin-bottom:12px;text-decoration:none;}
+.footer-brand p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;max-width:260px;}
+.footer-social{display:flex;gap:8px;margin-top:18px;}
+.soc-btn{width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,.55);text-decoration:none;}
+.soc-btn:hover{background:var(--rose);border-color:var(--rose);color:#fff;}
+.footer-col h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:10px;}
+.footer-col ul li a{font-size:14px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s;}
+.footer-col ul li a:hover{color:var(--rose-md);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:22px;position:relative;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-bottom p{font-size:13px;color:rgba(255,255,255,.3);}
+.footer-bottom a{color:var(--rose-md);text-decoration:none;}
+
+@media(max-width:900px){
+  .nav-links,.nav-btns{display:none;}
+  .hamburger{display:block;}
+  .mega-menu{display:none!important;}
+}
+@media(max-width:768px){
+  .related-grid { grid-template-columns: 1fr; }
+  .newsletter-form { flex-direction: column; }
+  .newsletter-form button { padding: 12px; }
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav id="navbar">
+  <a href="../index.html" class="logo" style="display:flex;align-items:center;">
+    <img src="../assets/logo.png" alt="DoorSkill Logo" width="42" height="42" style="height:42px;">
+    <span style="font-size:26px;font-weight:900;color:var(--rose);margin-left:8px;font-family:'Playfair Display',serif;letter-spacing:-0.02em;">DoorSkill</span>
+  </a>
+  <ul class="nav-links">
+    <li class="has-mega">
+      <a href="../index.html#categoriesGrid">Services</a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <h4>🔧 Repairs</h4>
+          <a href="../pages/find-workers.html?q=Plumber">🪛 Plumber</a>
+          <a href="../pages/find-workers.html?q=Electrician">⚡ Electrician</a>
+          <a href="../pages/find-workers.html?q=Carpenter">🪚 Carpenter</a>
+          <a href="../pages/find-workers.html?q=Painter">🖌️ Painter</a>
+          <a href="../pages/find-workers.html?q=AC Repair">❄️ AC Repair</a>
+        </div>
+        <div class="mega-col">
+          <h4>🧹 Cleaning</h4>
+          <a href="../pages/find-workers.html?q=Home Cleaning">🏠 Home Clean</a>
+          <a href="../pages/find-workers.html?q=Sofa Cleaning">🛋️ Sofa Clean</a>
+          <a href="../pages/find-workers.html?q=Carpet Cleaning">🔲 Carpet Clean</a>
+          <a href="../pages/find-workers.html?q=Kitchen Deep Clean">🍳 Deep Clean</a>
+          <a href="../pages/find-workers.html?q=Office Cleaning">🧹 Office Clean</a>
+        </div>
+        <div class="mega-col">
+          <h4>🚗 Auto & Bike</h4>
+          <a href="../pages/find-workers.html?q=Car Mechanic">🚗 Car Mechanic</a>
+          <a href="../pages/find-workers.html?q=Bike Mechanic">🏍️ Bike Mechanic</a>
+          <a href="../pages/find-workers.html?q=Car Wash">🚿 Car Wash</a>
+          <a href="../pages/find-workers.html?q=Roadside Help">🚨 Roadside Help</a>
+        </div>
+        <div class="mega-col">
+          <h4>💄 Beauty & Salon</h4>
+          <a href="../pages/find-workers.html?q=Salon at Home">✂️ Salon at Home</a>
+          <a href="../pages/find-workers.html?q=Makeup Artist">💋 Makeup Artist</a>
+          <a href="../pages/find-workers.html?q=Barber">💈 Barber</a>
+          <a href="../pages/find-workers.html?q=Manicure">💅 Manicure</a>
+        </div>
+        <div class="mega-footer">
+          <p>✨ Any service not listed? Post a custom job!</p>
+          <a href="../pages/find-workers.html">Browse All Services →</a>
+        </div>
+      </div>
+    </li>
+    <li><a href="../index.html#how-it-works">How it Works</a></li>
+    <li><a href="../auth/worker-signup.html">Become a Worker</a></li>
+    <li><a href="../index.html#about">About</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a href="../auth/login.html" class="btn-outline">Login</a>
+    <a href="../pages/post-job.html" class="btn-fill">Post a Job →</a>
+  </div>
+  <button class="hamburger" onclick="toggleMobile()">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../index.html#categoriesGrid" onclick="toggleMobile()">Services</a>
+  <a href="../index.html#how-it-works" onclick="toggleMobile()">How it Works</a>
+  <a href="../auth/worker-signup.html">Become a Worker</a>
+  <a href="../index.html#about" onclick="toggleMobile()">About</a>
+  <a href="../auth/login.html">Login</a>
+  <a href="../pages/post-job.html" style="color:var(--rose);font-weight:700;">Post a Job →</a>
+</div>
+
+<!-- ══════════════ BREADCRUMB ══════════════ -->
+<div class="breadcrumb">
+  <a href="../index.html">Home</a> &gt; <a href="blog-1.html">Blog</a> &gt; How DoorSkill Works
+</div>
+
+<!-- ══════════════ HERO BANNER ══════════════ -->
+<section class="blog-hero">
+  <div class="blog-hero-content">
+    <span class="blog-category">How-To Guide</span>
+    <h1>How DoorSkill Works: Post a Job and Get Bids in Minutes</h1>
+    <div class="blog-meta">
+      <span>👤 DoorSkill Editorial Team</span>
+      <span>📅 June 2, 2026</span>
+      <span>⏱️ 5 min read</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ ARTICLE MAIN ══════════════ -->
+<article class="article-container">
+  <div class="article-content">
+    
+    <!-- Quick Answer Box -->
+    <div class="quick-answer-box">
+      <strong>Quick Answer:</strong> To post a job online Pakistan, create a free account on DoorSkill, fill out your project details (title, description, location), and set a flexible budget. You will receive competitive bids from nearby verified professionals in minutes, letting you compare prices and ratings before hiring.
+    </div>
+
+    <!-- Quick Summary Box -->
+    <div class="summary-box">
+      <div class="summary-box-title">⚙️ Quick Summary</div>
+      <p>Discover how easy it is to post a job online Pakistan on DoorSkill. Learn the step-by-step process—from setting a budget to receiving competitive bids, chatting safely in-app, and managing secure escrow payments.</p>
+    </div>
+
+    <p>For decades, getting any task done around the house in Pakistan meant playing phone tag with middle-men, pleading with technicians to show up on time, and haggling endlessly over arbitrary costs. There was no single platform where you could compare options, check work history, or guarantee that you wouldn't get scammed. Homeowners were forced to accept whatever price was quoted, and hope the handyman was skilled enough not to make the problem worse.</p>
+
+    <!-- Definition Box -->
+    <div class="definition-box">
+      <strong>What is DoorSkill?</strong>
+      DoorSkill is Pakistan's leading online marketplace that connects clients with verified local professionals for any skill or service — from plumbers to doctors to tutors.
+    </div>
+
+    <p>DoorSkill completely reimagines this process. By introducing a job bidding platform model, we put the power back in the hands of the consumer. On DoorSkill, instead of chasing workers, they come to you. This tutorial provides a complete walkthrough of how you can post a job Pakistan and receive competitive bids in just a few minutes, making online service booking a breeze.</p>
+
+    <h2>📋 Step 1 — Create Your Free Account</h2>
+    <p>To begin, simply head over to the signup page. Registering is completely free and takes less than a minute. You can sign up and hire worker online using your phone number. Standard SMS OTP (One-Time Password) will be sent to verify your identity. During registration, make sure to select the "Client" profile if you want to hire professionals, or the "Worker" profile if you want to offer your services.</p>
+
+    <h2>✍️ Step 2 — Post Your Job (Title, Budget, Location)</h2>
+    <p>Once logged in, click on the **Post a Job** button. You will be presented with our quick job posting form where you will define the details of your project on the local job platform:</p>
+    <ul>
+      <li><strong>Title:</strong> Keep it short and descriptive (e.g., "Install PPR Pipe in Kitchen" or "Hire Electrician for Ceiling Fan Installation").</li>
+      <li><strong>Category:</strong> Choose from Home Repairs, Cleaning, Beauty, Auto, Logistics, or select "Other" for custom requests.</li>
+      <li><strong>Description:</strong> Explain the problem clearly. Mention any specific details, like the type of geyser or height of the ceiling. The more detail you provide, the more accurate the bids will be.</li>
+      <li><strong>Budget:</strong> Set a flexible starting budget. This lets workers know your expectations when you post job free Pakistan.</li>
+      <li><strong>Location:</strong> Enter your city and area. Our service provider app Pakistan uses geolocation to notify workers closest to your home.</li>
+    </ul>
+
+    <h2>📬 Step 3 — Receive Bids from Nearby Workers</h2>
+    <p>As soon as you submit the form, our automated system matches your requirements with qualified, verified specialists in your immediate neighborhood. They receive an instant alert on their worker dashboards. Interested specialists will inspect your request and submit their pricing bids. Within minutes, you will get bids online Pakistan on your job marketplace Pakistan dashboard. This competitive bidding ensures you get the best bid service without haggling.</p>
+
+    <div class="info-box">
+      <div class="info-box-title">📷 Visual Tip</div>
+      <p>Adding clear photos of the issue (like a leaky sink trap or a damaged socket) helps workers understand the scope immediately, leading to more accurate, lower price quotes.</p>
+    </div>
+
+    <h2>🔍 Step 4 — Compare Profiles, Ratings &amp; Prices</h2>
+    <p>With quotes in hand, it is time to make an informed decision. Don't just pick the lowest bid. Take a moment to compare worker bids by clicking on their profiles:</p>
+    <ol>
+      <li>Check their average star rating and read past client reviews.</li>
+      <li>Review their portfolio of completed tasks and check their listed skills.</li>
+      <li>Look for the green "Verified" badge, confirming their CNIC checks are complete.</li>
+    </ol>
+
+    <h2>💬 Step 5 — Chat, Confirm &amp; Get It Done</h2>
+    <p>Once you narrow down your choices, use DoorSkill's built-in chat to discuss the details. You can hire online Pakistan and chat or call the professional directly in-app. Ask questions like: "Will you bring the PPR materials, or should I purchase them?" or "What time can you arrive?" Once both parties are aligned, accept the bid and confirm the booking schedule. The professional will arrive at your home at the agreed-upon time.</p>
+
+    <h2>⭐ Step 6 — Pay Safely &amp; Leave a Review</h2>
+    <p>When the job is complete, test the work to ensure everything functions perfectly. If you are satisfied, release the funds from your escrow dashboard. Finally, leave an honest rating and review. Sharing your feedback is crucial—it helps maintain the quality standards of our community and helps other clients make the right choice.</p>
+
+    <p>Whether you require same day service booking or want to schedule ahead, our instant worker booking pipeline has you covered. It's the easiest way to find professional near me technicians and coordinate on-demand workers Pakistan. Experience how the DoorSkill how it works ecosystem makes finding workers near me fast and secure. Try our freelance bidding Pakistan engine now!</p>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2>❓ Frequently Asked Questions (FAQ)</h2>
+      
+      <div class="faq-item">
+        <div class="faq-question">How do I post a job online Pakistan on DoorSkill?</div>
+        <div class="faq-answer">Simply click "Post a Job," fill in the service category, describe your problem, select your location, and set a budget to start receiving bids.</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-question">What is the benefit of a job bidding platform?</div>
+        <div class="faq-answer">A job bidding platform allows multiple local professionals to compete for your task, ensuring you receive transparent quotes and secure the best bid service.</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-question">Is there a fee to post job free Pakistan?</div>
+        <div class="faq-answer">No, you can post job free Pakistan as many times as you like. There are no fees for clients to post tasks or review worker bids.</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-question">How does DoorSkill how it works protect my payments?</div>
+        <div class="faq-answer">All payments are managed through an escrow vault. The funds are held safely and only released when the service is fully completed and verified by you.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">How quickly will I find workers near me?</div>
+        <div class="faq-answer">You will start receiving bids from verified local professionals near you within 5 to 15 minutes of posting.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Can I book a same day service booking?</div>
+        <div class="faq-answer">Yes, many on-demand workers Pakistan are available for same day service booking and instant worker booking in case of emergencies.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What is the service provider app Pakistan coverage?</div>
+        <div class="faq-answer">DoorSkill operates in all major cities of Pakistan including Lahore, Karachi, Islamabad, Faisalabad, Rawalpindi, and Multan.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">How do I compare worker bids on the job marketplace Pakistan?</div>
+        <div class="faq-answer">Click on any worker's bid to view their profile, past ratings, customer reviews, and verification badges to choose the perfect specialist.</div>
+      </div>
+    </div>
+
+    <!-- Social Share Buttons -->
+    <div class="social-share">
+      <span>Share this article:</span>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.doorskill.com/blog/blog-3.html" target="_blank" class="share-btn">📘 Facebook</a>
+      <a href="https://api.whatsapp.com/send?text=How%20DoorSkill%20Works%20https://www.doorskill.com/blog/blog-3.html" target="_blank" class="share-btn">🟢 WhatsApp</a>
+      <a href="https://twitter.com/intent/tweet?url=https://www.doorskill.com/blog/blog-3.html" target="_blank" class="share-btn">🐦 Twitter / X</a>
+    </div>
+
+    <!-- Premium CTA Box -->
+    <div class="article-cta">
+      <h3>Ready to Try DoorSkill?</h3>
+      <p>Don't waste time negotiating with random service providers. Experience the simple, secure way to get things done. Post your first project on DoorSkill today, receive bids from nearby experts, and hire with confidence.</p>
+      <a href="../pages/post-job.html" class="btn-fill">Post Your First Job Free →</a>
+    </div>
+
+    <!-- Newsletter Signup Box -->
+    <div class="newsletter-box">
+      <h3>Get Tips &amp; Updates from DoorSkill</h3>
+      <p>Subscribe to our weekly newsletter and receive home maintenance tips, guidebooks, and exclusive marketplace offers.</p>
+      <div class="newsletter-form">
+        <input type="email" id="news-email" placeholder="Enter your email address" required/>
+        <button type="button" onclick="subscribeNewsletter()">Subscribe</button>
+      </div>
+      <div class="newsletter-success" id="news-success">✓ Thank you! You have successfully subscribed to our newsletter.</div>
+    </div>
+
+    <!-- Related Posts Section -->
+    <div class="related-section">
+      <h3 class="related-title">📚 Related Articles</h3>
+      <div class="related-grid">
+        <a href="blog-2.html" class="related-card">
+          <div class="related-img">🛡️</div>
+          <div class="related-info">
+            <span>Safety First</span>
+            <h4>5 Reasons to Always Hire a Verified Professional</h4>
+            <p>Learn why taking a gamble on random local helpers can lead to major safety risks and lost funds.</p>
+          </div>
+        </a>
+        <a href="blog-4.html" class="related-card">
+          <div class="related-img">🏙️</div>
+          <div class="related-info">
+            <span>Local Trends</span>
+            <h4>Top 10 Home Services You Can Book Online in Pakistan</h4>
+            <p>A comprehensive city breakdown of the most popular home and technical services in Lahore, Karachi, and Islamabad.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<div class="footer-divider"></div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html" class="logo" style="display:flex;align-items:center;margin-bottom:16px;">
+        <img src="../assets/logo.png" alt="DoorSkill Logo" width="36" height="36" loading="lazy" style="filter:brightness(0) invert(1);height:36px;">
+        <span style="font-size:24px;font-weight:900;color:#fff;margin-left:8px;font-family:'Playfair Display',serif;letter-spacing:-0.02em;">DoorSkill</span>
+      </a>
+      <p>Connecting clients with verified local professionals worldwide. Secure, efficient, and dependable — every single time.</p>
+      <div class="footer-social">
+        <a href="javascript:void(0)" class="soc-btn">f</a>
+        <a href="javascript:void(0)" class="soc-btn">in</a>
+        <a href="javascript:void(0)" class="soc-btn">ig</a>
+        <a href="javascript:void(0)" class="soc-btn">yt</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="../pages/find-workers.html?category=Home%20Repairs">Home Repairs</a></li>
+        <li><a href="../pages/find-workers.html?category=Cleaning">Home Cleaning</a></li>
+        <li><a href="../pages/find-workers.html?category=Auto%20Services">Auto &amp; Bike</a></li>
+        <li><a href="../pages/find-workers.html?category=Beauty">Beauty &amp; Salon</a></li>
+        <li><a href="../pages/find-workers.html?category=Logistics%20%26%20Helpers">Logistics &amp; Helpers</a></li>
+        <li><a href="../pages/find-workers.html?category=Other%20Local%20Services">Other Local Services</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="../index.html#how-it-works">How it Works</a></li>
+        <li><a href="../pages/post-job.html">Post a Job</a></li>
+        <li><a href="../auth/worker-signup.html">Become a Worker</a></li>
+        <li><a href="../auth/login.html">Login to Dashboard</a></li>
+        <li><a href="../pages/find-workers.html">Browse All Profiles</a></li>
+        <li><a href="javascript:void(0)">Pricing &amp; Fees</a></li>
+        <li><a href="javascript:void(0)">Trust &amp; Safety</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="../index.html#about">About DoorSkill</a></li>
+        <li><a href="javascript:void(0)">Careers</a></li>
+        <li><a href="javascript:void(0)">Privacy Policy</a></li>
+        <li><a href="javascript:void(0)">Terms of Service</a></li>
+        <li><a href="javascript:void(0)">Contact Support</a></li>
+        <li><a href="../sitemap.xml">XML Sitemap</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 DoorSkill. Made with ❤️ for the World.</p>
+  </div>
+</footer>
+
+<script>
+function toggleMobile(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function subscribeNewsletter(){
+  const email = document.getElementById('news-email').value;
+  if(email && email.includes('@')){
+    document.getElementById('news-success').style.display = 'block';
+    document.getElementById('news-email').value = '';
+  } else {
+    alert("Please enter a valid email address.");
+  }
+}
+
+// FAQ Accordion Interactivity
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentNode;
+    item.classList.toggle('active');
+  });
+});
+</script>
+</body>
+</html>
+

@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DoorSkill — Register as Worker</title>
-<meta name="description" content="Join DoorSkill as a professional worker and get hired globally. Offer your skills and build your freelance or local service business."/>
-<meta name="keywords" content="DoorSkill worker, freelance jobs, professional signup, offer services, find clients globally"/>
+<title>DoorSkill — Register as a Local Trade Professional</title>
+<meta name="description" content="Join DoorSkill as a local home service professional or skilled tradesperson. Register as a plumber, cleaner, electrician, mechanic, or handyman and get local job requests."/>
+<meta name="keywords" content="DoorSkill worker registration, register handyman, plumber registration, electrician signup, local gig work, DoorSkill"/>
+<link rel="canonical" href="https://www.doorskill.com/auth/worker-signup.html"/>
+<meta name="robots" content="index, follow"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="icon" href="../assets/logo.png" type="image/png"/>
 <style>
@@ -58,12 +61,105 @@ body{
 }
 .nav-right a:hover{text-decoration:underline;}
 
-/* ── WRAPPER ── */
+
+/* Split-screen container styles */
+.split-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 68px);
+  flex: 1;
+}
+.split-left {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #fff;
+}
+.split-right {
+  position: relative;
+  background: linear-gradient(135deg, var(--dark) 0%, #2d0a1e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 40px;
+}
+.split-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(244,63,94,.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.visual-wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 440px;
+  color: #fff;
+}
+
+/* Page Transition animation */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+body {
+  animation: fadeInPage 0.4s ease-out both;
+}
+
+/* Google Registration Button */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--dark);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+  margin-top: 14px;
+}
+.google-btn:hover {
+  background: var(--pink-bg);
+  border-color: var(--rose-md);
+  transform: translateY(-1px);
+}
+
+/* Password Strength Indicator */
+.strength-meter {
+  height: 4px;
+  background: var(--border);
+  margin-top: 6px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.strength-bar {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s, background-color 0.3s;
+}
+.strength-text {
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Hide old centering wrapper */
 .page-wrap{
   flex:1;display:flex;
   align-items:flex-start;
   justify-content:center;
   padding:40px 16px 60px;
+  display: none !important;
 }
 
 /* ── CARD ── */
@@ -514,7 +610,7 @@ input[type=range]::-webkit-slider-thumb{
 
 <!-- Top Nav -->
 <div class="top-nav">
-  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="42" height="42" style="height:42px;">
 <span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
   <div class="nav-right">
     Already registered?
@@ -528,10 +624,10 @@ input[type=range]::-webkit-slider-thumb{
 
   <!-- Header -->
   <div class="card-header">
-    <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+    <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="42" height="42" style="height:42px;">
 <span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
     <h2>Join as a Worker 👷</h2>
-    <p>Register your skills and start earning globally</p>
+    <p>Register your skills and start earning locally</p>
   </div>
 
   <!-- Progress -->
@@ -554,7 +650,7 @@ input[type=range]::-webkit-slider-thumb{
   </div>
 
   <!-- ══════════════════════════════
-       STEP 1 — LOCATION (Global)
+       STEP 1 — LOCATION (Local)
   ══════════════════════════════ -->
   <div class="fstep active" id="step1">
     <div class="fgroup">
@@ -569,7 +665,7 @@ input[type=range]::-webkit-slider-thumb{
         <option value="India" data-code="+91">🇮🇳 India</option>
         <option value="Canada" data-code="+1">🇨🇦 Canada</option>
         <option value="Australia" data-code="+61">🇦🇺 Australia</option>
-        <option value="Other" data-code="">🌍 Other (Global)</option>
+        <option value="Other" data-code="">🌍 Other</option>
       </select>
     </div>
 
@@ -584,6 +680,7 @@ input[type=range]::-webkit-slider-thumb{
       </div>
     </div>
 
+    <div id="recaptcha-container" style="margin-bottom: 4px;"></div>
     <button class="gps-btn" id="sendOtpBtn" onclick="sendOTP()" style="margin-bottom:16px;">
       📱 Send OTP to Verify Phone
     </button>
@@ -710,7 +807,12 @@ input[type=range]::-webkit-slider-thumb{
 
     <div class="fgroup">
       <label>Password * <span style="font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;">(Min 6 characters)</span></label>
-      <input type="password" id="password" placeholder="Min 6 characters" />
+      <input type="password" id="password" placeholder="Min 6 characters" oninput="checkPasswordStrength(this.value)" />
+      <!-- Password Strength Meter -->
+      <div class="strength-meter">
+        <div id="strengthBar" class="strength-bar"></div>
+      </div>
+      <span id="strengthText" class="strength-text" style="color: var(--muted);">Password Complexity</span>
     </div>
 
     <div class="fgroup">
@@ -739,21 +841,14 @@ input[type=range]::-webkit-slider-thumb{
       <label>Main Category *</label>
       <select id="category">
         <option value="">Select your main category</option>
-        <option>🔧 Home Repairs</option>
-        <option>📚 Education</option>
-        <option>🏥 Health & Medical</option>
-        <option>💄 Beauty & Salon</option>
-        <option>🧹 Cleaning & Maintenance</option>
-        <option>💻 IT, Web & Tech</option>
-        <option>🚗 Auto Services</option>
-        <option>🍳 Food & Chef</option>
-        <option>🏗️ Construction</option>
-        <option>📈 Business Services</option>
-        <option>🎨 Creative & Design</option>
-        <option>🚚 Transport & Delivery</option>
-        <option>Other (Custom)</option>
+        <option value="Home Repairs">🔧 Home Repairs</option>
+        <option value="Cleaning">🧹 Cleaning</option>
+        <option value="Auto Services">🚗 Auto Services</option>
+        <option value="Beauty">💄 Beauty</option>
+        <option value="Logistics & Helpers">🚚 Logistics &amp; Helpers</option>
+        <option value="Other Local Services">✨ Other Local Services</option>
       </select>
-      <div class="hint">🌍 Any category — DoorSkill accepts all businesses worldwide</div>
+      <div class="hint">🌍 Choose the category that best represents your primary service trade.</div>
     </div>
 
     <div class="fgroup">
@@ -761,7 +856,7 @@ input[type=range]::-webkit-slider-thumb{
       <div class="skill-wrap" id="skillWrap">
         <div class="skill-row" id="skillRow1">
           <div class="skill-num">1</div>
-          <input type="text" class="skill-input" id="skill1" placeholder="e.g. Plumber, SEO Expert, Tutor..." maxlength="30" oninput="updateCharBar(this,'cb1')" />
+          <input type="text" class="skill-input" id="skill1" placeholder="e.g. Plumber, AC Repair, Electrician..." maxlength="30" oninput="updateCharBar(this,'cb1')" />
         </div>
         <div class="char-bar" id="cb1">0/30</div>
       </div>
@@ -955,8 +1050,42 @@ input[type=range]::-webkit-slider-thumb{
     </a>
   </div>
 
-</div><!-- end .card -->
-</div><!-- end .page-wrap -->
+      </div><!-- end .card -->
+    </div><!-- end .form-container -->
+  </div><!-- end .split-left -->
+  
+  <!-- Right side: Visual and Benefits Panel -->
+  <div class="split-right">
+    <div class="visual-wrap">
+      <h2 style="font-family:'Playfair Display',serif; font-size:36px; font-weight:900; margin-bottom:20px; color:#fff;">Maximize Your Earnings Today</h2>
+      <p style="font-size:16px; line-height:1.7; opacity:0.9; margin-bottom:40px; color:rgba(255,255,255,0.85);">Become a DoorSkill worker and enjoy these exclusive benefits designed to help you grow your local business:</p>
+      
+      <div style="display:flex; flex-direction:column; gap:20px; margin-bottom:40px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:24px;">💰</span>
+          <div>
+            <div style="font-weight:700; font-size:15px; color:#fff;">0% Commission Launch Offer</div>
+            <div style="font-size:12px; opacity:0.7; color:rgba(255,255,255,0.7);">Keep 100% of your earnings for the first 3 months.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:24px;">🚨</span>
+          <div>
+            <div style="font-weight:700; font-size:15px; color:#fff;">Instant Local Job Alerts</div>
+            <div style="font-size:12px; opacity:0.7; color:rgba(255,255,255,0.7);">Get notifications about job requests near your address instantly.</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:24px;">🔒</span>
+          <div>
+            <div style="font-weight:700; font-size:15px; color:#fff;">Secure Escrow Protection</div>
+            <div style="font-size:12px; opacity:0.7; color:rgba(255,255,255,0.7);">Never worry about non-payments. Payments are secured in escrow first.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════
      FIREBASE SCRIPT (Mock Logic Maintained)
@@ -964,7 +1093,7 @@ input[type=range]::-webkit-slider-thumb{
 <script type="module">
 import { initializeApp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, updateProfile }
+import { getAuth, createUserWithEmailAndPassword, updateProfile, RecaptchaVerifier, signInWithPhoneNumber }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -986,49 +1115,146 @@ const auth    = getAuth(app);
 const db      = getFirestore(app);
 const storage = getStorage(app);
 
-// ── OTP System (Simulated — works without SMS plan) ──
-let _generatedOTP = null;
+// ── Security Helpers ──
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>/g, '');
+}
+
+function checkOtpRateLimit(phoneNumber) {
+  const now = Date.now();
+  const key = 'otp_requests_' + phoneNumber;
+  let requests = JSON.parse(localStorage.getItem(key) || '[]');
+  requests = requests.filter(ts => now - ts < 3600000);
+  if (requests.length >= 3) {
+    return false;
+  }
+  requests.push(now);
+  localStorage.setItem(key, JSON.stringify(requests));
+  return true;
+}
+
+function recordFailedOtp(phoneNumber) {
+  const key = 'otp_failed_' + phoneNumber;
+  let data = JSON.parse(localStorage.getItem(key) || '{"count": 0, "blockedUntil": 0}');
+  data.count += 1;
+  if (data.count >= 3) {
+    data.blockedUntil = Date.now() + 3600000; // Block for 1 hour
+  }
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function checkOtpBlocked(phoneNumber) {
+  const key = 'otp_failed_' + phoneNumber;
+  let data = JSON.parse(localStorage.getItem(key) || '{"count": 0, "blockedUntil": 0}');
+  if (data.blockedUntil > Date.now()) {
+    return data.blockedUntil;
+  }
+  return 0;
+}
+
+// ── OTP System (Real Firebase Auth) ──
+function formatPakistanPhone(phone) {
+  // Strip all spaces, dashes, parentheses from phone input
+  let cleaned = phone.replace(/[\s\-()]/g, '');
+  if (cleaned.startsWith('0')) {
+    // If number starts with "0", replace with "+92"
+    return '+92' + cleaned.substring(1);
+  } else if (cleaned.startsWith('92')) {
+    // If number starts with "92" (no plus), add "+" prefix
+    return '+' + cleaned;
+  } else if (cleaned.startsWith('+92')) {
+    // If number starts with "+92", keep as is
+    return cleaned;
+  } else {
+    if (cleaned.length === 10) {
+      return '+92' + cleaned;
+    }
+    if (!cleaned.startsWith('+')) {
+      return '+92' + cleaned;
+    }
+    return cleaned;
+  }
+}
+
 let otpCountdownInterval = null;
 let otpExpireTime = null;
 
-window.sendOTP = function() {
+window.sendOTP = async function() {
   const code = document.getElementById('mobileCode').value.trim();
-  const ph   = document.getElementById('phone').value.trim();
+  let ph     = document.getElementById('phone').value.trim();
   if(!code || !ph) return showErr('err1', 'پہلے اپنا موبائل نمبر لکھیں۔ (Please enter your mobile number.)');
+  
+  // Strip leading "0" from mobile input before concatenating
+  if (ph.startsWith('0')) {
+    ph = ph.substring(1);
+  }
+  const rawPhone = code + ph;
+  const phone = formatPakistanPhone(rawPhone);
 
-  // Generate 6-digit OTP
-  _generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-  window.isPhoneVerified = false;
-
+  // OTP Rate Limiting Check
+  const blockedTime = checkOtpBlocked(phone);
+  if (blockedTime > Date.now()) {
+    const minLeft = Math.ceil((blockedTime - Date.now()) / 60000);
+    return showErr('err1', `Verification blocked. Please wait ${minLeft} minutes.`);
+  }
+  if (!checkOtpRateLimit(phone)) {
+    return showErr('err1', 'Rate limit exceeded. Maximum 3 OTP requests per hour.');
+  }
+  
   const btn = document.getElementById('sendOtpBtn');
   btn.disabled = true;
-  btn.textContent = '✅ OTP Sent!';
+  btn.textContent = '📱 Sending OTP...';
 
-  // Show OTP group
-  const grp = document.getElementById('otpGroup');
-  grp.style.display = 'block';
-  document.getElementById('otpInput').value = '';
-  document.getElementById('otpInput').disabled = false;
-  document.getElementById('verifyOtpBtn').disabled = false;
-  document.getElementById('verifyOtpBtn').textContent = '✔ Verify';
-  document.getElementById('otpResendBtn').style.display = 'none';
-  document.getElementById('otpVerifiedBadge').style.display = 'none';
+  try {
+    if(window.recaptchaVerifier) {
+      try { window.recaptchaVerifier.clear(); } catch(e) {}
+    }
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
 
-  // Show hint box with OTP (for demo/testing)
-  const hintBox = document.getElementById('otpHintBox');
-  hintBox.style.display = 'block';
-  document.getElementById('otpDebugHint').textContent =
-    '(Demo mode) Your OTP code: ' + _generatedOTP;
+    const result = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+    window.confirmationResult = result;
 
-  // Disable phone editing
-  document.getElementById('phone').disabled = true;
-  document.getElementById('mobileCode').disabled = true;
+    // Show OTP group
+    const grp = document.getElementById('otpGroup');
+    grp.style.display = 'block';
+    document.getElementById('otpInput').value = '';
+    document.getElementById('otpInput').disabled = false;
+    document.getElementById('verifyOtpBtn').disabled = false;
+    document.getElementById('verifyOtpBtn').textContent = '✔ Verify';
+    document.getElementById('otpResendBtn').style.display = 'none';
+    document.getElementById('otpVerifiedBadge').style.display = 'none';
 
-  // Start 5-minute countdown
-  startOtpTimer(300);
-  
-  // Scroll OTP into view
-  grp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Disable phone editing
+    document.getElementById('phone').disabled = true;
+    document.getElementById('mobileCode').disabled = true;
+    btn.textContent = '✅ OTP Sent!';
+
+    // Start 5-minute countdown
+    startOtpTimer(300);
+    
+    // Scroll OTP into view
+    grp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Show a success message in OTP Hint Box
+    document.getElementById('otpHintBox').style.display = 'block';
+    document.getElementById('otpDebugHint').textContent = 'SMS sent to: ' + phone;
+
+  } catch(err) {
+    console.error('Worker OTP Error:', err);
+    btn.disabled = false;
+    btn.textContent = '📱 Send OTP to Verify Phone';
+    document.getElementById('phone').disabled = false;
+    document.getElementById('mobileCode').disabled = false;
+
+    let msg = 'Failed to send OTP: ' + err.message;
+    if(err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please wait a few minutes.';
+    if(err.code === 'auth/invalid-phone-number') msg = 'Invalid phone number format.';
+    showErr('err1', msg);
+    if(window.recaptchaVerifier) {
+      try { window.recaptchaVerifier.clear(); } catch(e) {}
+    }
+  }
 };
 
 function startOtpTimer(seconds) {
@@ -1062,7 +1288,7 @@ function startOtpTimer(seconds) {
   }, 1000);
 }
 
-window.verifyOTP = function() {
+window.verifyOTP = async function() {
   const entered = document.getElementById('otpInput').value.trim();
   if(!entered || entered.length !== 6) return showErr('err1', '6 ہندسوں کا OTP لکھیں۔');
   if(otpExpireTime && Date.now() > otpExpireTime) {
@@ -1070,29 +1296,93 @@ window.verifyOTP = function() {
     document.getElementById('otpResendBtn').style.display = 'inline-block';
     return;
   }
-  if(entered !== _generatedOTP) {
-    showErr('err1', 'غلط OTP کوڈ ہے۔ دوبارہ چیک کریں۔ (Wrong OTP)');
+  
+  const btn = document.getElementById('verifyOtpBtn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  try {
+    const result = await window.confirmationResult.confirm(entered);
+    window.isPhoneVerified = true;
+    clearInterval(otpCountdownInterval);
+    document.getElementById('otpInput').disabled = true;
+    document.getElementById('otpTimerWrap').style.display = 'none';
+    document.getElementById('otpResendBtn').style.display = 'none';
+    document.getElementById('otpHintBox').style.display = 'none';
+    document.getElementById('otpVerifiedBadge').style.display = 'flex';
+    btn.style.display = 'none';
+    document.getElementById('phone').readOnly = true;
+    document.getElementById('phone').disabled = true;
+    document.getElementById('mobileCode').disabled = true;
+    document.getElementById('sendOtpBtn').style.display = 'none';
+  } catch(err) {
+    console.error('Worker Verify Error:', err);
+    btn.disabled = false;
+    btn.textContent = '✔ Verify';
+    try {
+      const code = document.getElementById('mobileCode').value.trim();
+      let ph     = document.getElementById('phone').value.trim();
+      if (ph.startsWith('0')) ph = ph.substring(1);
+      const phone = formatPakistanPhone(code + ph);
+      recordFailedOtp(phone);
+    } catch(e) {}
+    showErr('err1', 'غلط OTP کوڈ ہے۔ دوبارہ چیک کریں۔ (Invalid OTP, please try again)');
     document.getElementById('otpInput').style.borderColor = 'var(--red)';
     setTimeout(() => document.getElementById('otpInput').style.borderColor = '', 2000);
-    return;
   }
-  // Correct!
-  window.isPhoneVerified = true;
-  clearInterval(otpCountdownInterval);
-  document.getElementById('otpInput').disabled = true;
-  document.getElementById('otpTimerWrap').style.display = 'none';
-  document.getElementById('otpResendBtn').style.display = 'none';
-  document.getElementById('otpHintBox').style.display = 'none';
-  document.getElementById('otpVerifiedBadge').style.display = 'flex';
-  document.getElementById('verifyOtpBtn').style.display = 'none';
-  document.getElementById('phone').readOnly = true;
-  document.getElementById('phone').disabled = true;
-  document.getElementById('mobileCode').disabled = true;
-  document.getElementById('sendOtpBtn').style.display = 'none';
 };
 
 // Expose resend via button
 window.sendOTP = window.sendOTP;
+
+/* ── Password Strength Gauge Logic ── */
+window.checkPasswordStrength = function(pass) {
+  const bar = document.getElementById('strengthBar');
+  const txt = document.getElementById('strengthText');
+  if (!bar || !txt) return;
+
+  if (!pass) {
+    bar.style.width = '0%';
+    bar.style.backgroundColor = 'var(--border)';
+    txt.textContent = 'Password Complexity';
+    txt.style.color = 'var(--muted)';
+    return;
+  }
+
+  let score = 0;
+  if (pass.length >= 6) score++;
+  if (pass.length >= 10) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^A-Za-z0-9]/.test(pass)) score++;
+
+  let pct = '0%';
+  let color = 'var(--red)';
+  let label = 'Weak ❌';
+
+  if (score <= 2) {
+    pct = '33%';
+    color = 'var(--red)';
+    label = 'Weak ❌';
+  } else if (score <= 4) {
+    pct = '66%';
+    color = 'orange';
+    label = 'Medium ⚡';
+  } else {
+    pct = '100%';
+    color = 'var(--green)';
+    label = 'Strong 💪';
+  }
+
+  bar.style.width = pct;
+  bar.style.backgroundColor = color;
+  txt.textContent = 'Strength: ' + label;
+  txt.style.color = color;
+};
+
+window.continueWithGoogle = function() {
+  alert('Google authentication registration will require client configuration on live deployment.');
+};
 
 // ── MAIN SUBMIT ──
 window.submitWorker = async function(){
@@ -1109,16 +1399,55 @@ window.submitWorker = async function(){
     const password   = document.getElementById('password').value;
     const first      = document.getElementById('firstName').value.trim();
     const last       = document.getElementById('lastName').value.trim();
-    const phone      = document.getElementById('mobileCode').value + document.getElementById('phone').value.trim();
+    const cnicRaw    = document.getElementById('cnic').value.trim();
+
+    // Sanitize text inputs
+    const cleanFirst = sanitizeInput(first);
+    const cleanLast = sanitizeInput(last);
+    const cleanEmail = sanitizeInput(emailInput);
+    const cleanCnic = sanitizeInput(cnicRaw);
+
+    // Max length validation
+    if (cleanFirst.length > 50 || cleanLast.length > 50) {
+      hideOverlay();
+      return showErr('err4', 'First name and last name must be under 50 characters.');
+    }
+    if (cleanEmail.length > 100) {
+      hideOverlay();
+      return showErr('err4', 'Email address must be under 100 characters.');
+    }
+    if (cleanCnic.length > 20) {
+      hideOverlay();
+      return showErr('err4', 'CNIC must be under 20 characters.');
+    }
+
+    // Email format validation (if provided)
+    if (cleanEmail) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(cleanEmail)) {
+        hideOverlay();
+        return showErr('err4', 'Please enter a valid email address.');
+      }
+    }
+
+    // CNIC format validation
+    const cnicRegex = /^(\d{13}|\d{5}-\d{7}-\d{1})$/;
+    if (!cnicRegex.test(cleanCnic)) {
+      hideOverlay();
+      return showErr('err4', 'Invalid CNIC format. Use 13 digits or XXXXX-XXXXXXX-X.');
+    }
+
+    let phRaw = document.getElementById('phone').value.trim();
+    if (phRaw.startsWith('0')) phRaw = phRaw.substring(1);
+    const phone = formatPakistanPhone(document.getElementById('mobileCode').value + phRaw);
 
     // ── 1. Firebase Email/Password Auth ──
-    // Use phone as fake email if no email provided
-    const loginEmail = emailInput || (phone.replace(/[^0-9]/g,'') + '@doorskill.worker');
+    const loginEmail = cleanEmail || (phone.replace(/[^0-9]/g,'') + '@doorskill.worker');
     let uid;
     try {
       const cred = await createUserWithEmailAndPassword(auth, loginEmail, password);
       uid = cred.user.uid;
-      await updateProfile(cred.user, { displayName: first+' '+last });
+      await updateProfile(cred.user, { displayName: cleanFirst+' '+cleanLast });
     } catch(authErr) {
       if(authErr.code === 'auth/email-already-in-use') {
         // Worker already registered — just fetch UID
@@ -1180,7 +1509,7 @@ window.submitWorker = async function(){
     const skillInputs = document.querySelectorAll('.skill-input');
     const skills = [];
     skillInputs.forEach(inp => {
-      if(inp.value.trim()) skills.push(inp.value.trim());
+      if(inp.value.trim()) skills.push(sanitizeInput(inp.value.trim()));
     });
 
     // ── 5. Save to Firestore ──
@@ -1189,25 +1518,25 @@ window.submitWorker = async function(){
 
     await setDoc(doc(db,'workers',uid),{
       uid,
-      firstName:  first,
-      lastName:   last,
-      fullName:   first+' '+last,
-      email,
+      firstName:  cleanFirst,
+      lastName:   cleanLast,
+      fullName:   cleanFirst+' '+cleanLast,
+      email:      cleanEmail,
       phone:      phone,
       country:    document.getElementById('country').value,
       province:   document.getElementById('province').value,
       city:       document.getElementById('city').value,
-      address:    document.getElementById('address').value.trim(),
-      town:       document.getElementById('town').value.trim(),
-      street:     document.getElementById('street').value.trim(),
-      market:     document.getElementById('market').value.trim(),
-      shopName:   document.getElementById('shopName').value.trim(),
-      shopAddress:document.getElementById('shopAddress').value.trim(),
+      address:    sanitizeInput(document.getElementById('address').value.trim()),
+      town:       sanitizeInput(document.getElementById('town').value.trim()),
+      street:     sanitizeInput(document.getElementById('street').value.trim()),
+      market:     sanitizeInput(document.getElementById('market').value.trim()),
+      shopName:   sanitizeInput(document.getElementById('shopName').value.trim()),
+      shopAddress:sanitizeInput(document.getElementById('shopAddress').value.trim()),
       category:   document.getElementById('category').value,
       skills,
       experience: document.getElementById('experience').value,
       gender:     document.getElementById('gender').value,
-      cnic:       document.getElementById('cnic').value.trim(),
+      cnic:       cleanCnic,
       rate:       parseInt(rate),
       rateType:   document.getElementById('rateType').value,
       photoURL,
@@ -1371,6 +1700,19 @@ function showErr(id, msg){
 function previewDP(input){
   const file = input.files[0];
   if(!file) return;
+  
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  if(!allowedTypes.includes(file.type)) {
+    alert("Only JPG, JPEG, and PNG images are allowed.");
+    input.value = "";
+    return;
+  }
+  if(file.size > 5 * 1024 * 1024) {
+    alert("Profile picture size must be less than 5MB.");
+    input.value = "";
+    return;
+  }
+
   const url = URL.createObjectURL(file);
   const img = document.getElementById('dpPreview');
   const icon= document.getElementById('dpIcon');
@@ -1390,12 +1732,12 @@ function addSkill(){
   skillCount++;
   const wrap = document.getElementById('skillWrap');
   const div  = document.createElement('div');
-  div.id = 'skillRowWrap'+skillCount;
+  div.id = 'skillRowWrap' + skillCount;
   div.innerHTML = `
-    <div class="skill-row" id="skillRow${skillCount}">
+    <div class="skill-row" id="skillRow${skillCount}" style="margin-top:10px;">
       <div class="skill-num">${skillCount}</div>
       <input type="text" class="skill-input" id="skill${skillCount}" placeholder="Skill ${skillCount}" maxlength="30" oninput="updateCharBar(this,'cb${skillCount}')"/>
-      <button class="skill-del" onclick="removeSkill(${skillCount})" title="Remove">×</button>
+      <button type="button" class="skill-del" onclick="removeSkill(${skillCount})" title="Remove" style="background:none;border:none;color:var(--rose);font-size:20px;cursor:pointer;padding:0 8px;">×</button>
     </div>
     <div class="char-bar" id="cb${skillCount}">0/30</div>
   `;
@@ -1408,8 +1750,10 @@ function addSkill(){
 }
 
 function removeSkill(n){
-  const el = document.getElementById('skillRowWrap'+n);
-  if(el) el.remove();
+  const el = document.getElementById('skillRowWrap' + n);
+  if(el) {
+    el.remove();
+  }
   skillCount--;
   document.getElementById('addSkillBtn').disabled = false;
   document.getElementById('addSkillBtn').innerHTML = '<span>＋</span> Add Another Skill (Max 3)';
@@ -1561,7 +1905,24 @@ window.diplomaFilesArray = [];
 function diplomaChosen(input){
   const list = document.getElementById('diplomaList');
   list.innerHTML = '';
-  window.diplomaFilesArray = Array.from(input.files);
+  
+  const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+  const validFiles = [];
+  
+  Array.from(input.files).forEach(file => {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(ext)) {
+      alert(`File "${file.name}" rejected: Only JPG, JPEG, PNG, and PDF files are allowed.`);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert(`File "${file.name}" rejected: Size must be less than 5MB.`);
+      return;
+    }
+    validFiles.push(file);
+  });
+
+  window.diplomaFilesArray = validFiles;
   window.diplomaFilesArray.forEach((file, idx) => {
     const div = document.createElement('div');
     div.className = 'file-chosen';
@@ -1605,3 +1966,4 @@ window.addEventListener('load',()=>{
 <script src="../assets/ai-helper.js"></script>
 </body>
 </html>
+

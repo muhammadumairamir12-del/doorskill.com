@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Careers at DoorSkill | Join Our Team</title>
+<meta name="description" content="Explore job openings and career opportunities at DoorSkill, Pakistan's leading local services marketplace."/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" href="../assets/logo.png" type="image/png"/>
+<style>
+:root{
+  --rose:#F43F5E; --rose-lt:#FFE4EC; --rose-md:#FB7185;
+  --pink-bg:#FFF0F5; --cream:#FFFAF9;
+  --dark:#1A0A14; --mid:#5C3D4E; --muted:#9D7589;
+  --white:#FFFFFF; --border:#F3D6E0;
+  --green:#10B981; --shadow:0 4px 24px rgba(244,63,94,.10);
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--dark); line-height:1.7;
+}
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:68px; background:rgba(255,255,255,.92);
+  backdrop-filter:blur(20px); border-bottom:1px solid var(--border);
+}
+.logo{display:inline-flex;align-items:center;text-decoration:none;}
+.logo img{height:32px;width:auto;}
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none;}
+.nav-links a{
+  text-decoration:none;font-size:14px;font-weight:500;color:var(--mid);
+  padding:8px 14px;border-radius:8px;transition:all .2s;
+}
+.nav-links a:hover{background:var(--rose-lt);color:var(--rose);}
+.nav-btns{display:flex;gap:8px;align-items:center;}
+.btn-fill{
+  padding:8px 20px;border-radius:8px;border:none;background:var(--rose); color:#fff;
+  font-size:14px;font-weight:600;cursor:pointer; transition:all .2s;text-decoration:none; display:inline-flex;align-items:center;
+}
+.btn-fill:hover{background:#e0334f;transform:translateY(-1px);box-shadow:0 6px 20px rgba(244,63,94,.3);}
+
+.hero {
+  padding: 140px 5% 60px; text-align: center;
+  background: linear-gradient(160deg,#fff 0%,#FFF0F5 35%,#FFE4EC 100%);
+}
+.hero h1 { font-family:'Playfair Display',serif; font-size: 3rem; font-weight: 900; margin-bottom: 16px; }
+.hero p { color: var(--mid); max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
+
+.container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+.card { background: #fff; padding: 40px; border-radius: var(--r); border: 1.5px solid var(--border); box-shadow: var(--shadow); }
+.card h2 { font-family:'Playfair Display',serif; font-size: 1.8rem; margin-bottom: 20px; }
+.card p { margin-bottom: 20px; color: var(--mid); }
+.openings { margin-top: 30px; }
+.opening { border-bottom: 1px solid var(--border); padding: 16px 0; display: flex; justify-content: space-between; align-items: center; }
+.opening:last-child { border-bottom: none; }
+.op-title { font-weight: 700; color: var(--dark); }
+.op-dept { font-size: 13px; color: var(--muted); }
+
+footer{background:var(--dark);color:#fff;padding:56px 5% 28px;position:relative;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;}
+.footer-brand p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;max-width:260px;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="logo">
+    <img src="../assets/logo.png" alt="DoorSkill Logo">
+    <span style="font-size:26px;font-weight:900;color:var(--rose);margin-left:8px;font-family:'Playfair Display',serif;">DoorSkill</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html#categoriesGrid">Services</a></li>
+    <li><a href="../index.html#how-it-works">How it Works</a></li>
+    <li><a href="../auth/worker-signup.html">Become a Worker</a></li>
+    <li><a href="../index.html#about">About</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a href="../pages/post-job.html" class="btn-fill">Post a Job →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Careers at DoorSkill</h1>
+  <p>Help us empower millions of local service professionals across Pakistan and the globe. Build the future of on-demand local services.</p>
+</section>
+
+<main class="container">
+  <div class="card">
+    <h2>Current Openings</h2>
+    <p>We are always looking for passionate product developers, community builders, operations managers, and trust &amp; safety specialists.</p>
+    
+    <div class="openings">
+      <div class="opening">
+        <div>
+          <div class="op-title">Senior Node.js Backend Developer</div>
+          <div class="op-dept">Engineering · Lahore (Hybrid)</div>
+        </div>
+        <a href="mailto:careers@doorskill.com" class="btn-fill" style="padding: 6px 14px; font-size: 12px;">Apply Now</a>
+      </div>
+      <div class="opening">
+        <div>
+          <div class="op-title">Onboarding &amp; Verification Lead</div>
+          <div class="op-dept">Operations · Karachi (Onsite)</div>
+        </div>
+        <a href="mailto:careers@doorskill.com" class="btn-fill" style="padding: 6px 14px; font-size: 12px;">Apply Now</a>
+      </div>
+      <div class="opening">
+        <div>
+          <div class="op-title">Product Manager - Trust &amp; Safety</div>
+          <div class="op-dept">Product · Remote</div>
+        </div>
+        <a href="mailto:careers@doorskill.com" class="btn-fill" style="padding: 6px 14px; font-size: 12px;">Apply Now</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html" class="logo" style="margin-bottom:16px;">
+        <img src="../assets/logo.png" alt="DoorSkill Logo" style="filter:brightness(0) invert(1);">
+        <span style="font-size:24px;font-weight:900;color:#fff;margin-left:8px;">DoorSkill</span>
+      </a>
+      <p>Connecting clients with verified local professionals worldwide.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 DoorSkill. Made with ❤️ for the World.</p>
+  </div>
+</footer>
+</body>
+</html>
+

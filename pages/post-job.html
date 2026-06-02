@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DoorSkill — Post a Job</title>
+<title>DoorSkill — Post a Home Service Job</title>
+<meta name="description" content="Post a home service or handyman job on DoorSkill and get bids from verified local professionals near you. Simple, fast, and secure."/>
+<meta name="keywords" content="post home service job, hire handyman, hire plumber, hire electrician, local home repair, DoorSkill"/>
+<link rel="canonical" href="https://www.doorskill.com/pages/post-job.html"/>
+<meta name="robots" content="index, follow"/>
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="DoorSkill — Post a Home Service Job"/>
+<meta property="og:description" content="Post a home service or handyman job on DoorSkill and get bids from verified local professionals near you."/>
+<meta property="og:image" content="https://www.doorskill.com/assets/logo.png"/>
+<meta property="og:url" content="https://www.doorskill.com/pages/post-job.html"/>
+<meta property="og:type" content="website"/>
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="DoorSkill — Post a Home Service Job"/>
+<meta name="twitter:description" content="Post a home service or handyman job on DoorSkill and get bids from verified local professionals near you."/>
+<meta name="twitter:image" content="https://www.doorskill.com/assets/logo.png"/>
 
 <script type="application/ld+json">
 {
@@ -13,24 +31,22 @@
     "@type": "ListItem",
     "position": 1,
     "name": "Home",
-    "item": "https://doorskill.com"
+    "item": "https://www.doorskill.com"
   },{
     "@type": "ListItem",
     "position": 2,
     "name": "Post Job",
-    "item": "https://doorskill.com/pages/post-job.html"
+    "item": "https://www.doorskill.com/pages/post-job.html"
   }]
 }
 </script>
-
-<meta name="description" content="Post a job on DoorSkill and get bids from verified professionals locally and globally. Simple, fast, and secure."/>
-<meta name="keywords" content="post a job, hire professional, local services, global freelancer, find expert, DoorSkill"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
+/* ══════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════ */
 :root{
-  --rose:#F43F5E;
-  --rose-lt:#FFE4EC;
-  --rose-md:#FB7185;
+  --rose:#F43F5E; --rose-lt:#FFE4EC; --rose-md:#FB7185;
   --pink-bg:#FFF0F5;
   --dark:#1A0A14;
   --mid:#5C3D4E;
@@ -674,10 +690,14 @@ input[type=range]::-webkit-slider-thumb{
   .sbar-dot { width: 28px; height: 28px; font-size: 11px; }
 }
 </style>
+</head>
+<body>
 <!-- Nav -->
 <div class="top-nav">
-  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
-<span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
+  <a href="../index.html" class="logo" style="display:flex; align-items:center;">
+    <img src="../assets/logo.png" alt="DoorSkill Logo" width="42" height="42" style="height:42px;">
+    <span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span>
+  </a>
   <div class="nav-right">
     <a href="../pages/find-workers.html">Find Workers</a>
     <a href="../dashboard/client.html" class="fill">My Dashboard →</a>
@@ -733,14 +753,8 @@ input[type=range]::-webkit-slider-thumb{
       </div>
     </div>
     <div class="s-actions">
-      <a href="../dashboard/client.html"
-         class="s-btn-primary">
-        📬 View Bids →
-      </a>
-      <a href="post-job.html"
-         class="s-btn-outline">
-        ➕ Post Another Job
-      </a>
+      <a href="../dashboard/client.html" class="s-btn-primary">📬 View Bids →</a>
+      <a href="post-job.html" class="s-btn-outline">➕ Post Another Job</a>
     </div>
   </div>
 
@@ -750,9 +764,18 @@ input[type=range]::-webkit-slider-thumb{
     <!-- LEFT — FORM -->
     <div>
 
-      <!-- ══════════════════════════
-           STEP 1 — CATEGORY
-      ══════════════════════════ -->
+      <!-- Direct Hire Alert Banner -->
+      <div id="preselectedWorkerAlert" style="display:none; background:var(--rose-lt); border:1.5px solid var(--rose); border-radius:12px; padding:16px 20px; margin-bottom:24px; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(244,63,94,.08);">
+        <div style="font-size:24px;">🔒</div>
+        <div>
+          <div style="font-weight:700; color:var(--rose); font-size:14px;">Direct Hire Mode Active</div>
+          <div style="font-size:13px; color:var(--mid); margin-top:2px;">
+            You are hiring <strong id="preselectedWorkerName" style="color:var(--dark);">...</strong>. Your job request and bids will be sent directly to this professional.
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1 - CATEGORY -->
       <div class="fstep active" id="step1">
         <div class="form-card">
           <div class="step-header">
@@ -764,52 +787,28 @@ input[type=range]::-webkit-slider-thumb{
           <div class="fgroup">
             <label>Select Category *</label>
             <div class="cat-grid" id="catGrid">
-              <div class="cat-opt" onclick="selectCat('Home Repairs','🔧')">
-                <div class="co-icon">🔧</div>
+              <div class="cat-opt" onclick="selectCat('Home Repairs','&#128295;')">
+                <div class="co-icon">&#128295;</div>
                 <div class="co-label">Home Repairs</div>
               </div>
-              <div class="cat-opt" onclick="selectCat('Education','📚')">
-                <div class="co-icon">📚</div>
-                <div class="co-label">Education</div>
-              </div>
-              <div class="cat-opt" onclick="selectCat('Health','🏥')">
-                <div class="co-icon">🏥</div>
-                <div class="co-label">Health</div>
-              </div>
-              <div class="cat-opt" onclick="selectCat('Beauty','💄')">
-                <div class="co-icon">💄</div>
-                <div class="co-label">Beauty</div>
-              </div>
-              <div class="cat-opt" onclick="selectCat('Cleaning','🧹')">
-                <div class="co-icon">🧹</div>
+              <div class="cat-opt" onclick="selectCat('Cleaning','&#129529;')">
+                <div class="co-icon">&#129529;</div>
                 <div class="co-label">Cleaning</div>
               </div>
-              <div class="cat-opt" onclick="selectCat('IT & Tech','💻')">
-                <div class="co-icon">💻</div>
-                <div class="co-label">IT &amp; Tech</div>
+              <div class="cat-opt" onclick="selectCat('Auto Services','&#128663;')">
+                <div class="co-icon">&#128663;</div>
+                <div class="co-label">Auto Services</div>
               </div>
-              <div class="cat-opt" onclick="selectCat('Auto Services','🚗')">
-                <div class="co-icon">🚗</div>
-                <div class="co-label">Auto</div>
+              <div class="cat-opt" onclick="selectCat('Beauty','&#128132;')">
+                <div class="co-icon">&#128132;</div>
+                <div class="co-label">Beauty</div>
               </div>
-              <div class="cat-opt" onclick="selectCat('Food & Chef','🍳')">
-                <div class="co-icon">🍳</div>
-                <div class="co-label">Chef/Cook</div>
+              <div class="cat-opt" onclick="selectCat('Logistics & Helpers','&#128666;')">
+                <div class="co-icon">&#128666;</div>
+                <div class="co-label">Logistics</div>
               </div>
-              <div class="cat-opt" onclick="selectCat('Construction','🏗️')">
-                <div class="co-icon">🏗️</div>
-                <div class="co-label">Construction</div>
-              </div>
-              <div class="cat-opt" onclick="selectCat('Business','📈')">
-                <div class="co-icon">📈</div>
-                <div class="co-label">Business</div>
-              </div>
-              <div class="cat-opt" onclick="selectCat('Design','🎨')">
-                <div class="co-icon">🎨</div>
-                <div class="co-label">Design</div>
-              </div>
-              <div class="cat-opt" onclick="selectCat('Other','✨')">
-                <div class="co-icon">✨</div>
+              <div class="cat-opt" onclick="selectCat('Other Local Services','&#10024;')">
+                <div class="co-icon">&#10024;</div>
                 <div class="co-label">Other</div>
               </div>
             </div>
@@ -817,11 +816,11 @@ input[type=range]::-webkit-slider-thumb{
             <!-- Custom category -->
             <div class="cat-custom" style="margin-top:12px;">
               <input type="text" id="customCat"
-                     placeholder="Or type your own: e.g. Wedding Planner..."
+                     placeholder="Or type your own: e.g. Pest Control, Gardening..."
                      oninput="customCatInput(this)"/>
             </div>
             <div class="hint" style="margin-top:6px;">
-              💡 Any skill works — DoorSkill accepts all types of jobs
+              💡 Focus on physical local services and skilled trades
             </div>
           </div>
 
@@ -884,7 +883,7 @@ input[type=range]::-webkit-slider-thumb{
           <div class="fgroup">
             <label>Specific Skill Needed *</label>
             <input type="text" id="skillNeeded"
-                   placeholder="e.g. Plumber, Math Teacher, Web Developer..."
+                   placeholder="e.g. Plumber, Electrician, Cleaner, Mechanic..."
                    oninput="updatePreview()"/>
             <div class="hint">
               💡 Be specific — workers search by skill
@@ -1243,6 +1242,201 @@ input[type=range]::-webkit-slider-thumb{
 ══════════════════════════════════ -->
 <script type="module">
 import { initializeApp }
+                      id="bt-negotiate"
+                      onclick="selectBudgetType('Negotiable','bt-negotiate')">
+                Negotiable
+              </button>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="fgroup">
+            <label>
+              Additional Notes
+              <span style="font-size:10px;color:var(--muted);
+                           text-transform:none;letter-spacing:0;">
+                (Optional)
+              </span>
+            </label>
+            <textarea id="jobNotes"
+                      placeholder="Any special instructions, payment terms, conditions etc."
+                      maxlength="200" rows="3"></textarea>
+          </div>
+
+          <div class="err-box" id="err3">
+            <span>⚠️</span><span id="err3msg"></span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-back" onclick="goStep(2)">← Back</button>
+            <button class="btn-next" onclick="v3()">
+              Next — Location →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════
+           STEP 4 — LOCATION
+      ══════════════════════════ -->
+      <div class="fstep" id="step4">
+        <div class="form-card">
+          <div class="step-header">
+            <h3>📍 Your Location</h3>
+            <p>Workers near you will get notified first</p>
+          </div>
+
+          <!-- GPS -->
+          <div class="fgroup">
+            <button class="gps-btn" id="gpsBtn"
+                    onclick="detectGPS()">
+              📍 Auto-Detect My Location
+            </button>
+            <div class="gps-status" id="gpsStatus">
+              Or enter your address manually below
+            </div>
+          </div>
+
+          <div class="fgroup">
+            <label>Street Address *</label>
+            <input type="text" id="jobAddress"
+                   placeholder="House No, Street, Area"
+                   oninput="updatePreview()"/>
+          </div>
+
+          <div class="frow">
+            <div class="fgroup">
+              <label>City *</label>
+              <select id="jobCity" onchange="updatePreview()">
+                <option value="">Select City</option>
+                <optgroup label="Major Cities">
+                  <option>Karachi</option>
+                  <option>Lahore</option>
+                  <option>Islamabad</option>
+                  <option>Rawalpindi</option>
+                  <option>Faisalabad</option>
+                  <option>Multan</option>
+                  <option>Peshawar</option>
+                  <option>Quetta</option>
+                </optgroup>
+                <optgroup label="Other">
+                  <option>Sialkot</option>
+                  <option>Gujranwala</option>
+                  <option>Hyderabad</option>
+                  <option>Bahawalpur</option>
+                  <option>Abbottabad</option>
+                  <option>Sargodha</option>
+                  <option>Other</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="fgroup">
+              <label>Province *</label>
+              <select id="jobProvince">
+                <option value="">Select Province</option>
+                <option>Punjab</option>
+                <option>Sindh</option>
+                <option>KPK</option>
+                <option>Balochistan</option>
+                <option>Islamabad (Federal)</option>
+                <option>AJK</option>
+                <option>Gilgit-Baltistan</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="fgroup">
+            <label>Contact Phone *</label>
+            <input type="tel" id="jobPhone"
+                   placeholder="+92 300 1234567"/>
+            <div class="hint">
+              🔒 Only shared with hired worker — not public
+            </div>
+          </div>
+
+          <!-- Terms -->
+          <div class="fgroup">
+            <label style="display:flex;align-items:flex-start;
+                          gap:8px;text-transform:none;
+                          letter-spacing:0;font-size:13px;
+                          font-weight:normal;color:var(--mid);">
+              <input type="checkbox" id="termsCheck"
+                     style="width:16px;height:16px;
+                            accent-color:var(--rose);
+                            margin-top:2px;flex-shrink:0;"/>
+              I agree to DoorSkill's
+              <a href="#" style="color:var(--rose);font-weight:600;">
+                Terms &amp; Conditions
+              </a>
+              and confirm this is a genuine job request.
+            </label>
+          </div>
+
+          <div class="err-box" id="err4">
+            <span>⚠️</span><span id="err4msg"></span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-back" onclick="goStep(3)">← Back</button>
+            <button class="btn-next" id="submitBtn"
+                    onclick="submitJob()">
+              🚀 Post Job Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — PREVIEW -->
+    <div class="right-col">
+
+      <!-- Job Preview -->
+      <div class="preview-card">
+        <div class="preview-title">
+          👁️ Job Preview
+        </div>
+        <div id="previewContent">
+          <div class="preview-empty">
+            Fill in details to see preview
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="tips-card">
+        <div class="tips-title">💡 Tips for Better Bids</div>
+        <div class="tip-item">
+          <span>📝</span>
+          Write a <strong>clear title</strong> — workers scan titles first
+        </div>
+        <div class="tip-item">
+          <span>📸</span>
+          Add <strong>photos</strong> — jobs with photos get 3x more bids
+        </div>
+        <div class="tip-item">
+          <span>💰</span>
+          Set a <strong>realistic budget</strong> — too low gets fewer bids
+        </div>
+        <div class="tip-item">
+          <span>📍</span>
+          Enable <strong>GPS location</strong> — nearby workers respond faster
+        </div>
+        <div class="tip-item">
+          <span>⭐</span>
+          Check worker <strong>ratings & reviews</strong> before hiring
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .two-col -->
+</div><!-- end .page-wrap -->
+
+<!-- ══════════════════════════════════
+     FIREBASE
+══════════════════════════════════ -->
+<script type="module">
+import { initializeApp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getAuth,
@@ -1253,8 +1447,12 @@ import {
   doc,
   getDoc,
   addDoc,
+  updateDoc,
   collection,
-  serverTimestamp
+  serverTimestamp,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getStorage,
@@ -1277,8 +1475,49 @@ const auth    = getAuth(app);
 const db      = getFirestore(app);
 const storage = getStorage(app);
 
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>/g, '');
+}
+
 let _uid     = null;
 let _client  = null;
+
+// ── PRESELECTED WORKER CHECK ──
+window.PRESELECTED_WORKER = { id: null, name: null };
+async function checkPreselectedWorker() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const workerId = urlParams.get('worker');
+  if (workerId) {
+    try {
+      const wSnap = await getDoc(doc(db, 'workers', workerId));
+      if (wSnap.exists()) {
+        const wData = wSnap.data();
+        window.PRESELECTED_WORKER = { id: workerId, name: wData.fullName || 'Professional' };
+        
+        // Show alert
+        const alertEl = document.getElementById('preselectedWorkerAlert');
+        const nameEl = document.getElementById('preselectedWorkerName');
+        if (alertEl && nameEl) {
+          nameEl.textContent = window.PRESELECTED_WORKER.name;
+          alertEl.style.display = 'flex';
+        }
+        
+        // Pre-select category
+        if (wData.category) {
+          if (typeof window.preselectCategory === 'function') {
+            window.preselectCategory(wData.category);
+          } else {
+            window.PENDING_PRESELECT_CAT = wData.category;
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching preselected worker:', err);
+    }
+  }
+}
+checkPreselectedWorker();
 
 // ── AUTH CHECK ──
 onAuthStateChanged(auth, async user => {
@@ -1328,7 +1567,54 @@ window.submitJob = async function(){
   if(!terms)
     return showErr('err4','Please agree to Terms & Conditions.');
 
-  showLoad('Posting Your Job...','Uploading data...');
+  const cleanAddress = sanitizeInput(address);
+  const cleanPhone = sanitizeInput(phone);
+  const cleanTitle = sanitizeInput(document.getElementById('jobTitle').value.trim());
+  const cleanDesc = sanitizeInput(document.getElementById('jobDesc').value.trim());
+  const cleanSkill = sanitizeInput(document.getElementById('skillNeeded').value.trim());
+  const cleanNotes = sanitizeInput(document.getElementById('jobNotes').value.trim());
+
+  // Input Length validation
+  if (cleanTitle.length < 10 || cleanTitle.length > 100) {
+    return showErr('err4', 'Job title must be between 10 and 100 characters.');
+  }
+  if (cleanDesc.length < 20 || cleanDesc.length > 1000) {
+    return showErr('err4', 'Job description must be between 20 and 1000 characters.');
+  }
+  if (cleanAddress.length > 200) {
+    return showErr('err4', 'Address must be under 200 characters.');
+  }
+
+  // Phone validation
+  const phoneRegex = /^(\+92|92|0)?3\d{9}$/;
+  if (!phoneRegex.test(cleanPhone)) {
+    return showErr('err4', 'Please enter a valid Pakistan mobile number.');
+  }
+
+  // ── Rate Limiting Check: Max 5 job posts per day ──
+  showLoad('Checking Limits...','Verifying posting limits...');
+  try {
+    const oneDayAgo = new Date();
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    const jobsQ = query(
+      collection(db, 'jobs'),
+      where('clientId', '==', _uid),
+      where('createdAt', '>=', oneDayAgo)
+    );
+    const jobsSnap = await getDocs(jobsQ);
+    if (jobsSnap.size >= 5) {
+      try {
+        await updateDoc(doc(db, 'users', _uid), { status: 'flagged', flagReason: 'Job post rate limit violation' });
+        await updateDoc(doc(db, 'clients', _uid), { status: 'flagged', flagReason: 'Job post rate limit violation' });
+      } catch(e) {}
+      hideLoad();
+      return showErr('err4', '⚠️ Rate limit exceeded: You can only post up to 5 jobs per day. Your account has been flagged.');
+    }
+  } catch(limitErr) {
+    console.error("Limit check failed:", limitErr);
+  }
+
+  updateLoad('Posting Your Job...','Uploading data...');
 
   try {
     // ── Upload Photos ──
@@ -1336,6 +1622,21 @@ window.submitJob = async function(){
     const photoURLs  = [];
 
     if(photoFiles.length > 0){
+      // Photo Upload Type and Size Validation
+      const allowedExtensions = ['jpg', 'jpeg', 'png'];
+      for(let i=0; i<photoFiles.length; i++){
+        const file = photoFiles[i];
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(ext)) {
+          hideLoad();
+          return showErr('err4', `Only JPG, JPEG, and PNG images are allowed for job photos.`);
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          hideLoad();
+          return showErr('err4', `Each job photo must be less than 5MB.`);
+        }
+      }
+
       updateLoad('Uploading Photos...','Please wait...');
       const maxPhotos = Math.min(photoFiles.length, 5);
       for(let i=0; i<maxPhotos; i++){
@@ -1355,16 +1656,16 @@ window.submitJob = async function(){
       clientId:    _uid,
       clientName:  _client?.fullName || 'Client',
       clientPhoto: _client?.photoURL || '',
-      clientPhone: phone,
+      clientPhone: cleanPhone,
 
       // Job info
-      title:       document.getElementById('jobTitle').value.trim(),
-      description: document.getElementById('jobDesc').value.trim(),
-      skillNeeded: document.getElementById('skillNeeded').value.trim(),
+      title:       cleanTitle,
+      description: cleanDesc,
+      skillNeeded: cleanSkill,
       category:    window._selectedCat || 'Other',
       urgency:     window._selectedUrgency || 'ASAP',
       scheduleDate:document.getElementById('scheduleDate')?.value||'',
-      notes:       document.getElementById('jobNotes').value.trim(),
+      notes:       cleanNotes,
       photos:      photoURLs,
 
       // Budget
@@ -1372,7 +1673,7 @@ window.submitJob = async function(){
       budgetType:  window._selectedBudgetType || 'Fixed',
 
       // Location
-      address,
+      address:     cleanAddress,
       city,
       province,
       location:{
@@ -1384,8 +1685,8 @@ window.submitJob = async function(){
       status:     'open',
       bidsCount:  0,
       bidders:    [],
-      hiredWorkerId:   null,
-      hiredWorkerName: null,
+      hiredWorkerId:   window.PRESELECTED_WORKER?.id || null,
+      hiredWorkerName: window.PRESELECTED_WORKER?.name || null,
 
       // Timestamps
       createdAt:  serverTimestamp(),
@@ -1394,6 +1695,39 @@ window.submitJob = async function(){
 
     const docRef = await addDoc(collection(db,'jobs'), jobData);
     console.log('Job posted:', docRef.id);
+
+    // ── Notify Workers ──
+    try {
+      if (jobData.hiredWorkerId) {
+        // Direct Hire
+        await window.triggerNotification(jobData.hiredWorkerId, {
+          title: "You've Been Hired! 🎉",
+          body: `${jobData.clientName} hired you for "${jobData.title}"`,
+          clickUrl: `../dashboard/worker.html`,
+          icon: "🎉"
+        });
+      } else {
+        // Broadcast to workers matching category and city
+        const workersQ = query(
+          collection(db, 'workers'),
+          where('status', '==', 'approved')
+        );
+        const wSnap = await getDocs(workersQ);
+        wSnap.forEach(wDoc => {
+          const w = wDoc.data();
+          if (w.category === jobData.category && w.city === jobData.city) {
+            window.triggerNotification(wDoc.id, {
+              title: "New Job Near You! 💼",
+              body: `"${jobData.title}" posted in ${jobData.city} — Rs.${jobData.budget}`,
+              clickUrl: `../dashboard/worker.html`,
+              icon: "💼"
+            });
+          }
+        });
+      }
+    } catch (notifErr) {
+      console.error("Failed to notify workers:", notifErr);
+    }
 
     // ── Show Success ──
     hideLoad();
@@ -1509,6 +1843,61 @@ window.selectCat = function(name, icon){
   document.getElementById('catSelectedText').textContent=icon+' '+name;
   updatePreview();
 };
+
+window.preselectCategory = function(catName) {
+  if (!catName) return;
+  const catGrid = document.getElementById('catGrid');
+  if (!catGrid) return;
+  const catOpts = catGrid.querySelectorAll('.cat-opt');
+  let matched = false;
+  
+  catOpts.forEach(opt => {
+    const labelEl = opt.querySelector('.co-label');
+    const label = labelEl ? labelEl.textContent.trim() : '';
+    if (label && label.toLowerCase() === catName.toLowerCase().trim()) {
+      // Clear custom category input
+      const customInput = document.getElementById('customCat');
+      if (customInput) customInput.value = '';
+      
+      // Remove selected class from others
+      catOpts.forEach(c => c.classList.remove('selected'));
+      // Add selected class to this one
+      opt.classList.add('selected');
+      window._selectedCat = label;
+      
+      const iconEl = opt.querySelector('.co-icon');
+      const icon = iconEl ? iconEl.textContent.trim() : '📂';
+      const infoEl = document.getElementById('catSelectedInfo');
+      const textEl = document.getElementById('catSelectedText');
+      if (infoEl) infoEl.style.display = 'block';
+      if (textEl) textEl.textContent = icon + ' ' + label;
+      
+      if (typeof updatePreview === 'function') updatePreview();
+      matched = true;
+    }
+  });
+
+  if (!matched) {
+    // Treat as custom category
+    const customInput = document.getElementById('customCat');
+    if (customInput) {
+      customInput.value = catName;
+      window._selectedCat = catName;
+      catOpts.forEach(c => c.classList.remove('selected'));
+      const infoEl = document.getElementById('catSelectedInfo');
+      const textEl = document.getElementById('catSelectedText');
+      if (infoEl) infoEl.style.display = 'block';
+      if (textEl) textEl.textContent = '✨ ' + catName;
+      if (typeof updatePreview === 'function') updatePreview();
+    }
+  }
+};
+
+// Check if there was a pending preselection check
+if (window.PENDING_PRESELECT_CAT) {
+  window.preselectCategory(window.PENDING_PRESELECT_CAT);
+  delete window.PENDING_PRESELECT_CAT;
+}
 
 window.customCatInput = function(input){
   if(input.value.trim()){
@@ -1691,5 +2080,6 @@ window.addEventListener('load',()=>{
 });
 </script>
 <script src="../assets/ai-helper.js"></script>
+<script type="module" src="../assets/notifications.js"></script>
 </body>
 </html>

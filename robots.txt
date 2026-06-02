@@ -1,9 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /admin-login.html
-Disallow: /dashboard/
-Disallow: /pages/chat.html
-Disallow: /pages/call.html
-
-Sitemap: https://doorskill.com/sitemap.xml
+Sitemap: https://www.doorskill.com/sitemap.xml

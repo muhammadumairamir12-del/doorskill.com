@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>DoorSkill — Login</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="icon" href="../assets/logo.png" type="image/png"/>
-<meta name="description" content="Login to DoorSkill. Connect with top professionals worldwide."/>
+<link rel="canonical" href="https://www.doorskill.com/auth/login.html"/>
+<meta name="robots" content="index, follow"/>
+<meta name="description" content="Login to DoorSkill. Find and hire top-rated local home service professionals and skilled tradespeople."/>
 <style>
 :root{
   --rose:#F43F5E;
@@ -88,12 +91,85 @@ body{
   background:#e0334f;
 }
 
+
+/* Split-screen container styles */
+.split-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 68px);
+  flex: 1;
+}
+.split-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #fff;
+}
+.split-right {
+  position: relative;
+  background: linear-gradient(135deg, var(--dark) 0%, #2d0a1e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 40px;
+}
+.split-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(244,63,94,.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.visual-wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 440px;
+  color: #white;
+}
+
+/* Page Transition animation */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+body {
+  animation: fadeInPage 0.4s ease-out both;
+}
+
+/* Google Sign-in Button styling */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--dark);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+  margin-top: 14px;
+}
+.google-btn:hover {
+  background: var(--pink-bg);
+  border-color: var(--rose-md);
+  transform: translateY(-1px);
+}
+
 /* ── PAGE WRAP ── */
 .page-wrap{
   flex:1;display:flex;
   align-items:center;justify-content:center;
   padding:40px 16px 60px;
   position:relative;z-index:1;
+  display: none !important; /* Hide old centered wrapper */
 }
 
 /* ── MAIN CARD ── */
@@ -296,7 +372,7 @@ body{
 </div>
 
 <div class="top-nav">
-  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
+  <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="42" height="42" style="height:42px;">
 <span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
   <div class="nav-links-top">
     <a href="../index.html">Home</a>
@@ -305,68 +381,111 @@ body{
   </div>
 </div>
 
-<div class="page-wrap">
-<div class="card">
-  <div class="card-top">
-    <a href="../index.html" class="logo" style="display:flex; align-items:center;"><img src="../assets/logo.png" alt="DoorSkill Logo" style="height:42px; width:auto;">
-<span style="font-size:26px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
-    <h2>Welcome Back! 👋</h2>
-    <p>Login to your DoorSkill account<br/>
-       and continue where you left off.</p>
-  </div>
+<!-- Split screen container -->
+<div class="split-container">
+  <!-- Left Column: Form -->
+  <div class="split-left">
+    <div class="form-container">
+      <div class="card" style="box-shadow:none; border:none; padding: 0;">
+        <div class="card-top" style="text-align:left; margin-bottom: 24px;">
+          <a href="../index.html" class="logo" style="display:flex; align-items:center; margin-bottom:12px;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="36" height="36" style="height:36px;">
+      <span style="font-size:24px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
+          <h2 style="font-size:26px;">Welcome Back! 👋</h2>
+          <p>Login to your DoorSkill account and continue.</p>
+        </div>
 
-  <div class="role-tabs">
-    <div class="role-tab active" id="tab-client" onclick="selectRole('client')">
-      <span class="rt-icon">👤</span>
-      <div class="rt-title">Client</div>
-      <div class="rt-sub">I need services</div>
+        <!-- Google button at the top -->
+        <button class="google-btn" onclick="continueWithGoogle()" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0;">
+            <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.2-5.136 4.2A5.626 5.626 0 0 1 8.35 13a5.626 5.626 0 0 1 5.64-5.6c1.472 0 2.8.54 3.82 1.428l3.1-3.1A10.02 10.02 0 0 0 13.99 3c-5.523 0-10 4.477-10 10s4.477 10 10 10c5.316 0 9.71-3.847 9.99-9.143H12.24Z"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <div class="divider"><span>or login with phone</span></div>
+
+        <div class="role-tabs" style="margin-bottom:18px;">
+          <div class="role-tab active" id="tab-client" onclick="selectRole('client')">
+            <span class="rt-icon">👤</span>
+            <div class="rt-title">Client</div>
+          </div>
+          <div class="role-tab" id="tab-worker" onclick="selectRole('worker')">
+            <span class="rt-icon">👷</span>
+            <div class="rt-title">Worker</div>
+          </div>
+        </div>
+
+        <div class="msg-box" id="mainMsg">
+          <span>⚠️</span>
+          <span id="mainMsgText"></span>
+        </div>
+
+        <div class="fgroup" id="phoneGroup">
+          <label>Mobile Number (with country code)</label>
+          <div class="input-wrap">
+            <input type="tel" id="loginPhone" placeholder="+923001234567" onkeydown="enterKey(event)"/>
+            <span class="input-icon">📱</span>
+          </div>
+        </div>
+
+        <div id="recaptcha-container" style="margin-bottom: 16px;"></div>
+
+        <div class="fgroup" id="otpGroup" style="display:none;">
+          <label>Enter 6-Digit OTP</label>
+          <div class="input-wrap">
+            <input type="text" id="loginOtp" placeholder="123456" maxlength="6" onkeydown="enterKey(event)"/>
+            <span class="input-icon">🔑</span>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="loginBtn" onclick="doLogin()">
+          Send OTP →
+        </button>
+
+        <div class="bottom-links" style="text-align:left; border-top:1px solid var(--border); padding-top:20px;">
+          <p>Don't have an account?</p>
+          <p style="margin-top:8px;">
+            <a href="client-signup.html">Sign Up as Client</a>
+            &nbsp;|&nbsp;
+            <a href="worker-signup.html">Join as Worker</a>
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="role-tab" id="tab-worker" onclick="selectRole('worker')">
-      <span class="rt-icon">👷</span>
-      <div class="rt-title">Worker</div>
-      <div class="rt-sub">I provide services</div>
+  </div>
+
+  <!-- Right Column: Visual Panel -->
+  <div class="split-right">
+    <div class="visual-wrap">
+      <h2 style="font-family:'Playfair Display',serif; font-size:36px; font-weight:900; margin-bottom:20px; color:#fff;">Join Pakistan's Top Trade Network</h2>
+      <p style="font-size:16px; line-height:1.7; opacity:0.9; margin-bottom:40px; color:rgba(255,255,255,0.85);">Get tasks completed instantly by verified local specialists. Secure payment escrow and premium in-app chat protect every single job.</p>
+      
+      <!-- Quick stats -->
+      <div style="display:flex; gap:40px; margin-bottom:40px;">
+        <div>
+          <div style="font-size:32px; font-weight:800; color:var(--rose-md);">12,000+</div>
+          <div style="font-size:12px; opacity:0.7; color:rgba(255,255,255,0.7);">Verified Workers</div>
+        </div>
+        <div>
+          <div style="font-size:32px; font-weight:800; color:var(--rose-md);">45,000+</div>
+          <div style="font-size:12px; opacity:0.7; color:rgba(255,255,255,0.7);">Completed Jobs</div>
+        </div>
+      </div>
+      
+      <!-- Testimonial citation -->
+      <div style="background:rgba(255,255,255,0.06); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px);">
+        <p style="font-style:italic; font-size:14px; line-height:1.6; margin-bottom:10px; color:rgba(255,255,255,0.9);">"The payment escrow gave me total security. The plumber did a fantastic job, and I only released the payment when I was fully satisfied."</p>
+        <div style="font-weight:700; font-size:13px; color:#fff;">— Ahmed Raza, Lahore</div>
+      </div>
     </div>
-  </div>
-
-  <div class="msg-box" id="mainMsg">
-    <span>⚠️</span>
-    <span id="mainMsgText"></span>
-  </div>
-
-  <div class="divider"><span>login with phone</span></div>
-
-  <div class="fgroup" id="phoneGroup">
-    <label>Mobile Number (with country code)</label>
-    <div class="input-wrap">
-      <input type="tel" id="loginPhone" placeholder="+923001234567" onkeydown="enterKey(event)"/>
-      <span class="input-icon">📱</span>
-    </div>
-  </div>
-
-  <div id="recaptcha-container" style="margin-bottom: 16px;"></div>
-
-  <div class="fgroup" id="otpGroup" style="display:none;">
-    <label>Enter 6-Digit OTP</label>
-    <div class="input-wrap">
-      <input type="text" id="loginOtp" placeholder="123456" maxlength="6" onkeydown="enterKey(event)"/>
-      <span class="input-icon">🔑</span>
-    </div>
-  </div>
-
-  <button class="submit-btn" id="loginBtn" onclick="doLogin()">
-    Send OTP →
-  </button>
-
-  <div class="bottom-links">
-    <p>Don't have an account?</p>
-    <p style="margin-top:8px;">
-      <a href="client-signup.html">Sign Up as Client</a>
-      &nbsp;|&nbsp;
-      <a href="worker-signup.html">Join as Worker</a>
-    </p>
   </div>
 </div>
-</div>
+
+<script>
+function continueWithGoogle() {
+  alert('Google authentication will require client configuration on live deployment.');
+}
+</script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -399,7 +518,7 @@ onAuthStateChanged(auth, async user => {
     if(role === 'worker'){
       window.location.href = '../dashboard/worker.html';
     } else if(role === 'admin'){
-      window.location.href = '../admin.html';
+      window.location.href = '../dashboard/admin.html';
     } else {
       await checkRoleAndRedirect(user.uid);
     }
@@ -408,21 +527,93 @@ onAuthStateChanged(auth, async user => {
 
 let confirmationResult = null;
 
+// ── Security Helpers ──
+function sanitizeInput(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/<[^>]*>/g, '');
+}
+
+function checkOtpRateLimit(phoneNumber) {
+  const now = Date.now();
+  const key = 'otp_requests_' + phoneNumber;
+  let requests = JSON.parse(localStorage.getItem(key) || '[]');
+  requests = requests.filter(ts => now - ts < 3600000);
+  if (requests.length >= 3) {
+    return false;
+  }
+  requests.push(now);
+  localStorage.setItem(key, JSON.stringify(requests));
+  return true;
+}
+
+function recordFailedOtp(phoneNumber) {
+  const key = 'otp_failed_' + phoneNumber;
+  let data = JSON.parse(localStorage.getItem(key) || '{"count": 0, "blockedUntil": 0}');
+  data.count += 1;
+  if (data.count >= 3) {
+    data.blockedUntil = Date.now() + 3600000; // Block for 1 hour
+  }
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function checkOtpBlocked(phoneNumber) {
+  const key = 'otp_failed_' + phoneNumber;
+  let data = JSON.parse(localStorage.getItem(key) || '{"count": 0, "blockedUntil": 0}');
+  if (data.blockedUntil > Date.now()) {
+    return data.blockedUntil;
+  }
+  return 0;
+}
+
+function formatPakistanPhone(phone) {
+  let cleaned = phone.replace(/[\s\-()]/g, '');
+  if (cleaned.startsWith('0')) {
+    return '+92' + cleaned.substring(1);
+  } else if (cleaned.startsWith('92')) {
+    return '+' + cleaned;
+  } else if (cleaned.startsWith('+92')) {
+    return cleaned;
+  } else {
+    if (cleaned.length === 10) {
+      return '+92' + cleaned;
+    }
+    if (!cleaned.startsWith('+')) {
+      return '+92' + cleaned;
+    }
+    return cleaned;
+  }
+}
+
 window.doLogin = async function(){
   const role = window._selectedRole || 'client';
 
-  if(!confirmationResult) {
-    const phone = document.getElementById('loginPhone').value.trim();
-    if(!phone) return showMsg('error','Please enter your phone number with country code.');
+  if(!window.confirmationResult) {
+    const rawPhone = document.getElementById('loginPhone').value.trim();
+    if(!rawPhone) return showMsg('error','Please enter your phone number with country code.');
+    
+    const phone = formatPakistanPhone(rawPhone);
+
+    // OTP Rate Limiting Check
+    const blockedTime = checkOtpBlocked(phone);
+    if (blockedTime > Date.now()) {
+      const minLeft = Math.ceil((blockedTime - Date.now()) / 60000);
+      return showMsg('error', `⚠️ Verification blocked. Please wait ${minLeft} minutes.`);
+    }
+    if (!checkOtpRateLimit(phone)) {
+      return showMsg('error', '⚠️ Rate limit exceeded. Maximum 3 OTP requests per hour.');
+    }
     
     showLoad('Sending OTP...','Please wait');
     setBtnLoad(true);
 
     try {
-      if(!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+      if(window.recaptchaVerifier) {
+        try { window.recaptchaVerifier.clear(); } catch(e) {}
       }
-      confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+      
+      const result = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      window.confirmationResult = result;
       
       hideLoad();
       setBtnLoad(false);
@@ -434,7 +625,7 @@ window.doLogin = async function(){
       hideLoad();
       setBtnLoad(false);
       showMsg('error', err.message);
-      if(window.recaptchaVerifier) window.recaptchaVerifier.clear();
+      if(window.recaptchaVerifier) { try { window.recaptchaVerifier.clear(); } catch(e) {} }
     }
   } else {
     const otp = document.getElementById('loginOtp').value.trim();
@@ -444,13 +635,29 @@ window.doLogin = async function(){
     setBtnLoad(true);
 
     try {
-      const cred = await confirmationResult.confirm(otp);
+      const cred = await window.confirmationResult.confirm(otp);
       const uid = cred.user.uid;
+      
+      // Request notification permission if supported and default
+      if (window.Notification && Notification.permission === 'default') {
+        try {
+          updateLoad('Enabling Notifications...','Please allow notification permission when prompted...');
+          await Notification.requestPermission();
+        } catch(e) {
+          console.warn("Notification permission request failed or ignored:", e);
+        }
+      }
+      
       updateLoad('Checking account...','Almost there...');
       await verifyRoleAndLogin(uid, role, cred.user);
     } catch(err) {
       hideLoad();
       setBtnLoad(false);
+      try {
+        const rawPhone = document.getElementById('loginPhone').value.trim();
+        const phone = formatPakistanPhone(rawPhone);
+        recordFailedOtp(phone);
+      } catch(e) {}
       showMsg('error', 'Invalid OTP. Please try again.');
     }
   }
@@ -465,7 +672,7 @@ async function verifyRoleAndLogin(uid, selectedRole, user){
       localStorage.setItem('ds_uid',  uid);
       localStorage.setItem('ds_role', 'admin');
       hideLoad();
-      window.location.href = '../admin.html';
+      window.location.href = '../dashboard/admin.html';
       return;
     }
 
