@@ -126,16 +126,35 @@ body{
   position: relative;
   z-index: 2;
   max-width: 440px;
-  color: #white;
+  color: #fff;
+}
+/* ── MOBILE: form on top, panel below ── */
+@media(max-width: 768px) {
+  .split-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .split-left {
+    order: 1;
+    padding: 28px 20px;
+    align-items: flex-start;
+  }
+  .split-right {
+    order: 2;
+    padding: 36px 24px;
+    min-height: 300px;
+  }
+  .visual-wrap { max-width: 100%; }
+  .visual-wrap h2 { font-size: 26px !important; }
 }
 
-/* Page Transition animation */
+/* Page Transition animation — fast */
 @keyframes fadeInPage {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 body {
-  animation: fadeInPage 0.4s ease-out both;
+  animation: fadeInPage 0.2s ease-out both;
 }
 
 /* Google Sign-in Button styling */
@@ -258,24 +277,23 @@ body {
   cursor:pointer;user-select:none;
 }
 
-/* ── SUBMIT BTN ── */
+/* ── SUBMIT BTN — instant press feel ── */
 .submit-btn{
   width:100%;padding:14px;border:none;
   border-radius:10px;background:var(--rose);
   color:#fff;font-size:15px;font-weight:700;
   cursor:pointer;font-family:'DM Sans',sans-serif;
-  transition:all .2s;
+  transition:background .15s, transform .1s, box-shadow .15s;
   display:flex;align-items:center;
   justify-content:center;gap:8px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
-.submit-btn:hover{
-  background:#e0334f;
-  transform:translateY(-1px);
-  box-shadow:0 6px 20px rgba(244,63,94,.3);
-}
-.submit-btn:disabled{
-  opacity:.6;transform:none;cursor:not-allowed;
-}
+.submit-btn:hover{ background:#e0334f; box-shadow:0 4px 14px rgba(244,63,94,.3); }
+.submit-btn:active{ transform:scale(0.97); background:#be123c; box-shadow:none; }
+.submit-btn:disabled{ opacity:.6;transform:none;cursor:not-allowed; }
+.google-btn:active { transform:scale(0.97); }
+.role-tab:active { transform:scale(0.97); }
 
 /* ── ERROR / SUCCESS BOX ── */
 .msg-box{
@@ -351,10 +369,11 @@ body {
 @media(max-width:600px){
   .card{padding:24px 16px; border-radius:16px;}
   .nav-links-top a:not(.fill){display:none;}
-  .input-wrap input{padding:14px 44px 14px 14px; font-size:16px;} /* Better touch target & prevent iOS zoom */
+  .input-wrap input{padding:14px 44px 14px 14px; font-size:16px;}
   .submit-btn{padding:16px; font-size:16px;}
-  .card-top h2{font-size:22px;}
-  .role-tabs{grid-template-columns:1fr; gap:8px;}
+  .card-top h2{font-size:20px;}
+  .role-tabs{grid-template-columns:1fr 1fr; gap:8px;}
+  .google-btn{padding:14px; font-size:15px;}
 }
 </style>
 </head>

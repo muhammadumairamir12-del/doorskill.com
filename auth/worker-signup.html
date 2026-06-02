@@ -98,14 +98,34 @@ body{
   max-width: 440px;
   color: #fff;
 }
+/* ── MOBILE: form on top, panel below ── */
+@media(max-width: 768px) {
+  .split-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .split-left {
+    order: 1;
+    padding: 24px 16px;
+    align-items: flex-start;
+  }
+  .split-right {
+    order: 2;
+    padding: 32px 20px;
+    min-height: 280px;
+  }
+  .visual-wrap { max-width: 100%; }
+  .visual-wrap h2 { font-size: 24px !important; }
+  .card { max-width: 100% !important; padding: 24px 16px !important; }
+}
 
-/* Page Transition animation */
+/* Page Transition animation — fast */
 @keyframes fadeInPage {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 body {
-  animation: fadeInPage 0.4s ease-out both;
+  animation: fadeInPage 0.2s ease-out both;
 }
 
 /* Google Registration Button */
@@ -124,14 +144,13 @@ body {
   font-weight: 700;
   cursor: pointer;
   font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s;
+  transition: background 0.15s, transform 0.1s;
   margin-top: 14px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
-.google-btn:hover {
-  background: var(--pink-bg);
-  border-color: var(--rose-md);
-  transform: translateY(-1px);
-}
+.google-btn:hover { background: var(--pink-bg); border-color: var(--rose-md); }
+.google-btn:active { transform: scale(0.97); }
 
 /* Password Strength Indicator */
 .strength-meter {

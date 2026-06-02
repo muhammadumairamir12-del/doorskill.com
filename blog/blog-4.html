@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://www.google.com https://unpkg.com https://download.agora.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https: wss:;"/>
@@ -429,7 +429,9 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       </div>
     </li>
     <li><a href="../index.html#how-it-works">How it Works</a></li>
-    <li><a href="../auth/worker-signup.html">Become a Worker</a></li>
+    <li><a href="../auth/worker-signup.html" onclick="toggleMobile()">Become a Worker</a>
+  <a href="blog-1.html" onclick="toggleMobile()" style="color:var(--rose);font-weight:600;">Blog</a></li>
+    <li><a href="blog-1.html" style="color:var(--rose);font-weight:600;">Blog</a></li>
     <li><a href="../index.html#about">About</a></li>
   </ul>
   <div class="nav-btns">
@@ -441,10 +443,11 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 <div class="mobile-menu" id="mobileMenu">
   <a href="../index.html#categoriesGrid" onclick="toggleMobile()">Services</a>
   <a href="../index.html#how-it-works" onclick="toggleMobile()">How it Works</a>
-  <a href="../auth/worker-signup.html">Become a Worker</a>
+  <a href="../auth/worker-signup.html" onclick="toggleMobile()">Become a Worker</a>
+  <a href="blog-1.html" onclick="toggleMobile()" style="color:var(--rose);font-weight:600;">Blog</a>
   <a href="../index.html#about" onclick="toggleMobile()">About</a>
-  <a href="../auth/login.html">Login</a>
-  <a href="../pages/post-job.html" style="color:var(--rose);font-weight:700;">Post a Job →</a>
+  <a href="../auth/login.html" onclick="toggleMobile()">Login</a>
+  <a href="../pages/post-job.html" onclick="toggleMobile()" style="color:var(--rose);font-weight:700;">Post a Job →</a>
 </div>
 
 <!-- ══════════════ BREADCRUMB ══════════════ -->
@@ -694,7 +697,8 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
       <ul>
         <li><a href="../index.html#how-it-works">How it Works</a></li>
         <li><a href="../pages/post-job.html">Post a Job</a></li>
-        <li><a href="../auth/worker-signup.html">Become a Worker</a></li>
+        <li><a href="../auth/worker-signup.html" onclick="toggleMobile()">Become a Worker</a>
+  <a href="blog-1.html" onclick="toggleMobile()" style="color:var(--rose);font-weight:600;">Blog</a></li>
         <li><a href="../auth/login.html">Login to Dashboard</a></li>
         <li><a href="../pages/find-workers.html">Browse All Profiles</a></li>
         <li><a href="javascript:void(0)">Pricing &amp; Fees</a></li>

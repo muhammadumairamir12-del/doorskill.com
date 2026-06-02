@@ -231,29 +231,44 @@ nav.scrolled{box-shadow:0 4px 24px rgba(244,63,94,.10);}
   padding:8px 18px;border-radius:8px;border:1.5px solid var(--rose);
   background:transparent;color:var(--rose);
   font-size:14px;font-weight:600;cursor:pointer;
-  transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;
+  transition:background .15s, transform .1s;font-family:'DM Sans',sans-serif;text-decoration:none;
   display:inline-flex;align-items:center;
+  -webkit-tap-highlight-color:transparent;user-select:none;
 }
 .btn-outline:hover{background:var(--rose-lt);}
+.btn-outline:active{transform:scale(0.96);}
 .btn-fill{
   padding:8px 20px;border-radius:8px;border:none;background:var(--rose);
   color:#fff;font-size:14px;font-weight:600;cursor:pointer;
-  transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;
+  transition:background .15s, transform .1s, box-shadow .15s;font-family:'DM Sans',sans-serif;text-decoration:none;
   display:inline-flex;align-items:center;
+  -webkit-tap-highlight-color:transparent;user-select:none;
 }
-.btn-fill:hover{background:#e0334f;transform:translateY(-1px);box-shadow:0 6px 20px rgba(244,63,94,.3);}
+.btn-fill:hover{background:#e0334f;box-shadow:0 4px 14px rgba(244,63,94,.3);}
+.btn-fill:active{transform:scale(0.96);background:#be123c;box-shadow:none;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;font-size:22px;color:var(--dark);}
 .mobile-menu{
   display:none;position:fixed;top:68px;left:0;right:0;z-index:999;
   background:#fff;border-bottom:1px solid var(--border);
   padding:16px 5%;box-shadow:0 8px 24px rgba(0,0,0,.1);
+  transform-origin: top;
 }
-.mobile-menu.open{display:block;}
+.mobile-menu.open{
+  display:block;
+  animation: slideDown 0.18s ease-out both;
+}
+@keyframes slideDown {
+  from { opacity:0; transform:translateY(-8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 .mobile-menu a{
   display:block;padding:12px 0;font-size:15px;font-weight:500;
   color:var(--dark);text-decoration:none;border-bottom:1px solid var(--border);
+  transition:color .1s;
+  -webkit-tap-highlight-color:transparent;
 }
 .mobile-menu a:hover{color:var(--rose);}
+.mobile-menu a:active{color:var(--rose);background:var(--rose-lt);padding-left:8px;}
 
 /* ══ HERO ══ */
 .hero{
@@ -1161,6 +1176,7 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
     </li>
     <li><a href="#how-it-works">How it Works</a></li>
     <li><a href="auth/worker-signup.html">Become a Worker</a></li>
+    <li><a href="blog/blog-1.html">Blog</a></li>
     <li><a href="#about">About</a></li>
   </ul>
   <div class="nav-btns">
@@ -1172,10 +1188,11 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 <div class="mobile-menu" id="mobileMenu">
   <a href="#categoriesGrid" onclick="toggleMobile()">Services</a>
   <a href="#how-it-works" onclick="toggleMobile()">How it Works</a>
-  <a href="auth/worker-signup.html">Become a Worker</a>
+  <a href="auth/worker-signup.html" onclick="toggleMobile()">Become a Worker</a>
+  <a href="blog/blog-1.html" onclick="toggleMobile()">Blog</a>
   <a href="#about" onclick="toggleMobile()">About</a>
-  <a href="auth/login.html">Login</a>
-  <a href="pages/post-job.html" style="color:var(--rose);font-weight:700;">Post a Job →</a>
+  <a href="auth/login.html" onclick="toggleMobile()">Login</a>
+  <a href="pages/post-job.html" onclick="toggleMobile()" style="color:var(--rose);font-weight:700;">Post a Job →</a>
 </div>
 
 <!-- ══════════════ HERO ══════════════ -->
@@ -2054,9 +2071,9 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <a href="index.html" class="logo" style="display:flex;align-items:center;margin-bottom:16px;">
-        <img src="assets/logo.png" alt="DoorSkill Logo" width="36" height="36" loading="lazy" style="filter:brightness(0) invert(1);height:36px;">
-        <span style="font-size:24px;font-weight:900;color:#fff;margin-left:8px;font-family:'Playfair Display',serif;letter-spacing:-0.02em;">DoorSkill</span>
+      <a href="index.html" class="logo" style="display:flex;align-items:center;margin-bottom:16px;text-decoration:none;">
+        <img src="assets/logo.png" alt="DoorSkill" width="36" height="36" loading="lazy" style="height:36px;width:36px;object-fit:contain;border-radius:6px;" onerror="this.style.display='none'">
+        <span style="font-size:24px;font-weight:900;color:#fff;margin-left:10px;font-family:'Playfair Display',serif;letter-spacing:-0.02em;">DoorSkill</span>
       </a>
       <p>Connecting clients with verified local professionals worldwide. Secure, efficient, and dependable — every single time.</p>
       <div class="footer-social">
@@ -2158,7 +2175,7 @@ loadStats();
 let realMap = null;
 let markersLayer = null;
 
-function initRealMap(workers){
+window.initRealMap = function initRealMap(workers){
   if(realMap) return;
 
   /* Default center = MULTAN */
@@ -2190,8 +2207,9 @@ function initRealMap(workers){
    .openPopup();
 
   plotWorkerMarkers(workers);
-  setTimeout(()=>{ realMap.invalidateSize(); }, 500);
-}
+  setTimeout(()=>{ realMap.invalidateSize(); }, 300);
+  setTimeout(()=>{ realMap.invalidateSize(); }, 1000);
+};
 
 function plotWorkerMarkers(workers){
   if(!markersLayer) return;
@@ -2265,6 +2283,20 @@ window.flyToCity = (name, lat, lng, el) => {
   realMap.flyTo([lat,lng], zoom, {duration:1.5});
   document.getElementById('mapCityName').textContent = name==='World' ? '🌍 Worldwide' : '📍 '+name;
 };
+
+/* Map section IntersectionObserver — init map when visible even without workers */
+const mapSectionEl = document.getElementById('map-section');
+if(mapSectionEl){
+  const mapVisObs = new IntersectionObserver((entries) => {
+    if(entries[0].isIntersecting){
+      if(typeof window.initRealMap === 'function' && !realMap){
+        window.initRealMap([]);
+      }
+      mapVisObs.disconnect();
+    }
+  }, { threshold: 0.1 });
+  mapVisObs.observe(mapSectionEl);
+}
 
 <script type="module">
 import { getFirestore, collection, getDocs, onSnapshot, query, orderBy, where, limit }
