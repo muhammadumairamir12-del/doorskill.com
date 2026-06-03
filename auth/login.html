@@ -406,12 +406,70 @@ body {
   <div class="split-left">
     <div class="form-container">
       <div class="card" style="box-shadow:none; border:none; padding: 0;">
-        <div class="card-top" style="text-align:left; margin-bottom: 24px;">
-          <a href="../index.html" class="logo" style="display:flex; align-items:center; margin-bottom:12px;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="36" height="36" style="height:36px;">
+        <div style="text-align:center;margin-bottom:32px">
+          <a href="../index.html" class="logo" style="display:flex; align-items:center; justify-content:center; margin-bottom:12px;"><img src="../assets/logo.png" alt="DoorSkill Logo" width="36" height="36" style="height:36px;">
       <span style="font-size:24px; font-weight:900; color:var(--rose); margin-left:8px; font-family:'Playfair Display', serif; letter-spacing:-0.02em; display:inline-block; vertical-align:middle;">DoorSkill</span></a>
-          <h2 style="font-size:26px;">Welcome Back! 👋</h2>
-          <p>Login to your DoorSkill account and continue.</p>
+          <h1 style="font-size:1.8rem;margin-bottom:8px">
+            Welcome Back! 👋
+          </h1>
+          <p style="color:#888">Choose your account type to login</p>
         </div>
+
+        <!-- Role selection cards -->
+        <div class="role-cards" style="display:grid;
+          grid-template-columns:1fr 1fr;gap:16px;
+          margin-bottom:28px">
+          
+          <div class="role-card" id="clientCard" 
+            onclick="selectRole('client')"
+            style="border:2px solid var(--rose, #e11d48);border-radius:12px;
+            padding:20px;text-align:center;cursor:pointer;
+            background:#fff1f2;transition:all 0.2s">
+            <div style="font-size:2.5rem;margin-bottom:8px">👤</div>
+            <strong>I am a Client</strong>
+            <p style="font-size:12px;color:#888;margin-top:6px">
+              I want to hire professionals
+            </p>
+          </div>
+          
+          <div class="role-card" id="workerCard"
+            onclick="selectRole('worker')"
+            style="border:2px solid #e5e7eb;border-radius:12px;
+            padding:20px;text-align:center;cursor:pointer;
+            background:white;transition:all 0.2s">
+            <div style="font-size:2.5rem;margin-bottom:8px">👷</div>
+            <strong>I am a Worker</strong>
+            <p style="font-size:12px;color:#888;margin-top:6px">
+              I want to find jobs & earn
+            </p>
+          </div>
+        </div>
+        
+        <script>
+        function selectRole(role) {
+          document.querySelectorAll('.role-card').forEach(c => {
+            c.style.borderColor = '#e5e7eb';
+            c.style.background = 'white';
+          });
+          const card = document.getElementById(
+            role + 'Card'
+          );
+          card.style.borderColor = 'var(--rose, #e11d48)';
+          card.style.background = '#fff1f2';
+          window._selectedRole = role; // updating global var used in doLogin
+        }
+        window._selectedRole = 'client'; // default
+        </script>
+
+        <p style="text-align:center;font-size:14px;
+          margin-bottom:24px;color:#888">
+          New here? 
+          <a href="/auth/client-signup.html" 
+            style="color:var(--rose)">Sign Up as Client</a> 
+          or 
+          <a href="/auth/worker-signup.html" 
+            style="color:var(--rose)">Register as Worker</a>
+        </p>
 
         <!-- Google button at the top -->
         <button class="google-btn" onclick="continueWithGoogle()" type="button">
@@ -422,17 +480,6 @@ body {
         </button>
 
         <div class="divider"><span>or login with phone</span></div>
-
-        <div class="role-tabs" style="margin-bottom:18px;">
-          <div class="role-tab active" id="tab-client" onclick="selectRole('client')">
-            <span class="rt-icon">👤</span>
-            <div class="rt-title">Client</div>
-          </div>
-          <div class="role-tab" id="tab-worker" onclick="selectRole('worker')">
-            <span class="rt-icon">👷</span>
-            <div class="rt-title">Worker</div>
-          </div>
-        </div>
 
         <div class="msg-box" id="mainMsg">
           <span>⚠️</span>
