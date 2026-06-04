@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gig Extras & Custom Offers - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      background: transparent;
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+      background: #fafafa;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .extras-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .extra-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .extra-item.new {
+      background: #fafafa;
+      border-style: dashed;
+    }
+
+    .extra-info {
+      flex: 1;
+    }
+
+    .extra-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .extra-desc {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .extra-details {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+    }
+
+    .detail {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .extra-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--secondary);
+      text-align: right;
+      min-width: 80px;
+    }
+
+    .extra-actions {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .edit-btn,
+    .delete-btn,
+    .add-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .edit-btn {
+      background: var(--border);
+      color: var(--primary);
+    }
+
+    .edit-btn:hover {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .delete-btn {
+      background: #fee;
+      color: #c33;
+    }
+
+    .delete-btn:hover {
+      background: #fcc;
+    }
+
+    .add-btn {
+      background: var(--success);
+      color: #fff;
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(244,64,78,0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .custom-offers {
+      background: #fff;
+      border: 2px dashed var(--secondary);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .offers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .offer-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fafafa;
+    }
+
+    .offer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .offer-buyer {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .offer-date {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .offer-details {
+      font-size: 13px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .offer-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .accept-btn {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .decline-btn {
+      background: #fee;
+      color: #c33;
+    }
+
+    .modal-form {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--accent);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Gig Extras & Custom Offers</h1>
+    <p>Manage add-ons and send custom quotes to buyers</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('extras')">Gig Extras</button>
+    <button class="tab-btn" onclick="switchTab('offers')">Custom Offers</button>
+  </div>
+
+  <!-- GIG EXTRAS TAB -->
+  <div id="extras-tab" class="tab-content">
+    <div class="section">
+      <div class="section-title">Add-on Services</div>
+      <p style="font-size: 13px; color: var(--accent); margin-bottom: 20px;">
+        Create optional add-ons that buyers can purchase with their order. Common extras include faster delivery, extra revisions, or additional deliverables.
+      </p>
+
+      <div class="extras-list">
+        <div class="extra-item">
+          <div class="extra-info">
+            <div class="extra-name">Express Delivery (24h)</div>
+            <div class="extra-desc">Get your order delivered within 24 hours</div>
+            <div class="extra-details">
+              <div class="detail">⏱️ 1 day delivery</div>
+              <div class="detail">•</div>
+              <div class="detail">✓ All revisions included</div>
+            </div>
+          </div>
+          <div class="extra-price">+$25</div>
+          <div class="extra-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
+
+        <div class="extra-item">
+          <div class="extra-info">
+            <div class="extra-name">Additional Revisions (5)</div>
+            <div class="extra-desc">5 additional rounds of revisions beyond included revisions</div>
+            <div class="extra-details">
+              <div class="detail">🔄 5 revisions</div>
+              <div class="detail">•</div>
+              <div class="detail">✓ Standard delivery time</div>
+            </div>
+          </div>
+          <div class="extra-price">+$15</div>
+          <div class="extra-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
+
+        <div class="extra-item">
+          <div class="extra-info">
+            <div class="extra-name">Source Files Included</div>
+            <div class="extra-desc">Provide editable source files (PSD, Figma, etc.)</div>
+            <div class="extra-details">
+              <div class="detail">📁 Editable files</div>
+              <div class="detail">•</div>
+              <div class="detail">✓ Commercial use allowed</div>
+            </div>
+          </div>
+          <div class="extra-price">+$20</div>
+          <div class="extra-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="add-btn" onclick="showAddExtraForm()">+ Add New Extra</button>
+
+      <!-- Add Extra Form -->
+      <div id="add-extra-form" class="modal-form" style="display: none;">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">Create New Extra</h3>
+        
+        <div class="form-group">
+          <label>Extra Name</label>
+          <input type="text" placeholder="e.g., Express Delivery, Extra Revisions, Premium Support">
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea rows="3" placeholder="Describe what's included in this extra..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price ($)</label>
+            <input type="number" placeholder="25" min="5" max="995" step="5">
+          </div>
+          <div class="form-group">
+            <label>Delivery Days</label>
+            <input type="number" placeholder="1" min="1" max="30">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Revision Limit (if applicable)</label>
+          <input type="number" placeholder="5" min="0" max="20">
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button style="flex: 1; padding: 10px; background: var(--border); border: none; border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="hideAddExtraForm()">Cancel</button>
+          <button style="flex: 1; padding: 10px; background: var(--secondary); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Create Extra</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM OFFERS TAB -->
+  <div id="offers-tab" class="tab-content" style="display: none;">
+    <div class="section">
+      <div class="section-title">Send Custom Offer</div>
+      
+      <div class="modal-form">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">Create Custom Quote</h3>
+        
+        <div class="form-group">
+          <label>Send To</label>
+          <input type="text" placeholder="Search for buyer or recent buyer...">
+        </div>
+
+        <div class="form-group">
+          <label>Scope Description</label>
+          <textarea rows="4" placeholder="Describe what you'll deliver for this custom offer..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price ($)</label>
+            <input type="number" placeholder="500" min="5" step="10">
+          </div>
+          <div class="form-group">
+            <label>Delivery Days</label>
+            <input type="number" placeholder="7" min="1" max="60">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Number of Revisions</label>
+          <input type="number" placeholder="3" min="0" max="20">
+        </div>
+
+        <div class="form-group">
+          <label>Expiration</label>
+          <select>
+            <option>1 Day</option>
+            <option selected>3 Days</option>
+            <option>7 Days</option>
+            <option>14 Days</option>
+          </select>
+        </div>
+
+        <button style="width: 100%; padding: 12px; background: var(--secondary); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">Send Custom Offer</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Recent Custom Offers</div>
+      
+      <div class="offers-list">
+        <div class="offer-card">
+          <div class="offer-header">
+            <div>
+              <div class="offer-buyer">Sarah Johnson 👤</div>
+              <div class="offer-date">Sent on June 3, 2026 • Expires in 2 days</div>
+            </div>
+          </div>
+          <div class="offer-details">
+            <strong>Scope:</strong> Build a complete e-commerce website with product catalog, shopping cart, and payment integration. Includes 3 revision rounds.
+          </div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--secondary); margin-bottom: 12px;">$1,200 • 14 days delivery</div>
+          <div class="offer-actions">
+            <span style="font-size: 12px; color: #666;">⏳ Pending Response</span>
+          </div>
+        </div>
+
+        <div class="offer-card" style="background: #e8f5e9;">
+          <div class="offer-header">
+            <div>
+              <div class="offer-buyer">Mike Chen 👤</div>
+              <div class="offer-date">Sent on May 30, 2026 • Expired</div>
+            </div>
+          </div>
+          <div class="offer-details">
+            <strong>Scope:</strong> UI/UX design for mobile app. High-fidelity mockups for 5 screens.
+          </div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--secondary); margin-bottom: 12px;">$750 • 10 days delivery</div>
+          <div class="offer-actions">
+            <button class="action-btn accept-btn">✓ Accepted</button>
+          </div>
+        </div>
+
+        <div class="offer-card" style="background: #ffe8e8;">
+          <div class="offer-header">
+            <div>
+              <div class="offer-buyer">Emma Wilson 👤</div>
+              <div class="offer-date">Sent on May 25, 2026 • Expired</div>
+            </div>
+          </div>
+          <div class="offer-details">
+            <strong>Scope:</strong> Full-stack web development for SaaS platform
+          </div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--secondary); margin-bottom: 12px;">$2,500 • 30 days delivery</div>
+          <div class="offer-actions">
+            <button class="action-btn decline-btn">✗ Declined</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  const extrasTab = document.getElementById('extras-tab');
+  const offersTab = document.getElementById('offers-tab');
+  const buttons = document.querySelectorAll('.tab-btn');
+
+  if (tab === 'extras') {
+    extrasTab.style.display = 'block';
+    offersTab.style.display = 'none';
+    buttons[0].classList.add('active');
+    buttons[1].classList.remove('active');
+  } else {
+    extrasTab.style.display = 'none';
+    offersTab.style.display = 'block';
+    buttons[0].classList.remove('active');
+    buttons[1].classList.add('active');
+  }
+}
+
+function showAddExtraForm() {
+  document.getElementById('add-extra-form').style.display = 'block';
+}
+
+function hideAddExtraForm() {
+  document.getElementById('add-extra-form').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

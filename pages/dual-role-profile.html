@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .role-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-btn.active {
+      background: var(--secondary);
+      color: #fff;
+      border-color: var(--secondary);
+    }
+
+    .role-btn:hover:not(.active) {
+      border-color: var(--secondary);
+    }
+
+    .profile-header {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      background: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: #fff;
+    }
+
+    .profile-info h1 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .profile-info p {
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .edit-profile-btn {
+      padding: 12px 28px;
+      background: var(--secondary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .edit-profile-btn:hover {
+      background: #d63040;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      background: transparent;
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+      background: #fafafa;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      background: var(--secondary);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-tag button {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .add-skill-input {
+      display: flex;
+      gap: 8px;
+    }
+
+    .add-skill-input input {
+      flex: 1;
+    }
+
+    .add-skill-input button {
+      padding: 10px 16px;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .portfolio-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fafafa;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .portfolio-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .portfolio-item h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .portfolio-item p {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--primary);
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .social-link:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .agency-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      border: 2px dashed var(--secondary);
+    }
+
+    .agency-toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .toggle-switch {
+      width: 48px;
+      height: 28px;
+      background: var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .toggle-switch.active {
+      background: var(--success);
+    }
+
+    .toggle-slider {
+      width: 24px;
+      height: 24px;
+      background: #fff;
+      border-radius: 12px;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: all 0.2s;
+    }
+
+    .toggle-switch.active .toggle-slider {
+      left: 22px;
+    }
+
+    .agency-team {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .team-member {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .team-member-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background: var(--secondary);
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .team-member h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .team-member p {
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .remove-btn {
+      padding: 6px 12px;
+      background: #fee;
+      color: #c33;
+      border: none;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Role Toggle -->
+  <div class="role-toggle">
+    <button class="role-btn active" onclick="switchRole('buyer')">👤 Buyer Mode</button>
+    <button class="role-btn" onclick="switchRole('seller')">🏪 Seller Mode</button>
+  </div>
+
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="avatar">👨</div>
+    <div class="profile-info">
+      <h1>John Doe</h1>
+      <p>@johndoe • Member since Jan 2023</p>
+      <div class="profile-stats">
+        <div class="stat">
+          <div class="stat-value">4.9</div>
+          <div class="stat-label">Rating</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">127</div>
+          <div class="stat-label">Orders</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">98%</div>
+          <div class="stat-label">On-Time</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><5 min</div>
+          <div class="stat-label">Response Time</div>
+        </div>
+      </div>
+    </div>
+    <button class="edit-profile-btn">Edit Profile</button>
+  </div>
+
+  <!-- Buyer View -->
+  <div id="buyer-view">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('buyer', 'history')">Purchase History</button>
+      <button class="tab-btn" onclick="switchTab('buyer', 'favorites')">Favorites</button>
+      <button class="tab-btn" onclick="switchTab('buyer', 'settings')">Settings</button>
+    </div>
+
+    <div id="buyer-history" class="tab-content active">
+      <div class="section">
+        <div class="section-title">Recent Orders</div>
+        <p style="color: var(--accent); font-size: 13px;">No orders yet</p>
+      </div>
+    </div>
+
+    <div id="buyer-favorites" class="tab-content">
+      <div class="section">
+        <div class="section-title">Saved Gigs</div>
+        <p style="color: var(--accent); font-size: 13px;">No favorites saved</p>
+      </div>
+    </div>
+
+    <div id="buyer-settings" class="tab-content">
+      <div class="section">
+        <div class="section-title">Notification Preferences</div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" checked> Email me about order updates
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" checked> Email me promotional offers
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seller View -->
+  <div id="seller-view" style="display: none;">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('seller', 'about')">About</button>
+      <button class="tab-btn" onclick="switchTab('seller', 'skills')">Skills & Certifications</button>
+      <button class="tab-btn" onclick="switchTab('seller', 'portfolio')">Portfolio</button>
+      <button class="tab-btn" onclick="switchTab('seller', 'agency')">Agency</button>
+    </div>
+
+    <div id="seller-about" class="tab-content active">
+      <div class="section">
+        <div class="section-title">Professional Bio</div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea rows="6" placeholder="Tell buyers about your expertise, experience, and what makes you unique..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Languages</label>
+          <select>
+            <option>English (Native)</option>
+            <option>Spanish (Fluent)</option>
+            <option>French (Intermediate)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Education</label>
+          <input type="text" placeholder="Bachelor's in Computer Science, MIT">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Social Profiles</div>
+        <div class="form-group">
+          <label>LinkedIn</label>
+          <div class="social-links">
+            <a href="https://linkedin.com/in/johndoe" class="social-link">
+              🔗 linkedin.com/in/johndoe
+            </a>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>GitHub</label>
+          <div class="social-links">
+            <a href="https://github.com/johndoe" class="social-link">
+              🐙 github.com/johndoe
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="seller-skills" class="tab-content">
+      <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="form-group">
+          <div class="skills-list">
+            <div class="skill-tag">Web Development <button>×</button></div>
+            <div class="skill-tag">React <button>×</button></div>
+            <div class="skill-tag">JavaScript <button>×</button></div>
+            <div class="skill-tag">UI/UX Design <button>×</button></div>
+          </div>
+        </div>
+        <div class="add-skill-input">
+          <input type="text" placeholder="Add a new skill">
+          <button>Add</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Certifications</div>
+        <div class="form-group">
+          <label>Certification Name</label>
+          <input type="text" placeholder="e.g., AWS Solutions Architect">
+        </div>
+        <div class="form-group">
+          <label>Issuing Organization</label>
+          <input type="text" placeholder="e.g., Amazon Web Services">
+        </div>
+        <div class="form-group">
+          <label>Issue Date</label>
+          <input type="text" placeholder="Jan 2023">
+        </div>
+      </div>
+    </div>
+
+    <div id="seller-portfolio" class="tab-content">
+      <div class="section">
+        <div class="section-title">Portfolio Items</div>
+        <div class="portfolio-grid">
+          <div class="portfolio-item">
+            <img src="https://via.placeholder.com/200x120" alt="Project 1">
+            <h4>E-Commerce Platform</h4>
+            <p>Full-stack development</p>
+          </div>
+          <div class="portfolio-item">
+            <img src="https://via.placeholder.com/200x120" alt="Project 2">
+            <h4>Mobile App Design</h4>
+            <p>UI/UX Design</p>
+          </div>
+        </div>
+        <button style="margin-top: 16px; padding: 12px 24px; background: var(--secondary); color: #fff; border: none; border-radius: 8px; cursor: pointer;">+ Add Portfolio Item</button>
+      </div>
+    </div>
+
+    <div id="seller-agency" class="tab-content">
+      <div class="agency-section">
+        <h3 style="margin-bottom: 16px;">Agency Account</h3>
+        <div class="agency-toggle">
+          <div class="toggle-switch" onclick="toggleAgency(this)">
+            <div class="toggle-slider"></div>
+          </div>
+          <label>Manage team members as an agency</label>
+        </div>
+        <p style="font-size: 12px; color: var(--accent); margin-bottom: 16px;">
+          Enable agency mode to manage multiple team members under one brand.
+        </p>
+      </div>
+
+      <div class="section" style="display: none;" id="team-section">
+        <div class="section-title">Team Members</div>
+        <div class="agency-team">
+          <div class="team-member">
+            <div class="team-member-avatar">👤</div>
+            <h4>Alice Developer</h4>
+            <p>Senior Developer</p>
+            <button class="remove-btn">Remove</button>
+          </div>
+          <div class="team-member">
+            <div class="team-member-avatar">👨</div>
+            <h4>Bob Designer</h4>
+            <p>UI/UX Designer</p>
+            <button class="remove-btn">Remove</button>
+          </div>
+        </div>
+        <button style="margin-top: 16px; padding: 12px 24px; background: var(--secondary); color: #fff; border: none; border-radius: 8px; cursor: pointer;">+ Invite Team Member</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchRole(role) {
+  const buyerView = document.getElementById('buyer-view');
+  const sellerView = document.getElementById('seller-view');
+  const buttons = document.querySelectorAll('.role-btn');
+
+  buttons.forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if (role === 'buyer') {
+    buyerView.style.display = 'block';
+    sellerView.style.display = 'none';
+  } else {
+    buyerView.style.display = 'none';
+    sellerView.style.display = 'block';
+  }
+}
+
+function switchTab(view, tab) {
+  const tabs = document.querySelectorAll(`#${view}-${tab}`).length
+    ? [document.getElementById(`${view}-${tab}`)]
+    : Array.from(document.querySelectorAll(`[id^="${view}-"]`));
+
+  const allTabs = document.querySelectorAll(`.tab-content`);
+  allTabs.forEach(t => t.classList.remove('active'));
+
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => btn.classList.remove('active'));
+
+  const currentTab = document.getElementById(`${view}-${tab}`);
+  if (currentTab) {
+    currentTab.classList.add('active');
+    event.target.classList.add('active');
+  }
+}
+
+function toggleAgency(element) {
+  element.classList.toggle('active');
+  const teamSection = document.getElementById('team-section');
+  teamSection.style.display = element.classList.contains('active') ? 'block' : 'none';
+}
+</script>
+
+</body>
+</html>

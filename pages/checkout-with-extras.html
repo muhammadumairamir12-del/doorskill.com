@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 32px;
+    }
+
+    .breadcrumb a {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    .header {
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* PACKAGE SELECTION */
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .package-card {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .package-card:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 4px 12px rgba(244,64,78,0.1);
+    }
+
+    .package-card.selected {
+      border-color: var(--secondary);
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .package-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .package-price {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .package-delivery {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    /* GIG EXTRAS */
+    .extras-section {
+      margin-bottom: 20px;
+    }
+
+    .extra-option {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .extra-option:hover {
+      background: #fafafa;
+    }
+
+    .extra-option input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .extra-info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .extra-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .extra-desc {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .extra-price {
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    /* BUYER REQUIREMENTS */
+    .requirements {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .requirement-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    input,
+    textarea,
+    select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(244,64,78,0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* ORDER SUMMARY */
+    .order-summary {
+      position: sticky;
+      top: 20px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .summary-item.total {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .seller-card {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .seller-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      background: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .seller-info {
+      flex: 1;
+    }
+
+    .seller-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .seller-rating {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--secondary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .checkout-btn:hover {
+      background: #d63040;
+    }
+
+    .checkout-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .gig-preview {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      background: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .gig-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 6px;
+      background: var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .gig-details {
+      flex: 1;
+    }
+
+    .gig-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .gig-category {
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .order-summary {
+        position: static;
+      }
+
+      .packages-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="/">Home</a> / <a href="/search">Services</a> / <span>Checkout</span>
+  </div>
+
+  <div class="header">
+    <h1>Review Your Order</h1>
+  </div>
+
+  <div class="main-content">
+    <div>
+      <!-- GIG PREVIEW -->
+      <div class="section">
+        <div class="gig-preview">
+          <div class="gig-image">🎨</div>
+          <div class="gig-details">
+            <div class="gig-title">I will create a beautiful UI/UX design</div>
+            <div class="gig-category">Graphic & Design / Web Design</div>
+          </div>
+        </div>
+
+        <div class="seller-card">
+          <div class="seller-avatar">👨</div>
+          <div class="seller-info">
+            <div class="seller-name">John Designer</div>
+            <div class="seller-rating">⭐ 4.9 (520 reviews) • Level 3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PACKAGE SELECTION -->
+      <div class="section">
+        <div class="section-title">Select Package</div>
+        <div class="packages-grid">
+          <div class="package-card" onclick="selectPackage(this, 'basic', 50)">
+            <div class="package-name">Basic</div>
+            <div class="package-price">$50</div>
+            <div class="package-delivery">5 days</div>
+          </div>
+          <div class="package-card selected" onclick="selectPackage(this, 'standard', 100)">
+            <div class="package-name">Standard</div>
+            <div class="package-price">$100</div>
+            <div class="package-delivery">3 days</div>
+          </div>
+          <div class="package-card" onclick="selectPackage(this, 'premium', 200)">
+            <div class="package-name">Premium</div>
+            <div class="package-price">$200</div>
+            <div class="package-delivery">1 day</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GIG EXTRAS -->
+      <div class="section">
+        <div class="section-title">Add Extras (Optional)</div>
+        <div class="extras-section">
+          <div class="extra-option">
+            <input type="checkbox" onchange="updateTotal()">
+            <div class="extra-info">
+              <div class="extra-name">Express Delivery</div>
+              <div class="extra-desc">Get your order within 24 hours</div>
+            </div>
+            <div class="extra-price">+$25</div>
+          </div>
+
+          <div class="extra-option">
+            <input type="checkbox" onchange="updateTotal()">
+            <div class="extra-info">
+              <div class="extra-name">Additional Revisions (5)</div>
+              <div class="extra-desc">Get 5 extra revision rounds</div>
+            </div>
+            <div class="extra-price">+$15</div>
+          </div>
+
+          <div class="extra-option">
+            <input type="checkbox" onchange="updateTotal()">
+            <div class="extra-info">
+              <div class="extra-name">Source Files</div>
+              <div class="extra-desc">Include editable source files (PSD, Figma)</div>
+            </div>
+            <div class="extra-price">+$20</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUYER REQUIREMENTS -->
+      <div class="section">
+        <div class="section-title">Your Requirements</div>
+        <div class="requirements">
+          <div class="requirement-field">
+            <label>What style do you prefer?</label>
+            <select>
+              <option>Modern & Minimalist</option>
+              <option>Bold & Vibrant</option>
+              <option>Classic & Elegant</option>
+            </select>
+          </div>
+
+          <div class="requirement-field">
+            <label>Additional Details</label>
+            <textarea placeholder="Tell the seller any specific details about your project..."></textarea>
+          </div>
+
+          <div class="requirement-field">
+            <label>Brand Colors (if any)</label>
+            <input type="text" placeholder="e.g., #FF5733, #33FF57">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDER SUMMARY SIDEBAR -->
+    <div class="order-summary">
+      <div class="section">
+        <div class="section-title">Order Summary</div>
+
+        <div class="summary-item">
+          <span>Standard Package</span>
+          <span id="package-price">$100</span>
+        </div>
+
+        <div id="extras-summary"></div>
+
+        <div class="summary-item" style="flex-direction: column; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span>Subtotal</span>
+            <span id="subtotal">$100</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: var(--accent);">
+            <span>Service Fee (18%)</span>
+            <span id="fee">$18.00</span>
+          </div>
+        </div>
+
+        <div class="summary-item total">
+          <span>Total</span>
+          <span id="total">$118</span>
+        </div>
+
+        <button class="checkout-btn">Proceed to Payment</button>
+
+        <p style="font-size: 11px; color: var(--accent); text-align: center; margin-top: 16px;">
+          By placing this order, you agree to our Terms of Service. Payment is secured by Stripe.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let packagePrice = 100;
+let selectedExtras = [];
+
+function selectPackage(element, tier, price) {
+  document.querySelectorAll('.package-card').forEach(card => {
+    card.classList.remove('selected');
+  });
+  element.classList.add('selected');
+  packagePrice = price;
+  updateTotal();
+}
+
+function updateTotal() {
+  const extrasCheckboxes = document.querySelectorAll('.extra-option input[type="checkbox"]');
+  let extrasTotal = 0;
+  let extrasSummary = '';
+
+  extrasCheckboxes.forEach((checkbox, index) => {
+    const prices = [25, 15, 20];
+    const names = ['Express Delivery', 'Additional Revisions', 'Source Files'];
+    
+    if (checkbox.checked) {
+      extrasTotal += prices[index];
+      extrasSummary += `
+        <div class="summary-item">
+          <span>${names[index]}</span>
+          <span>+$${prices[index]}</span>
+        </div>
+      `;
+    }
+  });
+
+  document.getElementById('extras-summary').innerHTML = extrasSummary;
+  document.getElementById('package-price').textContent = `$${packagePrice}`;
+
+  const subtotal = packagePrice + extrasTotal;
+  const fee = Math.round(subtotal * 0.18 * 100) / 100;
+  const total = subtotal + fee;
+
+  document.getElementById('subtotal').textContent = `$${subtotal}`;
+  document.getElementById('fee').textContent = `$${fee.toFixed(2)}`;
+  document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+}
+</script>
+
+</body>
+</html>
