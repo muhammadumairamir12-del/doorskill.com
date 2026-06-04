@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+    .breadcrumb { font-size: 13px; margin-bottom: 24px; }
+    .breadcrumb a { color: var(--secondary); text-decoration: none; }
+    
+    h1 { font-size: 24px; font-weight: 900; margin-bottom: 32px; }
+    
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Order Summary */
+    .order-summary {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .summary-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .summary-item label {
+      font-weight: 400;
+      color: var(--accent);
+      text-transform: none;
+      margin: 0;
+    }
+
+    .summary-divider {
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-top: 12px;
+    }
+
+    .summary-total .label {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .summary-total .price {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--secondary);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+    }
+
+    .gig-card-summary {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .gig-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      background: var(--bg);
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .gig-info {
+      flex: 1;
+      font-size: 13px;
+    }
+
+    .gig-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .gig-pkg {
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .seller-section {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .seller-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      flex-shrink: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .seller-info {
+      flex: 1;
+    }
+
+    .seller-name {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .seller-rating {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .checkout-grid { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> / <a href="/pages/search.html">Services</a> / <span id="gigCategory"></span> / Checkout
+    </div>
+
+    <h1>Checkout</h1>
+
+    <div class="checkout-grid">
+      <!-- Left: Order Form -->
+      <div>
+        <!-- Gig Selection -->
+        <div class="section">
+          <div class="section-title">Order Details</div>
+          <div class="gig-card-summary">
+            <img id="gigThumb" class="gig-thumb" src="" alt="">
+            <div class="gig-info">
+              <div class="gig-title" id="gigTitle"></div>
+              <div class="gig-pkg" id="packageName"></div>
+              <div class="gig-pkg" id="gigPrice"></div>
+            </div>
+          </div>
+
+          <div class="seller-section">
+            <div class="seller-avatar" id="sellerAvatar">S</div>
+            <div class="seller-info">
+              <div class="seller-name" id="sellerName">Seller</div>
+              <div class="seller-rating">
+                <span id="sellerRating">★★★★★</span> 5.0
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buyer Requirements -->
+        <div class="section">
+          <div class="section-title">Tell us about your project</div>
+          <div id="requirementsForm"></div>
+          <textarea id="specialInstructions" placeholder="Special instructions or additional notes (optional)" style="margin-top: 12px;" rows="4"></textarea>
+        </div>
+
+        <!-- Delivery Address -->
+        <div class="section">
+          <div class="section-title">Delivery Address</div>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="fullName" required>
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="address" required>
+          </div>
+          <div class="two-col">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" id="country" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="section">
+          <div class="section-title">Payment Method</div>
+          <div class="form-group">
+            <label>
+              <input type="radio" name="paymentMethod" value="stripe_card" checked>
+              Credit / Debit Card
+            </label>
+          </div>
+          <div id="stripePaymentForm" style="min-height: 100px; border: 1px solid var(--border); border-radius: 8px; padding: 12px;"></div>
+        </div>
+
+        <!-- Terms -->
+        <div class="section">
+          <label style="display: flex; align-items: center; gap: 8px; font-weight: 400; text-transform: none;">
+            <input type="checkbox" id="agreeTerms" required>
+            I agree to DoorSkill&apos;s Terms of Service and Privacy Policy
+          </label>
+        </div>
+
+        <button class="btn btn-primary" id="placeOrderBtn" style="margin-bottom: 12px;">Place Order</button>
+        <button class="btn btn-secondary" onclick="window.history.back()">Back</button>
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div class="order-summary">
+        <div class="summary-title">Order Summary</div>
+
+        <div class="summary-item">
+          <label>Service Price</label>
+          <span id="summaryPrice">$0</span>
+        </div>
+
+        <div id="extrasContainer"></div>
+
+        <div class="summary-item">
+          <label>Platform Fee (5.5% + $2.50)</label>
+          <span id="summaryFee">$0</span>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-total">
+          <span class="label">Total Amount</span>
+          <span class="price" id="summaryTotal">$0</span>
+        </div>
+
+        <div style="background: var(--bg); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--accent); margin-bottom: 16px;">
+          Funds will be held in escrow until you accept the delivery.
+        </div>
+
+        <button class="btn btn-primary" id="placeOrderBtn2">Place Order</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getGig, getUserProfile, createOrder, createNotification } from '/assets/firebase-db.js';
+    import { auth } from '/assets/firebase-db.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const gigId = params.get('gig_id');
+    const packageId = params.get('package_id') || 'basic';
+
+    let gig, seller, selectedPackage;
+
+    async function loadCheckout() {
+      gig = await getGig(gigId);
+      if (!gig) {
+        alert('Gig not found');
+        window.location.href = '/pages/search.html';
+        return;
+      }
+
+      seller = await getUserProfile(gig.sellerId);
+      selectedPackage = gig.packages.find(p => p.id === packageId) || gig.packages[0];
+
+      // Populate UI
+      document.getElementById('gigTitle').textContent = gig.title;
+      document.getElementById('gigThumb').src = gig.thumbnail || '/assets/placeholder.png';
+      document.getElementById('gigCategory').textContent = gig.category;
+      document.getElementById('packageName').textContent = `${selectedPackage.name} Package`;
+      document.getElementById('gigPrice').textContent = `Starting at $${selectedPackage.price}`;
+      
+      document.getElementById('sellerName').textContent = seller.displayName || 'Seller';
+      document.getElementById('sellerAvatar').textContent = (seller.displayName || 'S').charAt(0).toUpperCase();
+
+      // Render requirements
+      if (gig.requirements && gig.requirements.length > 0) {
+        const requirementsHTML = gig.requirements.map(req => {
+          if (req.type === 'text') {
+            return `
+              <div class="form-group">
+                <label>${req.title} ${req.required ? '*' : ''}</label>
+                <input type="text" class="requirement" data-req-id="${req.id}" ${req.required ? 'required' : ''}>
+              </div>
+            `;
+          } else if (req.type === 'file') {
+            return `
+              <div class="form-group">
+                <label>${req.title} ${req.required ? '*' : ''}</label>
+                <input type="file" class="requirement" data-req-id="${req.id}" ${req.required ? 'required' : ''}>
+              </div>
+            `;
+          }
+          return '';
+        }).join('');
+        document.getElementById('requirementsForm').innerHTML = requirementsHTML;
+      }
+
+      // Calculate fees
+      const platformFee = selectedPackage.price < 75 
+        ? selectedPackage.price * 0.055 + 2.50
+        : selectedPackage.price * 0.055;
+      
+      const total = selectedPackage.price + platformFee;
+
+      document.getElementById('summaryPrice').textContent = `$${selectedPackage.price.toFixed(2)}`;
+      document.getElementById('summaryFee').textContent = `$${platformFee.toFixed(2)}`;
+      document.getElementById('summaryTotal').textContent = `$${total.toFixed(2)}`;
+
+      // Place order buttons
+      document.getElementById('placeOrderBtn').addEventListener('click', submitOrder);
+      document.getElementById('placeOrderBtn2').addEventListener('click', submitOrder);
+    }
+
+    async function submitOrder() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Please log in first');
+        window.location.href = '/login.html';
+        return;
+      }
+
+      if (!document.getElementById('agreeTerms').checked) {
+        alert('Please agree to the terms');
+        return;
+      }
+
+      // Collect requirements
+      const requirements = {};
+      document.querySelectorAll('.requirement').forEach(el => {
+        requirements[el.dataset.reqId] = el.value;
+      });
+
+      // Calculate fee
+      const platformFee = selectedPackage.price < 75 
+        ? selectedPackage.price * 0.055 + 2.50
+        : selectedPackage.price * 0.055;
+
+      // Create order
+      const orderId = await createOrder({
+        buyerId: user.uid,
+        sellerId: gig.sellerId,
+        gigId: gigId,
+        packageId: packageId,
+        packagePrice: selectedPackage.price,
+        extras: [],
+        subtotal: selectedPackage.price,
+        platformFee: platformFee,
+        total: selectedPackage.price + platformFee,
+        requirements,
+        specialInstructions: document.getElementById('specialInstructions').value,
+        deliveryAddress: {
+          fullName: document.getElementById('fullName').value,
+          address: document.getElementById('address').value,
+          city: document.getElementById('city').value,
+          country: document.getElementById('country').value,
+        }
+      });
+
+      if (orderId) {
+        // Notify seller
+        await createNotification(gig.sellerId, {
+          type: 'order_placed',
+          title: 'New Order',
+          message: `${user.displayName || 'A buyer'} ordered your gig: ${gig.title}`,
+          actionUrl: `/dashboard/seller-orders.html#${orderId}`,
+          relatedId: orderId,
+          sentVia: ['in_app', 'email']
+        });
+
+        alert('Order placed successfully!');
+        window.location.href = `/pages/order-detail.html?order_id=${orderId}`;
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    }
+
+    loadCheckout();
+  </script>
+</body>
+</html>

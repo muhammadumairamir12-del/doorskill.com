@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+
+    .breadcrumb { font-size: 13px; margin-bottom: 24px; }
+    .breadcrumb a { color: var(--secondary); text-decoration: none; }
+
+    h1 { font-size: 28px; font-weight: 900; margin-bottom: 24px; }
+
+    .order-header {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+
+    .header-item {
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-item:last-child {
+      border-bottom: none;
+    }
+
+    .header-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .header-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-in_progress { background: #dbeafe; color: #1e40af; }
+    .status-in_review { background: #e0e7ff; color: #3730a3; }
+    .status-completed { background: #d1fae5; color: #065f46; }
+    .status-cancelled { background: #fee2e2; color: #7f1d1d; }
+
+    .order-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      left: -18px;
+      top: 2px;
+    }
+
+    .timeline-item.completed::before {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .timeline-item.current::before {
+      background: var(--info);
+      border-color: var(--info);
+      width: 16px;
+      height: 16px;
+      left: -20px;
+    }
+
+    .timeline-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* Order Summary */
+    .order-summary {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .summary-item label {
+      color: var(--accent);
+    }
+
+    .summary-divider {
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .summary-total .label {
+      font-weight: 700;
+    }
+
+    .summary-total .price {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--secondary);
+    }
+
+    /* Gig Info */
+    .gig-card {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .gig-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .gig-info {
+      flex: 1;
+    }
+
+    .gig-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .gig-pkg {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    /* Delivery Address */
+    .address-block {
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      border-left: 3px solid var(--secondary);
+    }
+
+    .address-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .address-content {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Action Buttons */
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+      width: 100%;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+      width: 100%;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: #fff;
+      width: 100%;
+    }
+
+    .seller-info {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .seller-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      flex-shrink: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .seller-details {
+      flex: 1;
+    }
+
+    .seller-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .seller-rating {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .order-header { grid-template-columns: 1fr; }
+      .order-grid { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> / <a href="/dashboard/client.html">Orders</a> / <span id="orderId"></span>
+    </div>
+
+    <h1>Order #<span id="orderIdShort"></span></h1>
+
+    <!-- Order Header -->
+    <div class="order-header">
+      <div class="header-item">
+        <div class="header-label">Order Status</div>
+        <div class="header-value">
+          <span id="orderStatus" class="status-badge"></span>
+        </div>
+      </div>
+      <div class="header-item">
+        <div class="header-label">Order Date</div>
+        <div class="header-value" id="orderDate"></div>
+      </div>
+      <div class="header-item">
+        <div class="header-label">Total Amount</div>
+        <div class="header-value" id="orderTotal"></div>
+      </div>
+    </div>
+
+    <div class="order-grid">
+      <!-- Left: Order Details -->
+      <div>
+        <!-- Timeline -->
+        <div class="section">
+          <div class="section-title">Order Progress</div>
+          <div id="timeline" class="timeline"></div>
+        </div>
+
+        <!-- Gig Details -->
+        <div class="section">
+          <div class="section-title">Service Details</div>
+          <div id="gigCard" class="gig-card"></div>
+          <div class="summary-item">
+            <label>Package</label>
+            <span id="packageName"></span>
+          </div>
+          <div class="summary-item">
+            <label>Package Price</label>
+            <span id="packagePrice"></span>
+          </div>
+        </div>
+
+        <!-- Seller Information -->
+        <div class="section">
+          <div class="section-title">Service Provider</div>
+          <div id="sellerInfo"></div>
+          <button class="btn btn-secondary" id="contactSellerBtn" style="margin-top: 12px;">Contact Seller</button>
+        </div>
+
+        <!-- Delivery Address -->
+        <div class="section">
+          <div class="section-title">Delivery Address</div>
+          <div id="deliveryAddress" class="address-block"></div>
+        </div>
+
+        <!-- Special Instructions -->
+        <div class="section" id="instructionsSection" style="display: none;">
+          <div class="section-title">Special Instructions</div>
+          <div id="specialInstructions" style="padding: 12px; background: var(--bg); border-radius: 8px; font-size: 13px; line-height: 1.6;"></div>
+        </div>
+
+        <!-- Buyer Requirements -->
+        <div class="section" id="requirementsSection" style="display: none;">
+          <div class="section-title">Your Requirements</div>
+          <div id="requirements"></div>
+        </div>
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div class="order-summary">
+        <div class="section-title">Order Summary</div>
+
+        <div class="summary-item">
+          <label>Service Price</label>
+          <span id="summaryPrice">$0</span>
+        </div>
+
+        <div id="extrasContainer"></div>
+
+        <div class="summary-item">
+          <label>Platform Fee</label>
+          <span id="summaryFee">$0</span>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-total">
+          <span class="label">Total</span>
+          <span class="price" id="summaryTotal">$0</span>
+        </div>
+
+        <div style="background: var(--bg); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--accent); margin: 16px 0;">
+          <strong>Escrow Status:</strong> Funds held safely until delivery is accepted
+        </div>
+
+        <div id="actionButtons"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { 
+      getOrder, getGig, getUserProfile, updateOrderStatus, 
+      createNotification, createMessage, getOrderMessages, auth 
+    } from '/assets/firebase-db.js';
+    import { getTimeAgo, formatCurrency } from '/assets/firebase-db.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order_id');
+
+    let order, gig, seller, buyer;
+
+    const orderStatusSteps = [
+      { key: 'pending_requirements', label: 'Payment Pending', step: 1 },
+      { key: 'accepted', label: 'Order Accepted', step: 2 },
+      { key: 'in_progress', label: 'In Progress', step: 3 },
+      { key: 'submitted_for_review', label: 'Submitted for Review', step: 4 },
+      { key: 'in_review', label: 'Reviewing', step: 5 },
+      { key: 'completed', label: 'Completed', step: 6 }
+    ];
+
+    async function loadOrder() {
+      order = await getOrder(orderId);
+      if (!order) {
+        alert('Order not found');
+        window.location.href = '/dashboard/client.html';
+        return;
+      }
+
+      gig = await getGig(order.gigId);
+      seller = await getUserProfile(order.sellerId);
+      buyer = await getUserProfile(order.buyerId);
+
+      const currentUser = auth.currentUser;
+      const isBuyer = currentUser.uid === order.buyerId;
+      const isSeller = currentUser.uid === order.sellerId;
+
+      // Populate header
+      document.getElementById('orderId').textContent = orderId;
+      document.getElementById('orderIdShort').textContent = orderId.substring(0, 8);
+      document.getElementById('orderDate').textContent = formatDate(order.createdAt);
+      document.getElementById('orderTotal').textContent = formatCurrency(order.total);
+
+      // Status badge
+      const statusEl = document.getElementById('orderStatus');
+      statusEl.textContent = formatStatus(order.status);
+      statusEl.className = `status-badge status-${order.status}`;
+
+      // Populate gig details
+      document.getElementById('gigCard').innerHTML = `
+        <img src="${gig.thumbnail || '/assets/placeholder.png'}" alt="" class="gig-thumb">
+        <div class="gig-info">
+          <div class="gig-title">${gig.title}</div>
+          <div class="gig-pkg">By ${seller.displayName}</div>
+          <div class="gig-pkg">Category: ${gig.category}</div>
+        </div>
+      `;
+
+      const selectedPackage = gig.packages.find(p => p.id === order.packageId) || gig.packages[0];
+      document.getElementById('packageName').textContent = selectedPackage.name;
+      document.getElementById('packagePrice').textContent = formatCurrency(selectedPackage.price);
+
+      // Populate seller info
+      const sellerInitials = (seller.displayName || 'S').charAt(0).toUpperCase();
+      document.getElementById('sellerInfo').innerHTML = `
+        <div class="seller-info">
+          <div class="seller-avatar">${sellerInitials}</div>
+          <div class="seller-details">
+            <div class="seller-name">${seller.displayName}</div>
+            <div class="seller-rating">★★★★★ (${seller.ordersCompleted || 0} orders)</div>
+            <div class="seller-rating" style="margin-top: 4px;">${seller.bio || 'Professional seller'}</div>
+          </div>
+        </div>
+      `;
+
+      // Populate delivery address
+      if (order.deliveryAddress) {
+        const addr = order.deliveryAddress;
+        document.getElementById('deliveryAddress').innerHTML = `
+          <div class="address-label">Delivery Location</div>
+          <div class="address-content">
+            ${addr.fullName}<br>
+            ${addr.address}<br>
+            ${addr.city}, ${addr.country}
+          </div>
+        `;
+      }
+
+      // Special instructions
+      if (order.specialInstructions) {
+        document.getElementById('instructionsSection').style.display = 'block';
+        document.getElementById('specialInstructions').textContent = order.specialInstructions;
+      }
+
+      // Requirements
+      if (order.requirements && Object.keys(order.requirements).length > 0) {
+        document.getElementById('requirementsSection').style.display = 'block';
+        let reqHTML = '';
+        for (const [key, value] of Object.entries(order.requirements)) {
+          reqHTML += `<div class="summary-item"><label>${key}</label><span>${value}</span></div>`;
+        }
+        document.getElementById('requirements').innerHTML = reqHTML;
+      }
+
+      // Order summary
+      document.getElementById('summaryPrice').textContent = formatCurrency(order.packagePrice);
+      document.getElementById('summaryFee').textContent = formatCurrency(order.platformFee);
+      document.getElementById('summaryTotal').textContent = formatCurrency(order.total);
+
+      // Timeline
+      renderTimeline(order.status);
+
+      // Action buttons
+      renderActionButtons(isBuyer, isSeller, order.status);
+
+      document.getElementById('contactSellerBtn').addEventListener('click', () => {
+        window.location.href = `/pages/order-detail.html?order_id=${orderId}#messages`;
+      });
+    }
+
+    function renderTimeline(currentStatus) {
+      const timelineEl = document.getElementById('timeline');
+      timelineEl.innerHTML = '';
+
+      orderStatusSteps.forEach((step, index) => {
+        const isCompleted = orderStatusSteps.findIndex(s => s.key === currentStatus) >= index;
+        const isCurrent = step.key === currentStatus;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = `timeline-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`;
+        itemEl.innerHTML = `
+          <div class="timeline-label">Step ${step.step}</div>
+          <div class="timeline-title">${step.label}</div>
+          <div class="timeline-time">${getStatusTime(order, step.key)}</div>
+        `;
+        timelineEl.appendChild(itemEl);
+      });
+    }
+
+    function renderActionButtons(isBuyer, isSeller, status) {
+      const container = document.getElementById('actionButtons');
+      container.innerHTML = '';
+
+      if (isSeller && status === 'pending_requirements') {
+        container.innerHTML += `
+          <button class="btn btn-success" onclick="acceptOrder()">Accept Order</button>
+          <button class="btn btn-warning" onclick="declineOrder()">Decline Order</button>
+        `;
+      } else if (isSeller && status === 'in_progress') {
+        container.innerHTML += `
+          <button class="btn btn-success" onclick="submitForReview()">Submit for Review</button>
+        `;
+      } else if (isBuyer && status === 'submitted_for_review') {
+        container.innerHTML += `
+          <button class="btn btn-success" onclick="acceptDelivery()">Accept Delivery</button>
+          <button class="btn btn-warning" onclick="requestRevision()">Request Revision</button>
+        `;
+      } else if (isBuyer && status === 'in_review') {
+        container.innerHTML += `
+          <button class="btn btn-secondary" disabled>Waiting for Seller Revision</button>
+        `;
+      } else if (status === 'completed') {
+        container.innerHTML += `
+          <button class="btn btn-secondary" disabled>Order Completed</button>
+        `;
+      }
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return '';
+      const date = new Date(timestamp.seconds * 1000 || timestamp);
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    function formatStatus(status) {
+      const map = {
+        'pending_requirements': 'Pending Payment',
+        'accepted': 'Accepted',
+        'in_progress': 'In Progress',
+        'submitted_for_review': 'Submitted for Review',
+        'in_review': 'In Review',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled'
+      };
+      return map[status] || status;
+    }
+
+    function getStatusTime(order, status) {
+      const map = {
+        'pending_requirements': order.createdAt,
+        'accepted': order.acceptedAt,
+        'in_progress': order.inProgressAt,
+        'submitted_for_review': order.submittedAt,
+        'in_review': order.inReviewAt,
+        'completed': order.completedAt
+      };
+      const time = map[status];
+      return time ? getTimeAgo(time) : '-';
+    }
+
+    window.acceptOrder = async function() {
+      const success = await updateOrderStatus(orderId, 'in_progress', {
+        acceptedAt: new Date(),
+        inProgressAt: new Date()
+      });
+      if (success) {
+        await createNotification(order.buyerId, {
+          type: 'order_accepted',
+          title: 'Order Accepted',
+          message: `${seller.displayName} accepted your order`,
+          relatedId: orderId
+        });
+        alert('Order accepted!');
+        location.reload();
+      }
+    };
+
+    window.declineOrder = async function() {
+      if (!confirm('Are you sure you want to decline this order?')) return;
+      const success = await updateOrderStatus(orderId, 'cancelled', {
+        cancelledAt: new Date()
+      });
+      if (success) {
+        alert('Order declined');
+        location.reload();
+      }
+    };
+
+    window.submitForReview = async function() {
+      const success = await updateOrderStatus(orderId, 'submitted_for_review', {
+        submittedAt: new Date()
+      });
+      if (success) {
+        await createNotification(order.buyerId, {
+          type: 'work_submitted',
+          title: 'Work Submitted for Review',
+          message: `${seller.displayName} submitted their work for your review`,
+          relatedId: orderId
+        });
+        alert('Work submitted for review!');
+        location.reload();
+      }
+    };
+
+    window.acceptDelivery = async function() {
+      const success = await updateOrderStatus(orderId, 'completed', {
+        completedAt: new Date()
+      });
+      if (success) {
+        await createNotification(order.sellerId, {
+          type: 'order_completed',
+          title: 'Order Completed',
+          message: `${buyer.displayName} accepted your delivery`,
+          relatedId: orderId
+        });
+        alert('Order completed! Please leave a review.');
+        window.location.href = `/pages/review.html?order_id=${orderId}`;
+      }
+    };
+
+    window.requestRevision = async function() {
+      const reason = prompt('Please provide details about your revision request:');
+      if (!reason) return;
+      
+      const success = await updateOrderStatus(orderId, 'in_review', {
+        revisionRequestedAt: new Date(),
+        revisionReason: reason
+      });
+      if (success) {
+        await createNotification(order.sellerId, {
+          type: 'revision_requested',
+          title: 'Revision Requested',
+          message: `${buyer.displayName} requested a revision: ${reason}`,
+          relatedId: orderId
+        });
+        alert('Revision request sent to seller!');
+        location.reload();
+      }
+    };
+
+    loadOrder();
+  </script>
+</body>
+</html>

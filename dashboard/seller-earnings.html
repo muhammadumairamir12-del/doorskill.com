@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earnings & Payouts - DoorSkill Seller</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+
+    h1 { font-size: 28px; font-weight: 900; margin-bottom: 32px; }
+
+    /* Balance Cards */
+    .balance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, var(--primary) 0%, #2d1623 100%);
+      border-radius: 12px;
+      padding: 24px;
+      color: #fff;
+    }
+
+    .balance-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .balance-value {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .balance-description {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .balance-card.info {
+      background: linear-gradient(135deg, var(--info) 0%, #1e40af 100%);
+    }
+
+    .balance-card.success {
+      background: linear-gradient(135deg, var(--success) 0%, #047857 100%);
+    }
+
+    .balance-card.warning {
+      background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab {
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+    }
+
+    /* Transaction List */
+    .transactions-container {
+      display: grid;
+      gap: 12px;
+    }
+
+    .transaction-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .transaction-info {
+      display: flex;
+      gap: 12px;
+    }
+
+    .transaction-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .transaction-icon.earned {
+      background: #d1fae5;
+      color: var(--success);
+    }
+
+    .transaction-icon.pending {
+      background: #fef3c7;
+      color: var(--warning);
+    }
+
+    .transaction-icon.paid {
+      background: #dbeafe;
+      color: var(--info);
+    }
+
+    .transaction-details {
+      flex: 1;
+    }
+
+    .transaction-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .transaction-meta {
+      font-size: 12px;
+      color: var(--accent);
+      display: flex;
+      gap: 12px;
+    }
+
+    .transaction-amount {
+      text-align: right;
+    }
+
+    .amount-value {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .amount-status {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--success);
+    }
+
+    .amount-status.pending {
+      color: var(--warning);
+    }
+
+    .amount-status.paid {
+      color: var(--info);
+    }
+
+    /* Payout Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-cancel {
+      background: var(--bg);
+      color: var(--accent);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .balance-grid { grid-template-columns: 1fr; }
+      .transaction-card { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Earnings & Payouts</h1>
+
+    <!-- Balance Cards -->
+    <div class="balance-grid">
+      <div class="balance-card success">
+        <div class="balance-label">Available Balance</div>
+        <div class="balance-value" id="availableBalance">$0.00</div>
+        <div class="balance-description">Ready to withdraw</div>
+      </div>
+
+      <div class="balance-card warning">
+        <div class="balance-label">Pending Earnings</div>
+        <div class="balance-value" id="pendingBalance">$0.00</div>
+        <div class="balance-description">Awaiting order completion</div>
+      </div>
+
+      <div class="balance-card info">
+        <div class="balance-label">Lifetime Earnings</div>
+        <div class="balance-value" id="totalBalance">$0.00</div>
+        <div class="balance-description">All-time total earned</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="requestPayoutBtn" onclick="openPayoutModal()">Request Payout</button>
+      <button class="btn btn-secondary" onclick="window.location.href='/dashboard/seller-earnings.html'">View Details</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="transactions">Recent Transactions</button>
+      <button class="tab" data-tab="payouts">Payouts</button>
+      <button class="tab" data-tab="invoices">Invoices</button>
+    </div>
+
+    <!-- Transactions List -->
+    <div id="transactionsList" class="transactions-container"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">💰</div>
+      <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">No transactions yet</div>
+      <div style="color: var(--accent);">Complete orders to start earning</div>
+    </div>
+  </div>
+
+  <!-- Payout Modal -->
+  <div id="payoutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-title">Request Payout</div>
+
+      <div class="form-group">
+        <label>Payout Amount</label>
+        <input type="number" id="payoutAmount" placeholder="Amount" min="50" step="0.01">
+        <div style="font-size: 11px; color: var(--accent); margin-top: 4px;">Minimum: $50</div>
+      </div>
+
+      <div class="form-group">
+        <label>Bank Account Type</label>
+        <select id="accountType">
+          <option value="">Select account type</option>
+          <option value="checking">Checking Account</option>
+          <option value="savings">Savings Account</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Routing Number</label>
+        <input type="text" id="routingNumber" placeholder="9-digit routing number">
+      </div>
+
+      <div class="form-group">
+        <label>Account Number</label>
+        <input type="text" id="accountNumber" placeholder="Account number">
+      </div>
+
+      <div class="form-group">
+        <label>Account Holder Name</label>
+        <input type="text" id="accountHolderName" placeholder="Full name on account">
+      </div>
+
+      <div style="background: var(--bg); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--accent); margin-bottom: 16px;">
+        <strong>Processing Time:</strong> 5-10 business days after approval
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-submit" onclick="submitPayout()">Submit Request</button>
+        <button class="btn-cancel" onclick="closePayoutModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getSellerBalance, getSellerOrders, getOrder, auth, getCurrentUser } from '/assets/firebase-db.js';
+    import { formatCurrency } from '/assets/firebase-db.js';
+
+    let currentTab = 'transactions';
+    let sellerBalance = { available: 0, pending: 0, total: 0 };
+
+    async function loadEarnings() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      // Fetch balance
+      sellerBalance = await getSellerBalance(user.uid);
+      updateBalanceDisplay();
+
+      // Fetch transactions
+      const orders = await getSellerOrders(user.uid);
+      renderTransactions(orders);
+
+      // Tab listeners
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          currentTab = e.target.dataset.tab;
+          renderTransactions(orders);
+        });
+      });
+
+      // Disable payout button if no available balance
+      const payoutBtn = document.getElementById('requestPayoutBtn');
+      if (sellerBalance.available < 50) {
+        payoutBtn.disabled = true;
+        payoutBtn.title = 'Minimum balance of $50 required';
+      }
+    }
+
+    function updateBalanceDisplay() {
+      document.getElementById('availableBalance').textContent = formatCurrency(sellerBalance.available);
+      document.getElementById('pendingBalance').textContent = formatCurrency(sellerBalance.pending);
+      document.getElementById('totalBalance').textContent = formatCurrency(sellerBalance.total);
+    }
+
+    async function renderTransactions(orders) {
+      const container = document.getElementById('transactionsList');
+      const emptyState = document.getElementById('emptyState');
+
+      let filtered = [];
+
+      if (currentTab === 'transactions') {
+        filtered = orders.filter(o => o.status === 'completed').slice(0, 10);
+      } else if (currentTab === 'payouts') {
+        filtered = []; // Placeholder for payouts
+      } else if (currentTab === 'invoices') {
+        filtered = []; // Placeholder for invoices
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      container.innerHTML = filtered.map((order) => {
+        const date = new Date(order.completedAt?.seconds * 1000 || order.completedAt || Date.now());
+        const amount = order.packagePrice;
+        const fee = order.platformFee;
+        const earned = amount - fee;
+
+        return `
+          <div class="transaction-card">
+            <div class="transaction-info">
+              <div class="transaction-icon earned">💵</div>
+              <div class="transaction-details">
+                <div class="transaction-title">Order Completed</div>
+                <div class="transaction-meta">
+                  <span>#${order.id.substring(0, 8)}</span>
+                  <span>${date.toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
+            <div class="transaction-amount">
+              <div class="amount-value">+${earned.toFixed(2)}</div>
+              <div class="amount-status" style="font-size: 10px; color: var(--accent);">
+                ${formatCurrency(amount)} - ${formatCurrency(fee)} fee
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.openPayoutModal = function() {
+      document.getElementById('payoutModal').classList.add('active');
+    };
+
+    window.closePayoutModal = function() {
+      document.getElementById('payoutModal').classList.remove('active');
+      document.getElementById('payoutAmount').value = '';
+      document.getElementById('accountType').value = '';
+      document.getElementById('routingNumber').value = '';
+      document.getElementById('accountNumber').value = '';
+      document.getElementById('accountHolderName').value = '';
+    };
+
+    window.submitPayout = async function() {
+      const amount = parseFloat(document.getElementById('payoutAmount').value);
+      const accountType = document.getElementById('accountType').value;
+      const routingNumber = document.getElementById('routingNumber').value;
+      const accountNumber = document.getElementById('accountNumber').value;
+      const accountHolderName = document.getElementById('accountHolderName').value;
+
+      if (!amount || amount < 50) {
+        alert('Minimum payout is $50');
+        return;
+      }
+
+      if (amount > sellerBalance.available) {
+        alert('Insufficient balance');
+        return;
+      }
+
+      if (!accountType || !routingNumber || !accountNumber || !accountHolderName) {
+        alert('Please fill in all bank details');
+        return;
+      }
+
+      // In production, this would call the backend API
+      console.log("[v0] Payout request submitted:", {
+        amount,
+        accountType,
+        routingNumber: '****' + routingNumber.slice(-4),
+        accountNumber: '****' + accountNumber.slice(-4),
+        accountHolderName
+      });
+
+      alert('Payout request submitted! It will be processed in 5-10 business days.');
+      window.closePayoutModal();
+      loadEarnings();
+    };
+
+    loadEarnings();
+  </script>
+</body>
+</html>

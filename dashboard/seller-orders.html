@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Management - DoorSkill Seller</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+
+    h1 { font-size: 28px; font-weight: 900; margin-bottom: 32px; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab {
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    /* Order Cards */
+    .orders-container {
+      display: grid;
+      gap: 12px;
+    }
+
+    .order-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .order-card:hover {
+      border-color: var(--secondary);
+    }
+
+    .order-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--bg);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .order-title {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .order-buyer {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .order-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    .order-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-in_progress { background: #dbeafe; color: #1e40af; }
+    .status-in_review { background: #e0e7ff; color: #3730a3; }
+    .status-completed { background: #d1fae5; color: #065f46; }
+    .status-cancelled { background: #fee2e2; color: #7f1d1d; }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 10px;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .order-price {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--secondary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .empty-text {
+      color: var(--accent);
+    }
+
+    /* Table view for larger screens */
+    @media (max-width: 768px) {
+      .order-card {
+        grid-template-columns: 1fr;
+      }
+
+      .order-thumb {
+        width: 100%;
+        height: 150px;
+      }
+
+      .order-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Order Management</h1>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="pending">Pending</button>
+      <button class="tab" data-tab="active">Active</button>
+      <button class="tab" data-tab="review">Under Review</button>
+      <button class="tab" data-tab="completed">Completed</button>
+      <button class="tab" data-tab="all">All Orders</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="statPending">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active</div>
+        <div class="stat-value" id="statActive">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="statCompleted">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Earned</div>
+        <div class="stat-value" id="statEarned">$0</div>
+      </div>
+    </div>
+
+    <!-- Orders List -->
+    <div id="ordersList" class="orders-container"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">No Orders</div>
+      <div class="empty-text">Check back soon for new orders</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getSellerOrders, getGig, getUserProfile, updateOrderStatus, createNotification, auth, getCurrentUser } from '/assets/firebase-db.js';
+    import { formatCurrency } from '/assets/firebase-db.js';
+
+    let orders = [];
+    let currentTab = 'pending';
+
+    async function loadOrders() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      orders = await getSellerOrders(user.uid);
+      
+      updateStats();
+      renderOrders();
+
+      // Attach tab listeners
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          currentTab = e.target.dataset.tab;
+          renderOrders();
+        });
+      });
+    }
+
+    function updateStats() {
+      const stats = {
+        pending: orders.filter(o => o.status === 'pending_requirements').length,
+        active: orders.filter(o => ['accepted', 'in_progress'].includes(o.status)).length,
+        completed: orders.filter(o => o.status === 'completed').length,
+        earned: orders
+          .filter(o => o.status === 'completed')
+          .reduce((sum, o) => sum + (o.packagePrice || 0), 0)
+      };
+
+      document.getElementById('statPending').textContent = stats.pending;
+      document.getElementById('statActive').textContent = stats.active;
+      document.getElementById('statCompleted').textContent = stats.completed;
+      document.getElementById('statEarned').textContent = formatCurrency(stats.earned);
+    }
+
+    function getFilteredOrders() {
+      switch (currentTab) {
+        case 'pending':
+          return orders.filter(o => o.status === 'pending_requirements');
+        case 'active':
+          return orders.filter(o => ['accepted', 'in_progress'].includes(o.status));
+        case 'review':
+          return orders.filter(o => ['submitted_for_review', 'in_review'].includes(o.status));
+        case 'completed':
+          return orders.filter(o => o.status === 'completed');
+        case 'all':
+        default:
+          return orders;
+      }
+    }
+
+    async function renderOrders() {
+      const filtered = getFilteredOrders();
+      const container = document.getElementById('ordersList');
+      const emptyState = document.getElementById('emptyState');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      container.innerHTML = await Promise.all(filtered.map(async (order) => {
+        const gig = await getGig(order.gigId);
+        const buyer = await getUserProfile(order.buyerId);
+
+        const status = formatStatus(order.status);
+        const actions = getActionButtons(order);
+
+        return `
+          <div class="order-card">
+            <img src="${gig.thumbnail || '/assets/placeholder.png'}" alt="" class="order-thumb" onclick="window.location.href='/pages/order-detail.html?order_id=${order.id}'">
+            <div>
+              <div class="order-header">
+                <div class="order-title">${gig.title}</div>
+                <span class="status-badge status-${order.status}">${status}</span>
+              </div>
+              <div class="order-buyer">👤 ${buyer.displayName}</div>
+              <div class="order-meta">
+                <span>📅 ${new Date(order.createdAt.seconds * 1000 || order.createdAt).toLocaleDateString()}</span>
+                <span>📦 #${order.id.substring(0, 8)}</span>
+              </div>
+            </div>
+            <div class="order-actions">
+              <div class="order-price">${formatCurrency(order.packagePrice)}</div>
+              ${actions}
+            </div>
+          </div>
+        `;
+      })).then(cards => cards.join(''));
+
+      // Attach event listeners for action buttons
+      attachActionListeners(filtered);
+    }
+
+    function getActionButtons(order) {
+      if (order.status === 'pending_requirements') {
+        return `
+          <button class="btn btn-primary btn-sm" onclick="acceptOrder('${order.id}')">Accept</button>
+          <button class="btn btn-secondary btn-sm" onclick="declineOrder('${order.id}')">Decline</button>
+        `;
+      } else if (order.status === 'in_progress') {
+        return `
+          <button class="btn btn-primary btn-sm" onclick="submitForReview('${order.id}')">Submit Work</button>
+        `;
+      } else if (order.status === 'in_review') {
+        return `
+          <button class="btn btn-secondary btn-sm" onclick="viewOrder('${order.id}')">View Details</button>
+        `;
+      } else if (order.status === 'completed') {
+        return `
+          <button class="btn btn-secondary btn-sm" onclick="viewOrder('${order.id}')">View Order</button>
+        `;
+      }
+      return '';
+    }
+
+    function formatStatus(status) {
+      const map = {
+        'pending_requirements': 'Pending',
+        'accepted': 'Accepted',
+        'in_progress': 'In Progress',
+        'submitted_for_review': 'Under Review',
+        'in_review': 'In Review',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled'
+      };
+      return map[status] || status;
+    }
+
+    function attachActionListeners(filtered) {
+      // Action listeners attached via onclick in HTML
+    }
+
+    window.acceptOrder = async function(orderId) {
+      const user = await getCurrentUser();
+      const order = orders.find(o => o.id === orderId);
+      const buyer = await getUserProfile(order.buyerId);
+
+      const success = await updateOrderStatus(orderId, 'in_progress', {
+        acceptedAt: new Date(),
+        inProgressAt: new Date()
+      });
+
+      if (success) {
+        await createNotification(order.buyerId, {
+          type: 'order_accepted',
+          title: 'Order Accepted',
+          message: 'Your order has been accepted. Work will begin soon.',
+          relatedId: orderId
+        });
+        alert('Order accepted!');
+        loadOrders();
+      }
+    };
+
+    window.declineOrder = async function(orderId) {
+      if (!confirm('Decline this order? Funds will be refunded to buyer.')) return;
+
+      const order = orders.find(o => o.id === orderId);
+      const success = await updateOrderStatus(orderId, 'cancelled', {
+        cancelledAt: new Date()
+      });
+
+      if (success) {
+        await createNotification(order.buyerId, {
+          type: 'order_declined',
+          title: 'Order Declined',
+          message: 'The seller declined your order. Your funds have been refunded.',
+          relatedId: orderId
+        });
+        alert('Order declined');
+        loadOrders();
+      }
+    };
+
+    window.submitForReview = async function(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      const success = await updateOrderStatus(orderId, 'submitted_for_review', {
+        submittedAt: new Date()
+      });
+
+      if (success) {
+        await createNotification(order.buyerId, {
+          type: 'work_submitted',
+          title: 'Work Submitted for Review',
+          message: 'Your order is ready for review',
+          relatedId: orderId
+        });
+        alert('Work submitted for review!');
+        loadOrders();
+      }
+    };
+
+    window.viewOrder = function(orderId) {
+      window.location.href = `/pages/order-detail.html?order_id=${orderId}`;
+    };
+
+    loadOrders();
+  </script>
+</body>
+</html>

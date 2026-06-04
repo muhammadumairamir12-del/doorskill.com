@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create a Gig - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(244, 64, 78, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    .input-hint {
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .package-card {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      background: #fafafa;
+      transition: all 0.2s;
+    }
+
+    .package-card:hover {
+      border-color: var(--secondary);
+      background: #fff;
+    }
+
+    .package-card.selected {
+      border-color: var(--secondary);
+      background: rgba(244, 64, 78, 0.05);
+    }
+
+    .package-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .package-name {
+      font-size: 16px;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .package-price {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--secondary);
+    }
+
+    .package-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .feature-value {
+      font-weight: 700;
+    }
+
+    .gallery-preview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fafafa;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-item:hover {
+      border-color: var(--secondary);
+      background: rgba(244, 64, 78, 0.05);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-item.remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      background: var(--error);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .gallery-item:hover .remove-btn {
+      display: flex;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      padding: 12px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .required {
+      color: var(--error);
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .two-col,
+      .three-col {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 20px 16px;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .gallery-preview {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Create Your Gig</h1>
+      <p>Share your skills and start earning on DoorSkill</p>
+    </div>
+
+    <form id="gigForm">
+      <!-- Basic Information -->
+      <div class="section">
+        <div class="section-title">Gig Basics</div>
+
+        <div class="form-group">
+          <label for="title">Gig Title <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            placeholder="e.g., I will create a professional logo for your business"
+            maxlength="100"
+            required
+          >
+          <div class="input-hint">0/100 characters</div>
+        </div>
+
+        <div class="two-col">
+          <div class="form-group">
+            <label for="category">Category <span class="required">*</span></label>
+            <select id="category" name="category" required>
+              <option value="">Select a category</option>
+              <option value="graphics-design">Graphics & Design</option>
+              <option value="writing">Writing & Translation</option>
+              <option value="video">Video & Animation</option>
+              <option value="programming">Programming & Tech</option>
+              <option value="business">Business</option>
+              <option value="home-services">Home Services</option>
+              <option value="photography">Photography</option>
+              <option value="marketing">Marketing</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="subcategory">Subcategory <span class="required">*</span></label>
+            <select id="subcategory" name="subcategory" required>
+              <option value="">Select subcategory</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description <span class="required">*</span></label>
+          <textarea 
+            id="description" 
+            name="description"
+            placeholder="Describe what you offer and what you'll deliver. Be specific and detailed."
+            minlength="100"
+            required
+          ></textarea>
+          <div class="input-hint">Minimum 100 characters</div>
+        </div>
+
+        <div class="form-group">
+          <label for="tags">Tags <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="tags" 
+            placeholder="e.g., logo design, brand identity, minimal (comma-separated, max 5)"
+          >
+          <div class="input-hint">Add relevant keywords to help buyers find your gig</div>
+        </div>
+      </div>
+
+      <!-- Media -->
+      <div class="section">
+        <div class="section-title">Gallery</div>
+
+        <div class="form-group">
+          <label for="thumbnail">Main Image <span class="required">*</span></label>
+          <input type="file" id="thumbnail" accept="image/*" required>
+          <div class="input-hint">This will be your gig's main image (min 500x500px)</div>
+        </div>
+
+        <div class="form-group">
+          <label>Additional Images & Videos</label>
+          <input type="file" id="gallery" multiple accept="image/*,video/*">
+          <div class="input-hint">Add up to 5 additional images or videos (max 50MB each)</div>
+          <div class="gallery-preview" id="galleryPreview"></div>
+        </div>
+      </div>
+
+      <!-- Packages -->
+      <div class="section">
+        <div class="section-title">Packages</div>
+        
+        <div id="packagesContainer"></div>
+
+        <div id="packagesList"></div>
+      </div>
+
+      <!-- Extras -->
+      <div class="section">
+        <div class="section-title">Extras (Optional)</div>
+        
+        <div id="extrasContainer"></div>
+        <button type="button" class="btn btn-secondary" id="addExtraBtn" style="width: 100%; margin-top: 12px;">+ Add Extra</button>
+      </div>
+
+      <!-- FAQs -->
+      <div class="section">
+        <div class="section-title">FAQ (Optional)</div>
+        <div class="input-hint">Answer common questions buyers might ask about your gig</div>
+        
+        <div id="faqsContainer"></div>
+        <button type="button" class="btn btn-secondary" id="addFaqBtn" style="width: 100%; margin-top: 12px;">+ Add FAQ</button>
+      </div>
+
+      <!-- Requirements -->
+      <div class="section">
+        <div class="section-title">Buyer Requirements (Optional)</div>
+        <div class="input-hint">Specify what information you need from buyers before starting work</div>
+        
+        <div id="requirementsContainer"></div>
+        <button type="button" class="btn btn-secondary" id="addRequirementBtn" style="width: 100%; margin-top: 12px;">+ Add Requirement</button>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Gig</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { createGig } from '/assets/firebase-db.js';
+    import { auth } from '/assets/firebase-db.js';
+
+    const form = document.getElementById('gigForm');
+    const packagesContainer = document.getElementById('packagesContainer');
+    const extrasContainer = document.getElementById('extrasContainer');
+    const faqsContainer = document.getElementById('faqsContainer');
+    const requirementsContainer = document.getElementById('requirementsContainer');
+
+    // Default packages
+    const defaultPackages = [
+      {
+        id: 'basic',
+        name: 'Basic',
+        description: 'Standard package',
+        price: 10,
+        deliveryDays: 3,
+        revisions: 1,
+        features: ['Feature 1', 'Feature 2']
+      },
+      {
+        id: 'standard',
+        name: 'Standard',
+        description: 'Popular package',
+        price: 25,
+        deliveryDays: 5,
+        revisions: 3,
+        features: ['All Basic features', 'Extra feature 1']
+      },
+      {
+        id: 'premium',
+        name: 'Premium',
+        description: 'Full package',
+        price: 50,
+        deliveryDays: 7,
+        revisions: -1,
+        features: ['All Standard features', 'Priority support']
+      }
+    ];
+
+    // Render packages
+    function renderPackages() {
+      packagesContainer.innerHTML = defaultPackages.map((pkg, idx) => `
+        <div class="package-card" data-package-id="${pkg.id}">
+          <div class="package-header">
+            <input type="radio" name="mainPackage" value="${pkg.id}" ${idx === 0 ? 'checked' : ''}>
+            <div class="package-name">${pkg.name}</div>
+            <div class="package-price">$${pkg.price}</div>
+          </div>
+          
+          <div class="two-col">
+            <div class="form-group">
+              <label>Price USD</label>
+              <input type="number" class="pkg-price" value="${pkg.price}" min="5" max="995" step="5">
+            </div>
+            <div class="form-group">
+              <label>Delivery Days</label>
+              <input type="number" class="pkg-delivery" value="${pkg.deliveryDays}" min="1" max="120">
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="form-group">
+              <label>Revisions</label>
+              <select class="pkg-revisions">
+                <option value="1">1 revision</option>
+                <option value="3">3 revisions</option>
+                <option value="5">5 revisions</option>
+                <option value="-1">Unlimited</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" class="pkg-desc" value="${pkg.description}" placeholder="e.g., Standard package">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Features (comma-separated)</label>
+            <textarea class="pkg-features" placeholder="List key features" style="height: 60px;">${pkg.features.join(', ')}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addExtra() {
+      const idx = extrasContainer.children.length;
+      const extraHTML = `
+        <div class="faq-item" data-extra-index="${idx}">
+          <div class="two-col" style="gap: 8px;">
+            <input type="text" placeholder="Extra name (e.g., Rush Delivery)" class="extra-name">
+            <div style="display: flex; gap: 8px; align-items: flex-end;">
+              <div style="flex: 1;">
+                <label style="font-size: 11px;">Extra price (+USD)</label>
+                <input type="number" placeholder="5" min="1" max="500" class="extra-price">
+              </div>
+              <button type="button" class="btn btn-secondary" style="padding: 6px 12px; margin-bottom: 0;" onclick="this.parentElement.parentElement.parentElement.remove();">Remove</button>
+            </div>
+          </div>
+        </div>
+      `;
+      extrasContainer.innerHTML += extraHTML;
+    }
+
+    function addFaq() {
+      const idx = faqsContainer.children.length;
+      const faqHTML = `
+        <div class="faq-item" data-faq-index="${idx}">
+          <input type="text" placeholder="Question" class="faq-question" style="margin-bottom: 8px;">
+          <textarea placeholder="Answer" class="faq-answer" style="margin-bottom: 8px;"></textarea>
+          <button type="button" class="btn btn-secondary" style="padding: 6px 12px;" onclick="this.parentElement.remove();">Remove</button>
+        </div>
+      `;
+      faqsContainer.innerHTML += faqHTML;
+    }
+
+    function addRequirement() {
+      const idx = requirementsContainer.children.length;
+      const reqHTML = `
+        <div class="faq-item" data-requirement-index="${idx}">
+          <div class="form-group">
+            <label>Question/Field Title</label>
+            <input type="text" placeholder="e.g., What is your brand name?" class="req-title">
+          </div>
+          <div class="two-col">
+            <div class="form-group">
+              <label>Type</label>
+              <select class="req-type">
+                <option value="text">Text</option>
+                <option value="select">Dropdown</option>
+                <option value="file">File Upload</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Required?</label>
+              <select class="req-required">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="this.parentElement.remove();">Remove</button>
+        </div>
+      `;
+      requirementsContainer.innerHTML += reqHTML;
+    }
+
+    document.getElementById('addExtraBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      addExtra();
+    });
+
+    document.getElementById('addFaqBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      addFaq();
+    });
+
+    document.getElementById('addRequirementBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      addRequirement();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Please log in first');
+        return;
+      }
+
+      // Collect form data
+      const formData = {
+        title: document.getElementById('title').value,
+        category: document.getElementById('category').value,
+        subcategory: document.getElementById('subcategory').value,
+        description: document.getElementById('description').value,
+        tags: document.getElementById('tags').value.split(',').map(t => t.trim()).slice(0, 5),
+        thumbnail: document.getElementById('thumbnail').value,
+        gallery: Array.from(document.getElementById('gallery').files).map(f => f.name),
+        packages: defaultPackages.map((pkg, idx) => ({
+          ...pkg,
+          price: parseFloat(document.querySelectorAll('.pkg-price')[idx].value),
+          deliveryDays: parseInt(document.querySelectorAll('.pkg-delivery')[idx].value),
+          revisions: parseInt(document.querySelectorAll('.pkg-revisions')[idx].value),
+          description: document.querySelectorAll('.pkg-desc')[idx].value,
+          features: document.querySelectorAll('.pkg-features')[idx].value.split(',').map(f => f.trim())
+        })),
+        extras: Array.from(extrasContainer.querySelectorAll('.faq-item')).map(item => ({
+          name: item.querySelector('.extra-name').value,
+          price: parseFloat(item.querySelector('.extra-price').value)
+        })).filter(e => e.name && e.price),
+        faqs: Array.from(faqsContainer.querySelectorAll('.faq-item')).map(item => ({
+          question: item.querySelector('.faq-question').value,
+          answer: item.querySelector('.faq-answer').value
+        })).filter(f => f.question && f.answer),
+        requirements: Array.from(requirementsContainer.querySelectorAll('.faq-item')).map(item => ({
+          title: item.querySelector('.req-title').value,
+          type: item.querySelector('.req-type').value,
+          required: item.querySelector('.req-required').value === 'true'
+        })).filter(r => r.title)
+      };
+
+      try {
+        const gigId = await createGig(user.uid, formData);
+        if (gigId) {
+          alert('Gig created successfully!');
+          window.location.href = `/pages/gig-detail.html?gig_id=${gigId}`;
+        } else {
+          alert('Failed to create gig. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      }
+    });
+
+    renderPackages();
+  </script>
+</body>
+</html>

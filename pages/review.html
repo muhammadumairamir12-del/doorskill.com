@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave a Review - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 700px; margin: 0 auto; padding: 40px 24px; }
+
+    h1 { font-size: 28px; font-weight: 900; margin-bottom: 32px; }
+
+    .review-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .review-header {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .reviewer-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      flex-shrink: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .reviewer-info {
+      flex: 1;
+    }
+
+    .reviewer-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .reviewer-role {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    /* Rating Input */
+    .rating-section {
+      margin-bottom: 32px;
+    }
+
+    .rating-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .star {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--border);
+      background: #fff;
+      border-radius: 6px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .star:hover {
+      border-color: var(--secondary);
+      transform: scale(1.1);
+    }
+
+    .star.selected {
+      border-color: var(--secondary);
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .rating-descriptor {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .rating-descriptor.excellent { color: #10b981; }
+    .rating-descriptor.good { color: #3b82f6; }
+    .rating-descriptor.okay { color: #f59e0b; }
+    .rating-descriptor.poor { color: var(--secondary); }
+
+    /* Attribute Ratings */
+    .attributes-section {
+      margin-bottom: 32px;
+    }
+
+    .attribute-item {
+      margin-bottom: 20px;
+    }
+
+    .attribute-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .attribute-stars {
+      display: flex;
+      gap: 4px;
+    }
+
+    .attr-star {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .attr-star:hover {
+      border-color: var(--secondary);
+    }
+
+    .attr-star.selected {
+      background: var(--secondary);
+      border-color: var(--secondary);
+      color: #fff;
+    }
+
+    /* Text Input */
+    .text-section {
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+
+    .char-count {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+
+    /* Anonymous Toggle */
+    .anonymous-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-bottom: 32px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle.active {
+      background: var(--secondary);
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 10px;
+      top: 2px;
+      left: 2px;
+      transition: all 0.2s;
+    }
+
+    .toggle.active::after {
+      left: 22px;
+    }
+
+    .anonymous-text {
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    .btn-primary:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    /* Service Summary */
+    .service-summary {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 32px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .service-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .service-info {
+      flex: 1;
+    }
+
+    .service-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .service-seller {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .review-card { padding: 20px; }
+      .button-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Leave a Review</h1>
+
+    <div class="review-card">
+      <!-- Service Summary -->
+      <div id="serviceSummary" class="service-summary"></div>
+
+      <!-- Review Form -->
+      <div class="review-header">
+        <div class="reviewer-avatar" id="reviewerAvatar">Y</div>
+        <div class="reviewer-info">
+          <div class="reviewer-name" id="reviewerName">You</div>
+          <div class="reviewer-role" id="reviewerRole">Buyer</div>
+        </div>
+      </div>
+
+      <!-- Overall Rating -->
+      <div class="rating-section">
+        <label class="rating-label">How would you rate this service?</label>
+        <div class="star-rating" id="overallRating"></div>
+        <div class="rating-descriptor" id="ratingDescriptor"></div>
+      </div>
+
+      <!-- Detailed Ratings -->
+      <div class="attributes-section">
+        <label class="rating-label">Rate these aspects</label>
+
+        <div class="attribute-item">
+          <label class="attribute-label">Quality of Work</label>
+          <div class="attribute-stars" id="qualityRating"></div>
+        </div>
+
+        <div class="attribute-item">
+          <label class="attribute-label">Communication</label>
+          <div class="attribute-stars" id="communicationRating"></div>
+        </div>
+
+        <div class="attribute-item">
+          <label class="attribute-label">Delivery Time</label>
+          <div class="attribute-stars" id="deliveryRating"></div>
+        </div>
+
+        <div class="attribute-item">
+          <label class="attribute-label">Value for Money</label>
+          <div class="attribute-stars" id="valueRating"></div>
+        </div>
+      </div>
+
+      <!-- Review Text -->
+      <div class="text-section">
+        <div class="form-group">
+          <label>What did you like most? (Optional)</label>
+          <textarea id="reviewText" placeholder="Share your positive experience..." maxlength="500"></textarea>
+          <div class="char-count"><span id="charCount">0</span>/500</div>
+        </div>
+
+        <div class="form-group">
+          <label>Suggestions for improvement (Optional)</label>
+          <textarea id="improvementText" placeholder="Help us improve..." maxlength="300"></textarea>
+          <div class="char-count"><span id="improvementCount">0</span>/300</div>
+        </div>
+      </div>
+
+      <!-- Anonymous Option -->
+      <div class="anonymous-section">
+        <div class="toggle" id="anonymousToggle" onclick="toggleAnonymous()"></div>
+        <span class="anonymous-text">Post this review anonymously</span>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button class="btn btn-primary" id="submitBtn" onclick="submitReview()">Submit Review</button>
+        <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getOrder, getGig, getUserProfile, createReview, updateOrderStatus, auth, getCurrentUser } from '/assets/firebase-db.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order_id');
+
+    let order, gig, seller, buyer;
+    let ratings = {
+      overall: 0,
+      quality: 0,
+      communication: 0,
+      delivery: 0,
+      value: 0
+    };
+    let isAnonymous = false;
+
+    async function loadReviewForm() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      order = await getOrder(orderId);
+      if (!order) {
+        alert('Order not found');
+        window.location.href = '/dashboard/buyer-orders.html';
+        return;
+      }
+
+      gig = await getGig(order.gigId);
+      seller = await getUserProfile(order.sellerId);
+      buyer = user;
+
+      // Populate service summary
+      document.getElementById('serviceSummary').innerHTML = `
+        <img src="${gig.thumbnail || '/assets/placeholder.png'}" alt="" class="service-thumb">
+        <div class="service-info">
+          <div class="service-title">${gig.title}</div>
+          <div class="service-seller">By ${seller.displayName}</div>
+        </div>
+      `;
+
+      // Populate reviewer info
+      const initials = (buyer.displayName || 'Y').charAt(0).toUpperCase();
+      document.getElementById('reviewerAvatar').textContent = initials;
+      document.getElementById('reviewerName').textContent = 'You';
+      document.getElementById('reviewerRole').textContent = 'Buyer';
+
+      // Create star ratings
+      createStarRating('overallRating', 'overall', 5);
+      createStarRating('qualityRating', 'quality', 5);
+      createStarRating('communicationRating', 'communication', 5);
+      createStarRating('deliveryRating', 'delivery', 5);
+      createStarRating('valueRating', 'value', 5);
+
+      // Text input listeners
+      document.getElementById('reviewText').addEventListener('input', (e) => {
+        document.getElementById('charCount').textContent = e.target.value.length;
+      });
+
+      document.getElementById('improvementText').addEventListener('input', (e) => {
+        document.getElementById('improvementCount').textContent = e.target.value.length;
+      });
+    }
+
+    function createStarRating(elementId, ratingKey, maxStars) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+
+      for (let i = 1; i <= maxStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star attr-star';
+        star.innerHTML = '★';
+        star.dataset.value = i;
+        star.addEventListener('click', () => {
+          ratings[ratingKey] = i;
+          updateStarDisplay(elementId, i);
+          
+          if (ratingKey === 'overall') {
+            updateRatingDescriptor(i);
+          }
+        });
+        container.appendChild(star);
+      }
+
+      // For overall rating, use larger stars
+      if (elementId === 'overallRating') {
+        container.className = 'star-rating';
+        container.querySelectorAll('.star').forEach(s => {
+          s.classList.remove('attr-star');
+          s.style.width = '40px';
+          s.style.height = '40px';
+          s.style.fontSize = '20px';
+        });
+      }
+    }
+
+    function updateStarDisplay(elementId, rating) {
+      document.querySelectorAll(`#${elementId} .star`).forEach((star, index) => {
+        if (index + 1 <= rating) {
+          star.classList.add('selected');
+        } else {
+          star.classList.remove('selected');
+        }
+      });
+    }
+
+    function updateRatingDescriptor(rating) {
+      const descriptors = {
+        5: { text: 'Excellent! Amazing experience', class: 'excellent' },
+        4: { text: 'Good. Very satisfied', class: 'good' },
+        3: { text: 'Okay. Did the job', class: 'okay' },
+        2: { text: 'Poor. Not satisfied', class: 'poor' },
+        1: { text: 'Terrible. Very disappointing', class: 'poor' }
+      };
+
+      const desc = descriptors[rating] || { text: '', class: '' };
+      const el = document.getElementById('ratingDescriptor');
+      el.textContent = desc.text;
+      el.className = `rating-descriptor ${desc.class}`;
+    }
+
+    window.toggleAnonymous = function() {
+      const toggle = document.getElementById('anonymousToggle');
+      isAnonymous = !isAnonymous;
+      toggle.classList.toggle('active');
+    };
+
+    window.submitReview = async function() {
+      if (ratings.overall === 0) {
+        alert('Please select an overall rating');
+        return;
+      }
+
+      if (ratings.quality === 0 || ratings.communication === 0 || ratings.delivery === 0 || ratings.value === 0) {
+        alert('Please rate all aspects');
+        return;
+      }
+
+      const reviewData = {
+        orderId: orderId,
+        gigId: order.gigId,
+        sellerId: order.sellerId,
+        buyerId: isAnonymous ? 'anonymous' : buyer.uid,
+        buyerName: isAnonymous ? 'Anonymous' : buyer.displayName,
+        rating: ratings.overall,
+        attributes: {
+          quality: ratings.quality,
+          communication: ratings.communication,
+          delivery: ratings.delivery,
+          value: ratings.value
+        },
+        comment: document.getElementById('reviewText').value,
+        improvement: document.getElementById('improvementText').value,
+        isAnonymous: isAnonymous,
+        isVisible: true
+      };
+
+      const reviewId = await createReview(reviewData);
+
+      if (reviewId) {
+        // Update order to mark review submitted
+        await updateOrderStatus(orderId, 'reviewed');
+        
+        alert('Thank you for your review!');
+        window.location.href = `/pages/gig-detail.html?gig_id=${order.gigId}`;
+      } else {
+        alert('Failed to submit review. Please try again.');
+      }
+    };
+
+    loadReviewForm();
+  </script>
+</body>
+</html>

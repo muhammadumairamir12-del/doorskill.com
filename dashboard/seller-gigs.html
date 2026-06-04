@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Gigs - DoorSkill Seller Dashboard</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+      --warning: #FCD34D;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--primary); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    h1 { font-size: 28px; font-weight: 900; }
+    .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .btn-primary { background: var(--secondary); color: #fff; }
+    .btn-primary:hover { background: #e0334f; }
+
+    .tabs {
+      display: flex;
+      gap: 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    .tab {
+      padding: 16px 0;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--secondary);
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      border-color: var(--secondary);
+      background: rgba(244, 64, 78, 0.1);
+      color: var(--secondary);
+    }
+
+    .gigs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .gig-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gig-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .gig-thumbnail {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--bg);
+      object-fit: cover;
+      display: block;
+    }
+
+    .gig-content {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gig-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary);
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .gig-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .gig-price {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--secondary);
+      margin-bottom: 12px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .gig-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .stat-label { color: var(--accent); margin-bottom: 2px; }
+    .stat-value { font-weight: 700; color: var(--primary); }
+
+    .gig-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .action-btn:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-active { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .status-paused { background: rgba(255, 193, 7, 0.2); color: var(--warning); }
+    .status-pending { background: rgba(244, 64, 78, 0.2); color: var(--secondary); }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .empty-text {
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .gigs-grid { grid-template-columns: 1fr; }
+      .container { padding: 20px 16px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>My Gigs</h1>
+      <button class="btn btn-primary" onclick="window.location.href='/pages/gig-create.html'">+ Create New Gig</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="filterByStatus('all')">All Gigs</button>
+      <button class="tab" onclick="filterByStatus('active')">Active</button>
+      <button class="tab" onclick="filterByStatus('paused')">Paused</button>
+      <button class="tab" onclick="filterByStatus('pending_review')">Pending Review</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="sortGigs('newest')">Newest First</button>
+      <button class="filter-btn" onclick="sortGigs('orders')">Most Orders</button>
+      <button class="filter-btn" onclick="sortGigs('rating')">Highest Rated</button>
+    </div>
+
+    <!-- Gigs Grid -->
+    <div class="gigs-grid" id="gigsGrid">
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <div class="empty-title">No gigs yet</div>
+        <div class="empty-text">Create your first gig to start earning</div>
+        <button class="btn btn-primary" onclick="window.location.href='/pages/gig-create.html'">Create Gig</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getSellerGigs, updateGigAnalytics } from '/assets/firebase-db.js';
+    import { auth } from '/assets/firebase-db.js';
+
+    let allGigs = [];
+    let filteredGigs = [];
+    let currentStatus = 'all';
+    let currentSort = 'newest';
+
+    async function loadGigs() {
+      const user = auth.currentUser;
+      if (!user) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      allGigs = await getSellerGigs(user.uid);
+      renderGigs();
+    }
+
+    function filterByStatus(status) {
+      currentStatus = status;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      renderGigs();
+    }
+
+    function sortGigs(sortType) {
+      currentSort = sortType;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      renderGigs();
+    }
+
+    function renderGigs() {
+      // Filter
+      filteredGigs = currentStatus === 'all' 
+        ? allGigs 
+        : allGigs.filter(g => g.status === currentStatus);
+
+      // Sort
+      if (currentSort === 'orders') {
+        filteredGigs.sort((a, b) => (b.orders || 0) - (a.orders || 0));
+      } else if (currentSort === 'rating') {
+        filteredGigs.sort((a, b) => b.rating - a.rating);
+      } else {
+        filteredGigs.sort((a, b) => b.createdAt - a.createdAt);
+      }
+
+      const grid = document.getElementById('gigsGrid');
+
+      if (filteredGigs.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">No gigs found</div>
+            <div class="empty-text">Try a different filter or create a new gig</div>
+            <button class="btn btn-primary" onclick="window.location.href='/pages/gig-create.html'">Create Gig</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filteredGigs.map(gig => `
+        <div class="gig-card">
+          <img src="${gig.thumbnail || '/assets/placeholder.png'}" class="gig-thumbnail" alt="${gig.title}">
+          <div class="gig-content">
+            <div style="margin-bottom: 8px;">
+              <span class="status-badge status-${gig.status}">${gig.status.toUpperCase().replace(/_/g, ' ')}</span>
+            </div>
+            <h3 class="gig-title">${gig.title}</h3>
+            <div class="gig-meta">
+              <span>${gig.orders || 0} orders</span>
+              <span>★ ${(gig.rating || 5.0).toFixed(1)}</span>
+            </div>
+            <div class="gig-price">$${(gig.packages && gig.packages[0] && gig.packages[0].price) || 10}</div>
+            <div class="gig-stats">
+              <div>
+                <div class="stat-label">Impressions</div>
+                <div class="stat-value">${gig.impressions || 0}</div>
+              </div>
+              <div>
+                <div class="stat-label">Clicks</div>
+                <div class="stat-value">${gig.clicks || 0}</div>
+              </div>
+              <div>
+                <div class="stat-label">CTR</div>
+                <div class="stat-value">${gig.impressions > 0 ? Math.round((gig.clicks || 0) / gig.impressions * 100) : 0}%</div>
+              </div>
+            </div>
+            <div class="gig-actions">
+              <button class="action-btn" onclick="window.location.href='/pages/gig-detail.html?gig_id=${gig.id}'">View</button>
+              <button class="action-btn" onclick="window.location.href='/pages/gig-edit.html?gig_id=${gig.id}'">Edit</button>
+              <button class="action-btn" onclick="togglePause('${gig.id}', '${gig.status}')">
+                ${gig.status === 'active' ? 'Pause' : 'Activate'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.filterByStatus = filterByStatus;
+    window.sortGigs = sortGigs;
+    window.togglePause = async (gigId, currentStatus) => {
+      const newStatus = currentStatus === 'active' ? 'paused' : 'active';
+      const gig = allGigs.find(g => g.id === gigId);
+      if (gig) {
+        await updateGigAnalytics(gigId, { status: newStatus });
+        gig.status = newStatus;
+        renderGigs();
+      }
+    };
+
+    loadGigs();
+  </script>
+</body>
+</html>

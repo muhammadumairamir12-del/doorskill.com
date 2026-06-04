@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+
+    h1 { font-size: 28px; font-weight: 900; margin-bottom: 32px; }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--accent);
+    }
+
+    .filter-btn.active {
+      background: var(--secondary);
+      border-color: var(--secondary);
+      color: #fff;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--secondary);
+    }
+
+    /* Order Cards */
+    .orders-container {
+      display: grid;
+      gap: 16px;
+    }
+
+    .order-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .order-card:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .order-thumb {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--bg);
+    }
+
+    .order-info {
+      flex: 1;
+    }
+
+    .order-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .order-seller {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .order-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .order-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .order-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-in_progress { background: #dbeafe; color: #1e40af; }
+    .status-in_review { background: #e0e7ff; color: #3730a3; }
+    .status-completed { background: #d1fae5; color: #065f46; }
+    .status-cancelled { background: #fee2e2; color: #7f1d1d; }
+
+    .order-price {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--secondary);
+      margin-bottom: 8px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .empty-text {
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--secondary);
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .order-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .order-thumb {
+        width: 100%;
+        height: 150px;
+      }
+
+      .order-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Orders</h1>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value" id="statInProgress">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="statCompleted">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Spent</div>
+        <div class="stat-value" id="statSpent">$0</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All Orders</button>
+      <button class="filter-btn" data-filter="pending_requirements">Pending</button>
+      <button class="filter-btn" data-filter="in_progress">In Progress</button>
+      <button class="filter-btn" data-filter="submitted_for_review">Under Review</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+      <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+    </div>
+
+    <!-- Orders List -->
+    <div id="ordersList" class="orders-container"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">📦</div>
+      <div class="empty-title">No Orders Yet</div>
+      <div class="empty-text">Start by browsing services and placing your first order</div>
+      <a href="/pages/search.html" class="btn-primary">Browse Services</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getBuyerOrders, getGig, getUserProfile, auth, getCurrentUser } from '/assets/firebase-db.js';
+    import { formatCurrency, getTimeAgo } from '/assets/firebase-db.js';
+
+    let orders = [];
+    let currentFilter = 'all';
+
+    async function loadOrders() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/auth/login.html';
+        return;
+      }
+
+      orders = await getBuyerOrders(user.uid);
+      
+      // Update stats
+      updateStats();
+
+      // Initial render
+      renderOrders();
+
+      // Attach filter listeners
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          currentFilter = e.target.dataset.filter;
+          renderOrders();
+        });
+      });
+    }
+
+    function updateStats() {
+      const stats = {
+        total: orders.length,
+        inProgress: orders.filter(o => ['pending_requirements', 'accepted', 'in_progress', 'submitted_for_review', 'in_review'].includes(o.status)).length,
+        completed: orders.filter(o => o.status === 'completed').length,
+        spent: orders.reduce((sum, o) => sum + o.total, 0)
+      };
+
+      document.getElementById('statTotal').textContent = stats.total;
+      document.getElementById('statInProgress').textContent = stats.inProgress;
+      document.getElementById('statCompleted').textContent = stats.completed;
+      document.getElementById('statSpent').textContent = formatCurrency(stats.spent);
+    }
+
+    async function renderOrders() {
+      const filtered = currentFilter === 'all' 
+        ? orders 
+        : orders.filter(o => o.status === currentFilter);
+
+      const container = document.getElementById('ordersList');
+      const emptyState = document.getElementById('emptyState');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      container.innerHTML = await Promise.all(filtered.map(async (order) => {
+        const gig = await getGig(order.gigId);
+        const seller = await getUserProfile(order.sellerId);
+
+        const orderDate = new Date(order.createdAt.seconds * 1000 || order.createdAt);
+        const status = formatStatus(order.status);
+
+        return `
+          <div class="order-card" onclick="window.location.href='/pages/order-detail.html?order_id=${order.id}'">
+            <img src="${gig.thumbnail || '/assets/placeholder.png'}" alt="" class="order-thumb">
+            <div class="order-info">
+              <div class="order-title">${gig.title}</div>
+              <div class="order-seller">By ${seller.displayName}</div>
+              <div class="order-meta">
+                <div class="order-meta-item">📅 ${orderDate.toLocaleDateString()}</div>
+                <div class="order-meta-item">📦 Order #${order.id.substring(0, 8)}</div>
+              </div>
+            </div>
+            <div class="order-actions">
+              <div class="order-price">${formatCurrency(order.total)}</div>
+              <span class="status-badge status-${order.status}">${status}</span>
+            </div>
+          </div>
+        `;
+      })).then(cards => cards.join(''));
+    }
+
+    function formatStatus(status) {
+      const map = {
+        'pending_requirements': 'Pending',
+        'accepted': 'Accepted',
+        'in_progress': 'In Progress',
+        'submitted_for_review': 'Under Review',
+        'in_review': 'In Review',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled'
+      };
+      return map[status] || status;
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>

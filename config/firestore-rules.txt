@@ -1,0 +1,236 @@
+// DoorSkill Firestore Security Rules
+// Deploy with: firebase deploy --only firestore:rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuth() {
+      return request.auth != null;
+    }
+    
+    function isUser(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // ===== USERS COLLECTION =====
+    match /users/{userId} {
+      // Public read (for profiles)
+      allow read: if isAuth();
+      
+      // Self write only
+      allow create: if isAuth() && isUser(userId);
+      allow update: if isAuth() && isUser(userId) && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['sellerLevel', 'sellerRating', 'completionRate', 'onTimeRate', 'responseRate', 'status', 'role']);
+      
+      // Admin can update metrics & status
+      allow update: if isAuth() && isAdmin() && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sellerLevel', 'sellerRating', 'completionRate', 'onTimeRate', 'responseRate', 'cancellationRate', 'status', 'updatedAt']);
+    }
+    
+    // ===== GIGS COLLECTION =====
+    match /gigs/{gigId} {
+      // Public read for all
+      allow read;
+      
+      // Sellers can create/update own gigs
+      allow create: if isAuth() && request.resource.data.sellerId == request.auth.uid;
+      allow update: if isAuth() && resource.data.sellerId == request.auth.uid &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['impressions', 'clicks', 'orders', 'status', 'featured', 'promoted']);
+      
+      // Admin can update visibility & status
+      allow update: if isAuth() && isAdmin();
+      
+      allow delete: if isAuth() && resource.data.sellerId == request.auth.uid;
+    }
+    
+    // ===== ORDERS COLLECTION =====
+    match /orders/{orderId} {
+      // Buyer and seller can read their orders
+      allow read: if isAuth() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid
+      );
+      
+      // Buyer creates order (after payment processed)
+      allow create: if isAuth() && request.resource.data.buyerId == request.auth.uid &&
+        request.resource.data.status == 'pending_requirements';
+      
+      // Buyer updates requirements, seller updates status
+      allow update: if isAuth() && (
+        (resource.data.buyerId == request.auth.uid && 
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['requirements', 'specialInstructions', 'deliveryAddress', 'updatedAt'])) ||
+        (resource.data.sellerId == request.auth.uid && 
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'deliveryFiles', 'revisionsRequested', 'latestRevisionRequestAt', 'deliveredAt', 'wasLate', 'updatedAt']))
+      );
+      
+      // Allow buyer to request revision or submit review decision
+      allow update: if isAuth() && resource.data.buyerId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'buyerReviewSubmitted', 'revisionsRequested', 'latestRevisionRequestAt', 'updatedAt']);
+    }
+    
+    // ===== MESSAGES SUBCOLLECTION (per order) =====
+    match /orders/{orderId}/messages/{messageId} {
+      // Read own order messages
+      allow read: if isAuth() && (
+        get(/databases/$(database)/documents/orders/$(orderId)).data.buyerId == request.auth.uid ||
+        get(/databases/$(database)/documents/orders/$(orderId)).data.sellerId == request.auth.uid
+      );
+      
+      // Create message in own order
+      allow create: if isAuth() && (
+        get(/databases/$(database)/documents/orders/$(orderId)).data.buyerId == request.auth.uid ||
+        get(/databases/$(database)/documents/orders/$(orderId)).data.sellerId == request.auth.uid
+      ) && request.resource.data.senderId == request.auth.uid;
+      
+      // Mark as read
+      allow update: if isAuth() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead', 'readAt']);
+    }
+    
+    // ===== REVIEWS COLLECTION =====
+    match /reviews/{reviewId} {
+      // Public read for visible reviews
+      allow read: if resource.data.isVisible;
+      
+      // Read own reviews (even if not visible)
+      allow read: if isAuth() && (
+        resource.data.reviewerId == request.auth.uid ||
+        resource.data.revieweeId == request.auth.uid
+      );
+      
+      // Create review after order completion
+      allow create: if isAuth() && request.resource.data.reviewerId == request.auth.uid &&
+        // Verify order exists and is in completed state
+        get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.status == 'completed';
+      
+      // Seller can add response once
+      allow update: if isAuth() && resource.data.revieweeId == request.auth.uid &&
+        resource.data.sellerResponse == null &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sellerResponse', 'sellerResponseAt', 'updatedAt']);
+    }
+    
+    // ===== TRANSACTIONS COLLECTION =====
+    match /transactions/{txnId} {
+      // Read own transactions
+      allow read: if isAuth() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid
+      );
+      
+      // Admin/system creates transactions (via Cloud Function)
+      allow create, update: if false; // Cloud Function only
+    }
+    
+    // ===== SELLER ANALYTICS =====
+    match /seller_analytics/{analyticsId} {
+      // Read own analytics
+      allow read: if isAuth() && resource.data.sellerId == request.auth.uid;
+      
+      // Admin/system updates (via Cloud Function)
+      allow write: if false;
+    }
+    
+    // ===== DISPUTES =====
+    match /disputes/{disputeId} {
+      // Buyer and seller can read disputes they're involved in
+      allow read: if isAuth() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid
+      );
+      
+      // Buyer creates dispute
+      allow create: if isAuth() && request.resource.data.buyerId == request.auth.uid &&
+        request.resource.data.initiatedBy == 'buyer';
+      
+      // Seller can create dispute too
+      allow create: if isAuth() && request.resource.data.sellerId == request.auth.uid &&
+        request.resource.data.initiatedBy == 'seller';
+      
+      // Parties can update with their response
+      allow update: if isAuth() && (
+        (resource.data.buyerId == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])) ||
+        (resource.data.sellerId == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sellerResponse', 'sellerResponseAt', 'sellerOffer', 'status', 'updatedAt']))
+      );
+      
+      // Admin resolves disputes
+      allow update: if isAuth() && isAdmin();
+    }
+    
+    // ===== NOTIFICATIONS =====
+    match /notifications/{notifId} {
+      // Read own notifications
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
+      
+      // Mark as read
+      allow update: if isAuth() && resource.data.userId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead', 'readAt', 'archivedAt']);
+      
+      // System creates (via Cloud Function)
+      allow create: if false;
+    }
+    
+    // ===== CUSTOM OFFERS =====
+    match /custom_offers/{offerId} {
+      // Both parties can read
+      allow read: if isAuth() && (
+        resource.data.sellerId == request.auth.uid ||
+        resource.data.buyerId == request.auth.uid
+      );
+      
+      // Seller creates
+      allow create: if isAuth() && request.resource.data.sellerId == request.auth.uid;
+      
+      // Buyer can accept/decline
+      allow update: if isAuth() && resource.data.buyerId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'respondedAt', 'relatedOrderId']);
+    }
+    
+    // ===== FAVORITES =====
+    match /favorites/{favId} {
+      // Read own favorites
+      allow read: if isAuth() && resource.data.buyerId == request.auth.uid;
+      
+      // Create/delete own favorites
+      allow create: if isAuth() && request.resource.data.buyerId == request.auth.uid;
+      allow delete: if isAuth() && resource.data.buyerId == request.auth.uid;
+    }
+    
+    // ===== CATEGORIES =====
+    match /categories/{catId} {
+      // Public read
+      allow read;
+      
+      // Admin only
+      allow write: if isAuth() && isAdmin();
+    }
+    
+    // ===== PROMOTED GIGS =====
+    match /promoted_gigs/{promoId} {
+      // Seller can read own campaigns
+      allow read: if isAuth() && resource.data.sellerId == request.auth.uid;
+      
+      // Admin can read all
+      allow read: if isAuth() && isAdmin();
+      
+      // Seller creates campaign
+      allow create: if isAuth() && request.resource.data.sellerId == request.auth.uid;
+      
+      // Seller updates own campaign
+      allow update: if isAuth() && resource.data.sellerId == request.auth.uid &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['impressions', 'clicks', 'spent', 'costPerClick']);
+      
+      // Admin can update metrics
+      allow update: if isAuth() && isAdmin();
+    }
+    
+    // ===== DEFAULT: DENY ALL =====
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

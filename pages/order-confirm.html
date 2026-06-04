@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Confirmation - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); }
+    .container { max-width: 600px; margin: 0 auto; padding: 60px 24px; }
+
+    .success-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #d1fae5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 24px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 32px;
+    }
+
+    .confirmation-details {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .detail-label {
+      color: var(--accent);
+    }
+
+    .detail-value {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .divider {
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    .next-steps {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .next-steps-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #92400e;
+    }
+
+    .next-steps-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .next-steps-list li {
+      font-size: 12px;
+      color: #92400e;
+      margin-bottom: 6px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .next-steps-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-direction: column;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .error-box {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .error-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--secondary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Loading State -->
+    <div id="loadingState" style="text-align: center; padding: 60px 24px;">
+      <div class="loading" style="margin: 0 auto 16px;"></div>
+      <p>Processing payment confirmation...</p>
+    </div>
+
+    <!-- Success State -->
+    <div id="successState" style="display: none;">
+      <div class="success-box">
+        <div class="success-icon">✓</div>
+        <h1>Payment Confirmed!</h1>
+        <p class="subtitle">Your order has been placed successfully</p>
+
+        <div class="confirmation-details">
+          <div class="detail-item">
+            <span class="detail-label">Order ID</span>
+            <span class="detail-value" id="confirmOrderId"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Order Date</span>
+            <span class="detail-value" id="confirmDate"></span>
+          </div>
+          <div class="divider"></div>
+          <div class="detail-item">
+            <span class="detail-label">Amount Paid</span>
+            <span class="detail-value" id="confirmAmount"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Escrow Status</span>
+            <span class="detail-value" style="color: var(--success);">Secured</span>
+          </div>
+        </div>
+
+        <div class="next-steps">
+          <div class="next-steps-title">What happens next?</div>
+          <ul class="next-steps-list">
+            <li>Seller will review your order</li>
+            <li>Seller will begin working on your project</li>
+            <li>You&apos;ll receive updates on your order</li>
+            <li>Review the delivered work</li>
+            <li>Funds will be released to seller upon acceptance</li>
+          </ul>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-primary" id="viewOrderBtn">View Order Details</button>
+          <a href="/dashboard/buyer-orders.html" class="btn btn-secondary">Back to Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" style="display: none;">
+      <div class="error-box">
+        <div class="error-icon">❌</div>
+        <h1>Payment Failed</h1>
+        <p class="subtitle" style="margin-bottom: 16px;" id="errorMessage"></p>
+        <a href="/pages/checkout.html" class="btn btn-primary" style="display: inline-block;">Try Again</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getOrder, auth } from '/assets/firebase-db.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order_id');
+    const clientSecret = params.get('payment_intent_client_secret');
+
+    async function confirmPayment() {
+      try {
+        const order = await getOrder(orderId);
+
+        if (!order) {
+          showError('Order not found');
+          return;
+        }
+
+        // Simulate payment processing
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        if (order.status === 'pending_requirements') {
+          showSuccess(order);
+        } else if (order.status === 'cancelled') {
+          showError('This order was cancelled');
+        } else {
+          showSuccess(order);
+        }
+      } catch (error) {
+        console.error("[v0] Error confirming payment:", error);
+        showError(error.message);
+      }
+    }
+
+    function showSuccess(order) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('successState').style.display = 'block';
+
+      document.getElementById('confirmOrderId').textContent = orderId.substring(0, 12);
+      document.getElementById('confirmDate').textContent = new Date().toLocaleDateString();
+      document.getElementById('confirmAmount').textContent = `$${order.total.toFixed(2)}`;
+
+      document.getElementById('viewOrderBtn').addEventListener('click', () => {
+        window.location.href = `/pages/order-detail.html?order_id=${orderId}`;
+      });
+    }
+
+    function showError(message) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('successState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+
+      document.getElementById('errorMessage').textContent = message || 'An error occurred during payment processing';
+    }
+
+    confirmPayment();
+  </script>
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gig Details - DoorSkill</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+    :root {
+      --primary: #1a0a14;
+      --secondary: #f4404e;
+      --accent: #62646a;
+      --border: #e8e8f0;
+      --bg: #f5f5f5;
+      --success: #10b981;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fff;
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    .breadcrumb {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .breadcrumb a {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      padding: 40px 24px;
+    }
+
+    /* ===== GALLERY ===== */
+    .gallery-section {
+      margin-bottom: 40px;
+    }
+
+    .main-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: var(--bg);
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .thumb:hover,
+    .thumb.active {
+      border-color: var(--secondary);
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ===== GIG INFO ===== */
+    .gig-info {
+      margin-bottom: 40px;
+    }
+
+    .gig-title {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .gig-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .meta-value {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .meta-label {
+      color: var(--accent);
+    }
+
+    .gig-description {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--primary);
+      margin-bottom: 24px;
+    }
+
+    .gig-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .tag {
+      background: var(--bg);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    /* ===== SELLER CARD ===== */
+    .seller-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .seller-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .seller-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .seller-info {
+      flex: 1;
+    }
+
+    .seller-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+
+    .seller-level {
+      display: inline-block;
+      background: #FCD34D;
+      color: #92400E;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .seller-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .stars {
+      color: #FCD34D;
+    }
+
+    .seller-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #e0334f;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    /* ===== PACKAGES ===== */
+    .packages-section {
+      margin-bottom: 40px;
+    }
+
+    .packages-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .package-card {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .package-card:hover {
+      border-color: var(--secondary);
+      box-shadow: 0 8px 24px rgba(244, 64, 78, 0.1);
+    }
+
+    .package-card.selected {
+      border-color: var(--secondary);
+      background: rgba(244, 64, 78, 0.05);
+    }
+
+    .package-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .package-price {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--secondary);
+      margin-bottom: 12px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .package-features {
+      list-style: none;
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .package-features li {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .package-features li:before {
+      content: "✓";
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .package-delivery {
+      font-size: 12px;
+      color: var(--accent);
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== REVIEWS ===== */
+    .reviews-section {
+      margin-bottom: 40px;
+    }
+
+    .reviews-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .review-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+    }
+
+    .review-info {
+      flex: 1;
+    }
+
+    .review-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .review-rating {
+      color: #FCD34D;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .review-text {
+      font-size: 13px;
+      color: var(--primary);
+      line-height: 1.6;
+    }
+
+    /* ===== FAQS ===== */
+    .faqs-section {
+      margin-bottom: 40px;
+    }
+
+    .faqs-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      background: var(--bg);
+      padding: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-toggle {
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+
+    .faq-item.open .faq-toggle {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      padding: 16px;
+      display: none;
+      color: var(--accent);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .packages-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px 16px;
+        gap: 20px;
+      }
+
+      .gig-title {
+        font-size: 20px;
+      }
+
+      .seller-card {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/">Home</a> / <a href="/pages/search.html">Services</a> / <span id="breadcrumbCategory"></span>
+    </div>
+
+    <div class="main-content">
+      <!-- Left Side: Gig Details -->
+      <div>
+        <!-- Gallery -->
+        <div class="gallery-section">
+          <img id="mainImage" class="main-image" src="" alt="Gig image">
+          <div class="gallery-thumbs" id="galleryThumbs"></div>
+        </div>
+
+        <!-- Gig Info -->
+        <div class="gig-info">
+          <h1 class="gig-title" id="gigTitle"></h1>
+          
+          <div class="gig-meta">
+            <div class="meta-item">
+              <span class="meta-label">Rating:</span>
+              <span class="stars" id="rating">★★★★★</span>
+              <span class="meta-value" id="ratingCount">5 (0)</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Orders:</span>
+              <span class="meta-value" id="ordersCount">0</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Category:</span>
+              <span class="meta-value" id="gigCategory"></span>
+            </div>
+          </div>
+
+          <div class="gig-description" id="gigDescription"></div>
+
+          <div class="gig-tags" id="gigTags"></div>
+        </div>
+
+        <!-- Packages -->
+        <div class="packages-section">
+          <h2 class="packages-title">Choose a Package</h2>
+          <div class="packages-grid" id="packagesGrid"></div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="faqs-section" id="faqsSection">
+          <h2 class="faqs-title">FAQ</h2>
+          <div id="faqsList"></div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="reviews-section" id="reviewsSection">
+          <h2 class="reviews-title">Reviews</h2>
+          <div id="reviewsList"></div>
+        </div>
+      </div>
+
+      <!-- Right Side: Seller Card -->
+      <div>
+        <div class="seller-card">
+          <!-- Seller Info -->
+          <div class="seller-header">
+            <div class="seller-avatar" id="sellerAvatar">A</div>
+            <div class="seller-info">
+              <div class="seller-name" id="sellerName">Seller Name</div>
+              <div class="seller-level" id="sellerLevel">New</div>
+              <div class="seller-rating">
+                <span class="stars">★★★★★</span>
+                <span id="sellerRating">5.0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="seller-stats">
+            <div class="stat">
+              <div class="stat-label">Response Time</div>
+              <div class="stat-value" id="responseTime">2h</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Completion Rate</div>
+              <div class="stat-value" id="completionRate">100%</div>
+            </div>
+          </div>
+
+          <!-- Package Price Display -->
+          <div style="text-align: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+            <div style="font-size: 11px; color: var(--accent); margin-bottom: 4px; text-transform: uppercase;">STARTING AT</div>
+            <div style="font-size: 32px; font-weight: 900; color: var(--secondary); font-family: 'Playfair Display', serif;" id="startingPrice">$10</div>
+          </div>
+
+          <!-- Buttons -->
+          <button class="btn btn-primary" id="continueBtn">Continue</button>
+          <button class="btn btn-secondary" id="favoriteBtn">♡ Save to Favorites</button>
+
+          <!-- Contact -->
+          <button class="btn btn-secondary">💬 Contact Me</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getGig, incrementGigImpressions, getReviewsForGig, getUserProfile } from '/assets/firebase-db.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const gigId = params.get('gig_id');
+
+    if (!gigId) {
+      window.location.href = '/pages/search.html';
+    }
+
+    async function loadGigDetails() {
+      const gig = await getGig(gigId);
+      if (!gig) {
+        alert('Gig not found');
+        window.location.href = '/pages/search.html';
+        return;
+      }
+
+      // Increment impressions
+      await incrementGigImpressions(gigId);
+
+      // Load seller info
+      const seller = await getUserProfile(gig.sellerId);
+
+      // Load reviews
+      const reviews = await getReviewsForGig(gig.id);
+
+      // Populate UI
+      document.getElementById('gigTitle').textContent = gig.title;
+      document.getElementById('gigDescription').textContent = gig.description;
+      document.getElementById('gigCategory').textContent = gig.category;
+      document.getElementById('breadcrumbCategory').textContent = gig.category;
+      document.getElementById('ordersCount').textContent = gig.orders || 0;
+
+      // Gallery
+      const mainImage = document.getElementById('mainImage');
+      mainImage.src = gig.thumbnail || '/assets/placeholder.png';
+      
+      if (gig.gallery && gig.gallery.length > 0) {
+        const thumbsHTML = gig.gallery.map((img, idx) => `
+          <div class="thumb ${idx === 0 ? 'active' : ''}" onclick="document.getElementById('mainImage').src='${img}'; this.parentElement.querySelectorAll('.thumb').forEach(t => t.classList.remove('active')); this.classList.add('active');">
+            <img src="${img}" alt="">
+          </div>
+        `).join('');
+        document.getElementById('galleryThumbs').innerHTML = thumbsHTML;
+      }
+
+      // Tags
+      if (gig.tags && gig.tags.length > 0) {
+        document.getElementById('gigTags').innerHTML = gig.tags
+          .map(tag => `<div class="tag">${tag}</div>`)
+          .join('');
+      }
+
+      // Packages
+      if (gig.packages && gig.packages.length > 0) {
+        const packagesHTML = gig.packages.map((pkg, idx) => `
+          <div class="package-card ${idx === 0 ? 'selected' : ''}" data-package-id="${pkg.id}">
+            <div class="package-name">${pkg.name}</div>
+            <div class="package-price">$${pkg.price}</div>
+            <ul class="package-features">
+              ${(pkg.features || []).map(f => `<li>${f}</li>`).join('')}
+            </ul>
+            <div class="package-delivery">
+              📅 ${pkg.deliveryDays} day${pkg.deliveryDays > 1 ? 's' : ''}
+              ${pkg.revisions === -1 ? '∞ revisions' : `${pkg.revisions} revision${pkg.revisions !== 1 ? 's' : ''}`}
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('packagesGrid').innerHTML = packagesHTML;
+        document.getElementById('startingPrice').textContent = `$${Math.min(...gig.packages.map(p => p.price))}`;
+      }
+
+      // FAQs
+      if (gig.faqs && gig.faqs.length > 0) {
+        const faqsHTML = gig.faqs.map((faq, idx) => `
+          <div class="faq-item" data-faq-idx="${idx}">
+            <div class="faq-question">
+              <div>${faq.question}</div>
+              <div class="faq-toggle">▼</div>
+            </div>
+            <div class="faq-answer">${faq.answer}</div>
+          </div>
+        `).join('');
+        document.getElementById('faqsList').innerHTML = faqsHTML;
+
+        // Toggle FAQ
+        document.querySelectorAll('.faq-question').forEach(q => {
+          q.addEventListener('click', function() {
+            this.parentElement.classList.toggle('open');
+          });
+        });
+      } else {
+        document.getElementById('faqsSection').style.display = 'none';
+      }
+
+      // Reviews
+      if (reviews.length > 0) {
+        const avgRating = (reviews.reduce((sum, r) => sum + r.overallRating, 0) / reviews.length).toFixed(1);
+        document.getElementById('rating').textContent = '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating));
+        document.getElementById('ratingCount').textContent = `${avgRating} (${reviews.length})`;
+
+        const reviewsHTML = reviews.slice(0, 3).map(review => `
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-avatar"></div>
+              <div class="review-info">
+                <div class="review-name">Buyer</div>
+                <div class="review-date">${new Date(review.createdAt.seconds * 1000).toLocaleDateString()}</div>
+              </div>
+            </div>
+            <div class="review-rating">${'★'.repeat(review.overallRating)}${'☆'.repeat(5 - review.overallRating)}</div>
+            <div class="review-text">${review.comment || 'No comment'}</div>
+          </div>
+        `).join('');
+        document.getElementById('reviewsList').innerHTML = reviewsHTML;
+      } else {
+        document.getElementById('reviewsSection').style.display = 'none';
+      }
+
+      // Seller info
+      if (seller) {
+        document.getElementById('sellerName').textContent = seller.displayName || 'Seller';
+        document.getElementById('sellerLevel').textContent = seller.sellerLevel?.toUpperCase() || 'NEW';
+        document.getElementById('sellerRating').textContent = (seller.sellerRating || 5.0).toFixed(1);
+        document.getElementById('sellerAvatar').textContent = (seller.displayName || 'S').charAt(0).toUpperCase();
+        document.getElementById('completionRate').textContent = (seller.completionRate || 100) + '%';
+        document.getElementById('responseTime').textContent = (seller.avgResponseTime || 2) + 'h';
+      }
+
+      // Continue to checkout
+      document.getElementById('continueBtn').addEventListener('click', () => {
+        const selectedPackage = document.querySelector('.package-card.selected');
+        if (selectedPackage) {
+          window.location.href = `/pages/checkout.html?gig_id=${gigId}&package_id=${selectedPackage.dataset.packageId}`;
+        }
+      });
+
+      // Select package
+      document.querySelectorAll('.package-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+        });
+      });
+    }
+
+    loadGigDetails();
+  </script>
+</body>
+</html>
