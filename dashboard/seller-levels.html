@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Levels - DoorSkill</title>
+  <link rel="stylesheet" href="../assets/global.css">
+  <style>
+    :root {
+      --rose: #f43f5e;
+      --rose-md: #fb7185;
+      --rose-lt: #ffe4e6;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --blue: #3b82f6;
+      --dark: #1a0a14;
+      --mid: #6b7280;
+      --muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #fafaf9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--bg); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .header { margin-bottom: 30px; }
+    .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+    .header p { color: var(--muted); font-size: 14px; }
+
+    .current-level {
+      background: linear-gradient(135deg, var(--rose) 0%, var(--rose-md) 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .current-level .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .current-level .level-name {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .current-level .level-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #fff;
+      width: 68%;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .level-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .level-card:hover {
+      border-color: var(--rose);
+      box-shadow: 0 4px 12px rgba(244,63,94,0.1);
+    }
+
+    .level-card.current {
+      border-color: var(--rose);
+      background: var(--rose-lt);
+    }
+
+    .level-card.locked {
+      opacity: 0.5;
+    }
+
+    .level-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .level-name-card {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .level-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .level-requirements {
+      background: var(--bg);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--mid);
+    }
+
+    .req-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .req-item:last-child { margin-bottom: 0; }
+
+    .req-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .benefits-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .benefit-item {
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 8px;
+      border-left: 3px solid var(--green);
+    }
+
+    .benefit-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .benefit-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .requirements-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .requirement-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .requirement-row:last-child {
+      border-bottom: none;
+    }
+
+    .req-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .req-info p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .req-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      margin: 0 20px;
+    }
+
+    .req-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .req-bar-fill {
+      height: 100%;
+      background: var(--green);
+    }
+
+    .req-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--mid);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    @media (max-width: 1024px) {
+      .levels-grid { grid-template-columns: repeat(2, 1fr); }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .levels-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .current-level { padding: 20px; }
+      .current-level .level-name { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Seller Levels</h1>
+      <p>Unlock higher levels and earn exclusive benefits as you grow</p>
+    </div>
+
+    <div class="current-level">
+      <div class="badge">YOUR CURRENT LEVEL</div>
+      <div class="level-name">Level 1</div>
+      <div class="level-subtitle">Established Seller</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="progress-text">68% toward Level 2 - Complete 2 more orders to advance</div>
+    </div>
+
+    <div class="levels-grid">
+      <div class="level-card">
+        <div class="level-icon">🌱</div>
+        <div class="level-name-card">New Seller</div>
+        <div class="level-desc">Get started on DoorSkill</div>
+        <div class="level-requirements">
+          <div class="req-item">
+            <div class="req-badge">✓</div>
+            <span>0+ Orders</span>
+          </div>
+          <div class="req-item">
+            <div class="req-badge">✓</div>
+            <span>1+ Active Gigs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card current">
+        <div class="level-icon">⭐</div>
+        <div class="level-name-card">Level 1</div>
+        <div class="level-desc">Established Seller</div>
+        <div class="level-requirements">
+          <div class="req-item">
+            <div class="req-badge">✓</div>
+            <span>5+ Orders</span>
+          </div>
+          <div class="req-item">
+            <div class="req-badge">✓</div>
+            <span>4.5+ Rating</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card">
+        <div class="level-icon">✨</div>
+        <div class="level-name-card">Level 2</div>
+        <div class="level-desc">Top Rated Seller</div>
+        <div class="level-requirements">
+          <div class="req-item">
+            <div class="req-badge">?</div>
+            <span>20+ Orders</span>
+          </div>
+          <div class="req-item">
+            <div class="req-badge">?</div>
+            <span>4.8+ Rating</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-card locked">
+        <div class="level-icon">👑</div>
+        <div class="level-name-card">Level 3</div>
+        <div class="level-desc">Pro Seller</div>
+        <div class="level-requirements">
+          <div class="req-item">
+            <div class="req-badge">?</div>
+            <span>50+ Orders</span>
+          </div>
+          <div class="req-item">
+            <div class="req-badge">?</div>
+            <span>4.9+ Rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="benefits-section">
+      <h2 class="section-title">Level 1 Benefits</h2>
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <div class="benefit-title">Higher Visibility</div>
+          <div class="benefit-desc">Your gigs appear higher in search results</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Priority Support</div>
+          <div class="benefit-desc">24/7 dedicated customer support</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Early Access</div>
+          <div class="benefit-desc">Get new features before others</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Badge Display</div>
+          <div class="benefit-desc">Show 'Level 1' badge on your profile</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Lower Fees</div>
+          <div class="benefit-desc">Reduced commission rate (18% vs 20%)</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Custom Offers</div>
+          <div class="benefit-desc">Send custom offers to buyers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="requirements-section">
+      <h2 class="section-title">Progress to Level 2</h2>
+
+      <div class="requirement-row">
+        <div class="req-info">
+          <h4>Total Orders</h4>
+          <p>Complete service orders</p>
+        </div>
+        <div class="req-progress">
+          <div class="req-bar">
+            <div class="req-bar-fill" style="width: 85%;"></div>
+          </div>
+          <div class="req-value">17/20</div>
+        </div>
+      </div>
+
+      <div class="requirement-row">
+        <div class="req-info">
+          <h4>Average Rating</h4>
+          <p>Maintain or improve your rating</p>
+        </div>
+        <div class="req-progress">
+          <div class="req-bar">
+            <div class="req-bar-fill" style="width: 72%;"></div>
+          </div>
+          <div class="req-value">4.6/4.8</div>
+        </div>
+      </div>
+
+      <div class="requirement-row">
+        <div class="req-info">
+          <h4>On-Time Completion</h4>
+          <p>Complete orders within agreed timeframe</p>
+        </div>
+        <div class="req-progress">
+          <div class="req-bar">
+            <div class="req-bar-fill" style="width: 95%;"></div>
+          </div>
+          <div class="req-value">95%</div>
+        </div>
+      </div>
+
+      <div class="requirement-row">
+        <div class="req-info">
+          <h4>Order Cancellation Rate</h4>
+          <p>Keep cancellations to a minimum</p>
+        </div>
+        <div class="req-progress">
+          <div class="req-bar">
+            <div class="req-bar-fill" style="width: 8%;"></div>
+          </div>
+          <div class="req-value">1% (Max 5%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

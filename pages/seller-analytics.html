@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Analytics - DoorSkill</title>
+  <link rel="stylesheet" href="../assets/global.css">
+  <style>
+    :root {
+      --rose: #f43f5e;
+      --rose-md: #fb7185;
+      --rose-lt: #ffe4e6;
+      --green: #10b981;
+      --blue: #3b82f6;
+      --dark: #1a0a14;
+      --mid: #6b7280;
+      --muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #fafaf9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--bg); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .time-range {
+      display: flex;
+      gap: 8px;
+    }
+
+    .time-btn {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .time-btn.active {
+      background: var(--rose);
+      color: #fff;
+      border-color: var(--rose);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .metric-change {
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .metric-change.negative {
+      color: #ef4444;
+    }
+
+    .charts-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .chart-container {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+
+    .chart-placeholder {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, var(--rose-lt) 0%, #fff 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table-container {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .table-header {
+      padding: 16px 20px;
+      border-bottom: 1.5px solid var(--border);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--dark);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      padding: 12px 20px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--bg);
+      border-bottom: 1.5px solid var(--border);
+      text-transform: uppercase;
+    }
+
+    .table td {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rating {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-badge.active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-badge.pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .performance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .performance-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .perf-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .perf-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .perf-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .perf-bar-fill {
+      height: 100%;
+      background: var(--green);
+      transition: width 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .charts-section { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 Seller Analytics</h1>
+      <div class="time-range">
+        <button class="time-btn active">7 Days</button>
+        <button class="time-btn">30 Days</button>
+        <button class="time-btn">90 Days</button>
+      </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Orders</div>
+        <div class="metric-value">24</div>
+        <div class="metric-change">↑ 12% from last week</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Total Earnings</div>
+        <div class="metric-value">$1,240</div>
+        <div class="metric-change">↑ 18% from last week</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Completion Rate</div>
+        <div class="metric-value">95%</div>
+        <div class="metric-change">↑ 3% from last week</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Average Rating</div>
+        <div class="metric-value">4.8</div>
+        <div class="metric-change">Based on 48 reviews</div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <div class="chart-title">Earnings Trend</div>
+        <div class="chart-placeholder">📈 Earnings over time chart goes here</div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Order Status Distribution</div>
+        <div class="chart-placeholder">📊 Status breakdown pie chart goes here</div>
+      </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="performance-grid">
+      <div class="performance-card">
+        <div class="perf-label">On-Time Delivery</div>
+        <div class="perf-value">98%</div>
+        <div class="perf-bar">
+          <div class="perf-bar-fill" style="width: 98%;"></div>
+        </div>
+      </div>
+
+      <div class="performance-card">
+        <div class="perf-label">Quality Rating</div>
+        <div class="perf-value">4.9</div>
+        <div class="perf-bar">
+          <div class="perf-bar-fill" style="width: 98%; background: var(--blue);"></div>
+        </div>
+      </div>
+
+      <div class="performance-card">
+        <div class="perf-label">Communication</div>
+        <div class="perf-value">4.8</div>
+        <div class="perf-bar">
+          <div class="perf-bar-fill" style="width: 96%; background: #8b5cf6;"></div>
+        </div>
+      </div>
+
+      <div class="performance-card">
+        <div class="perf-label">Cancellation Rate</div>
+        <div class="perf-value">2%</div>
+        <div class="perf-bar">
+          <div class="perf-bar-fill" style="width: 20%; background: #ef4444;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Performing Gigs -->
+    <div class="table-container">
+      <div class="table-header">🏆 Top Performing Gigs</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Gig Name</th>
+            <th>Orders</th>
+            <th>Earnings</th>
+            <th>Avg Rating</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Professional Door Lock Installation</strong></td>
+            <td>12</td>
+            <td>$840</td>
+            <td class="rating">4.9★</td>
+            <td><span class="status-badge active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>Emergency Lock Repair Service</strong></td>
+            <td>8</td>
+            <td>$560</td>
+            <td class="rating">4.7★</td>
+            <td><span class="status-badge active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>Door Handle Replacement</strong></td>
+            <td>4</td>
+            <td>$240</td>
+            <td class="rating">4.8★</td>
+            <td><span class="status-badge active">Active</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Top Clients -->
+    <div class="table-container">
+      <div class="table-header">👥 Top Clients</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Client Name</th>
+            <th>Orders</th>
+            <th>Total Spent</th>
+            <th>Last Order</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sarah Johnson</strong></td>
+            <td>5</td>
+            <td>$350</td>
+            <td>2 days ago</td>
+            <td><span class="status-badge active">Regular</span></td>
+          </tr>
+          <tr>
+            <td><strong>Michael Chen</strong></td>
+            <td>4</td>
+            <td>$280</td>
+            <td>1 week ago</td>
+            <td><span class="status-badge pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td><strong>Emily Davis</strong></td>
+            <td>3</td>
+            <td>$210</td>
+            <td>3 days ago</td>
+            <td><span class="status-badge active">Regular</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.time-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        console.log("[v0] Time range changed to:", this.textContent);
+      });
+    });
+  </script>
+</body>
+</html>

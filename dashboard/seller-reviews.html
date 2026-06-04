@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Reviews - DoorSkill</title>
+  <link rel="stylesheet" href="../assets/global.css">
+  <style>
+    :root {
+      --rose: #f43f5e;
+      --rose-md: #fb7185;
+      --rose-lt: #ffe4e6;
+      --green: #10b981;
+      --blue: #3b82f6;
+      --dark: #1a0a14;
+      --mid: #6b7280;
+      --muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #fafaf9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--bg); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .header { margin-bottom: 30px; }
+    .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+    .header p { color: var(--muted); font-size: 14px; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .reviews-section { background: #fff; border-radius: 12px; padding: 24px; }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+
+    .rating-filter {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--mid);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+    }
+
+    .filter-btn.active {
+      background: var(--rose);
+      color: #fff;
+      border-color: var(--rose);
+    }
+
+    .review-item {
+      border-bottom: 1.5px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .review-item:last-child { border-bottom: none; }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .review-buyer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .buyer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--rose-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--rose);
+    }
+
+    .buyer-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .buyer-info p { font-size: 12px; color: var(--muted); }
+
+    .review-rating {
+      display: flex;
+      gap: 4px;
+      font-size: 14px;
+    }
+
+    .star { color: #fbbf24; }
+    .star.empty { color: var(--border); }
+
+    .review-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--mid);
+      margin-bottom: 12px;
+    }
+
+    .review-gig {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 8px 12px;
+      background: var(--bg);
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .no-reviews {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .no-reviews-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .review-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Your Reviews</h1>
+      <p>Manage and view all reviews from your clients</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="value">4.8</div>
+        <div class="label">Average Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">127</div>
+        <div class="label">Total Reviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">98%</div>
+        <div class="label">Positive Reviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">15</div>
+        <div class="label">5-Star Rating</div>
+      </div>
+    </div>
+
+    <div class="reviews-section">
+      <h2 class="section-title">Recent Reviews</h2>
+      
+      <div class="rating-filter">
+        <button class="filter-btn active" data-filter="all">All Reviews</button>
+        <button class="filter-btn" data-filter="5">5 Stars</button>
+        <button class="filter-btn" data-filter="4">4 Stars</button>
+        <button class="filter-btn" data-filter="3">3 Stars</button>
+        <button class="filter-btn" data-filter="2">2 Stars</button>
+        <button class="filter-btn" data-filter="1">1 Star</button>
+      </div>
+
+      <div id="reviewsList">
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-buyer">
+              <div class="buyer-avatar">JD</div>
+              <div class="buyer-info">
+                <h4>John Davis</h4>
+                <p>Verified Buyer</p>
+              </div>
+            </div>
+            <div class="review-date">2 days ago</div>
+          </div>
+          <div class="review-rating">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+          <div class="review-text">Excellent work! The door repair was completed perfectly. Very professional and punctual. Highly recommend!</div>
+          <div class="review-gig">Door Lock Repair</div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-buyer">
+              <div class="buyer-avatar">SM</div>
+              <div class="buyer-info">
+                <h4>Sarah Martinez</h4>
+                <p>Verified Buyer</p>
+              </div>
+            </div>
+            <div class="review-date">5 days ago</div>
+          </div>
+          <div class="review-rating">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star empty">★</span>
+          </div>
+          <div class="review-text">Good service overall. Work was done well, but took a bit longer than expected. Would still recommend.</div>
+          <div class="review-gig">Hinges Replacement</div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="review-buyer">
+              <div class="buyer-avatar">BC</div>
+              <div class="buyer-info">
+                <h4>Brian Chen</h4>
+                <p>Verified Buyer</p>
+              </div>
+            </div>
+            <div class="review-date">1 week ago</div>
+          </div>
+          <div class="review-rating">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+          <div class="review-text">Perfect service! Arrived on time, did great work, and was very communicative. Will definitely hire again.</div>
+          <div class="review-gig">Door Frame Repair</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // Filter reviews here based on rating
+      });
+    });
+  </script>
+</body>
+</html>

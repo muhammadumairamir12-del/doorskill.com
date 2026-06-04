@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - DoorSkill</title>
+  <link rel="stylesheet" href="../assets/global.css">
+  <style>
+    :root {
+      --rose: #f43f5e;
+      --rose-md: #fb7185;
+      --rose-lt: #ffe4e6;
+      --green: #10b981;
+      --blue: #3b82f6;
+      --dark: #1a0a14;
+      --mid: #6b7280;
+      --muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #fafaf9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--bg); }
+
+    .container { display: flex; height: 100vh; }
+
+    .conversations-panel {
+      width: 320px;
+      background: #fff;
+      border-right: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .conversations-header {
+      padding: 16px;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .conversations-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px var(--rose-lt);
+    }
+
+    .conversations-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .conversation-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .conversation-item:hover {
+      background: var(--bg);
+    }
+
+    .conversation-item.active {
+      background: var(--rose-lt);
+      border-left: 3px solid var(--rose);
+    }
+
+    .conv-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--rose-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--rose);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .conv-avatar.online::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--green);
+      border: 2px solid #fff;
+      border-radius: 50%;
+      bottom: 0;
+      right: 0;
+    }
+
+    .conv-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .conv-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .conv-last-msg {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conv-unread {
+      background: var(--rose);
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .messages-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .messages-header {
+      padding: 16px 20px;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .message-person {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .person-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--rose-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--rose);
+    }
+
+    .person-info h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .person-status {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      display: flex;
+      gap: 8px;
+      max-width: 80%;
+    }
+
+    .message.sent {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--rose-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--rose);
+      flex-shrink: 0;
+    }
+
+    .message-bubble {
+      background: var(--bg);
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .message.sent .message-bubble {
+      background: var(--rose);
+      color: #fff;
+    }
+
+    .message-time {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .input-area {
+      padding: 16px 20px;
+      border-top: 1.5px solid var(--border);
+      display: flex;
+      gap: 12px;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+    }
+
+    .message-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      resize: none;
+      max-height: 100px;
+    }
+
+    .message-input:focus {
+      border-color: var(--rose);
+    }
+
+    .attach-btn {
+      width: 38px;
+      height: 38px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .attach-btn:hover {
+      border-color: var(--rose);
+      color: var(--rose);
+    }
+
+    .send-btn {
+      width: 38px;
+      height: 38px;
+      background: var(--rose);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .send-btn:hover {
+      background: var(--rose-md);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .offer-box {
+      background: var(--blue);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin: 8px 0;
+    }
+
+    .offer-box strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .no-conversation {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .no-conversation-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+      .conversations-panel {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+      }
+
+      .conversations-panel.show {
+        display: flex;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="conversations-panel">
+      <div class="conversations-header">
+        <h2>Messages</h2>
+        <input type="text" class="search-input" placeholder="Search conversations...">
+      </div>
+      <div class="conversations-list">
+        <div class="conversation-item active">
+          <div class="conv-avatar online">AK</div>
+          <div class="conv-info">
+            <div class="conv-name">Alex Kumar</div>
+            <div class="conv-last-msg">Sounds good, I'll start tomorrow...</div>
+          </div>
+          <div class="conv-unread">2</div>
+        </div>
+
+        <div class="conversation-item">
+          <div class="conv-avatar">SM</div>
+          <div class="conv-info">
+            <div class="conv-name">Sarah Martinez</div>
+            <div class="conv-last-msg">Thank you for your feedback</div>
+          </div>
+        </div>
+
+        <div class="conversation-item">
+          <div class="conv-avatar online">BC</div>
+          <div class="conv-info">
+            <div class="conv-name">Brian Chen</div>
+            <div class="conv-last-msg">Can you add more features to...</div>
+          </div>
+          <div class="conv-unread">3</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="messages-panel">
+      <div class="messages-header">
+        <div class="message-person">
+          <div class="person-avatar">AK</div>
+          <div class="person-info">
+            <h3>Alex Kumar</h3>
+            <div class="person-status">Online now</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button style="padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600;">Send Offer</button>
+          <button style="padding: 8px 12px; border: none; background: var(--bg); border-radius: 8px; cursor: pointer; font-size: 14px;">⋮</button>
+        </div>
+      </div>
+
+      <div class="messages-container">
+        <div class="message-time">Today, 10:30 AM</div>
+
+        <div class="message">
+          <div class="message-avatar">AK</div>
+          <div>
+            <div class="message-bubble">Hi there! I'm interested in your door lock repair service.</div>
+            <div class="message-time">10:32</div>
+          </div>
+        </div>
+
+        <div class="message">
+          <div class="message-avatar">AK</div>
+          <div>
+            <div class="message-bubble">Can you start tomorrow?</div>
+            <div class="message-time">10:35</div>
+          </div>
+        </div>
+
+        <div class="message sent">
+          <div class="message-avatar" style="background: var(--rose); color: #fff;">You</div>
+          <div>
+            <div class="message-bubble">Hi Alex! Yes, I can definitely start tomorrow morning.</div>
+            <div class="message-time">10:37</div>
+          </div>
+        </div>
+
+        <div class="message sent">
+          <div class="message-avatar" style="background: var(--rose); color: #fff;">You</div>
+          <div>
+            <div class="message-bubble">Sounds good, I'll start tomorrow...</div>
+            <div class="message-time">10:40</div>
+          </div>
+        </div>
+
+        <div class="offer-box">
+          <strong>Custom Offer Received</strong>
+          Premium Lock Installation - $89 (2 days, 5 revisions)
+          <div style="margin-top: 8px; display: flex; gap: 6px;">
+            <button style="flex: 1; padding: 6px; background: rgba(255,255,255,0.2); border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 11px; font-weight: 600;">Accept</button>
+            <button style="flex: 1; padding: 6px; background: rgba(255,255,255,0.2); border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 11px; font-weight: 600;">Decline</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <div class="input-wrapper">
+          <input type="text" class="message-input" placeholder="Type your message...">
+          <button class="attach-btn">📎</button>
+          <button class="send-btn">📤</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-conversation" style="display: none;">
+      <div>
+        <div class="no-conversation-icon">💬</div>
+        <p>No conversation selected</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.conversation-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    document.querySelector('.send-btn').addEventListener('click', () => {
+      const input = document.querySelector('.message-input');
+      if (input.value.trim()) {
+        console.log("[v0] Sending message:", input.value);
+        input.value = '';
+      }
+    });
+  </script>
+</body>
+</html>

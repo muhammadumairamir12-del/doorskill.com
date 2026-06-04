@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Tier - DoorSkill</title>
+  <link rel="stylesheet" href="../assets/global.css">
+  <style>
+    :root {
+      --rose: #f43f5e;
+      --rose-md: #fb7185;
+      --rose-lt: #ffe4e6;
+      --green: #10b981;
+      --blue: #3b82f6;
+      --gold: #fbbf24;
+      --dark: #1a0a14;
+      --mid: #6b7280;
+      --muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #fafaf9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--bg); }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--dark);
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--mid);
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--gold);
+      color: #92400e;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .pricing-card {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .pricing-card:hover {
+      border-color: var(--rose);
+      box-shadow: 0 10px 30px rgba(244, 63, 94, 0.1);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--rose);
+      background: linear-gradient(135deg, var(--rose-lt) 0%, #fff 100%);
+      transform: scale(1.05);
+    }
+
+    .popular-badge {
+      background: var(--rose);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .plan-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--dark);
+    }
+
+    .plan-price {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--rose);
+      margin-bottom: 4px;
+    }
+
+    .plan-price-period {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .plan-description {
+      font-size: 13px;
+      color: var(--mid);
+      margin-bottom: 20px;
+      min-height: 36px;
+    }
+
+    .features-list {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .feature-item::before {
+      content: '✓';
+      font-weight: 700;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .btn-upgrade {
+      width: 100%;
+      padding: 12px;
+      background: var(--rose);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-upgrade:hover {
+      background: var(--rose-md);
+    }
+
+    .features-section {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .features-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .features-table th {
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+      background: var(--bg);
+    }
+
+    .features-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .features-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .check { color: var(--green); font-weight: 700; }
+
+    .faq-section {
+      margin-bottom: 48px;
+    }
+
+    .faq-item {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      background: var(--bg);
+    }
+
+    .faq-question:hover {
+      background: var(--rose-lt);
+    }
+
+    .faq-answer {
+      padding: 16px;
+      display: none;
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    .faq-answer.show {
+      display: block;
+    }
+
+    .faq-icon {
+      transition: transform 0.2s;
+    }
+
+    .faq-icon.open {
+      transform: rotate(180deg);
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .hero h1 { font-size: 24px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card.featured { transform: none; }
+      .features-section { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="badge">Premium Seller Tools</div>
+      <h1>Unlock Your Potential with DoorSkill Pro</h1>
+      <p>Get advanced tools to grow your business, increase visibility, and earn more</p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="pricing-grid">
+      <!-- Monthly Plan -->
+      <div class="pricing-card">
+        <div class="plan-name">Monthly</div>
+        <div class="plan-price">$9.99</div>
+        <div class="plan-price-period">per month</div>
+        <div class="plan-description">Perfect for getting started</div>
+        <div class="features-list">
+          <div class="feature-item">Featured gigs</div>
+          <div class="feature-item">Advanced analytics</div>
+          <div class="feature-item">Priority support</div>
+          <div class="feature-item">Bulk custom offers</div>
+        </div>
+        <button class="btn-upgrade">Upgrade Now</button>
+      </div>
+
+      <!-- Quarterly Plan (Featured) -->
+      <div class="pricing-card featured">
+        <div class="popular-badge">Most Popular</div>
+        <div class="plan-name">Quarterly</div>
+        <div class="plan-price">$24.99</div>
+        <div class="plan-price-period">every 3 months</div>
+        <div class="plan-description">Best value for growing sellers</div>
+        <div class="features-list">
+          <div class="feature-item">All Monthly features</div>
+          <div class="feature-item">Promoted listings</div>
+          <div class="feature-item">Verified seller badge</div>
+          <div class="feature-item">Priority queue access</div>
+        </div>
+        <button class="btn-upgrade">Start Free Trial</button>
+      </div>
+
+      <!-- Yearly Plan -->
+      <div class="pricing-card">
+        <div class="plan-name">Yearly</div>
+        <div class="plan-price">$79.99</div>
+        <div class="plan-price-period">per year</div>
+        <div class="plan-description">Best for committed sellers</div>
+        <div class="features-list">
+          <div class="feature-item">All Quarterly features</div>
+          <div class="feature-item">Unlimited revisions</div>
+          <div class="feature-item">Dedicated account manager</div>
+          <div class="feature-item">Custom promotion campaigns</div>
+        </div>
+        <button class="btn-upgrade">Upgrade Now</button>
+      </div>
+    </div>
+
+    <!-- Features Comparison -->
+    <div class="features-section">
+      <div class="section-title">Feature Comparison</div>
+      <table class="features-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Monthly</th>
+            <th>Quarterly</th>
+            <th>Yearly</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Featured Gigs</strong></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Promoted Listings</strong></td>
+            <td></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Advanced Analytics</strong></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Verified Seller Badge</strong></td>
+            <td></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Priority Support</strong></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Bulk Custom Offers</strong></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Priority Queue</strong></td>
+            <td></td>
+            <td></td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td><strong>Dedicated Support</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <div class="section-title">Frequently Asked Questions</div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Can I cancel my subscription anytime?</span>
+          <span class="faq-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          Yes, you can cancel your Pro subscription at any time. Your access will continue until the end of your billing period, and you won&apos;t be charged for the next cycle.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Do I get a free trial?</span>
+          <span class="faq-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          Yes! We offer a 7-day free trial for all new Pro subscribers. Try all features risk-free before your first charge.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>What payment methods are accepted?</span>
+          <span class="faq-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. All transactions are secure and encrypted.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Can I upgrade or downgrade my plan?</span>
+          <span class="faq-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          Absolutely! You can change your plan at any time. If you upgrade, the difference will be prorated and charged immediately. If you downgrade, the credit will be applied to your next billing cycle.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', function() {
+        const answer = this.nextElementSibling;
+        const icon = this.querySelector('.faq-icon');
+        
+        // Close other open items
+        document.querySelectorAll('.faq-answer.show').forEach(a => {
+          if (a !== answer) {
+            a.classList.remove('show');
+            a.previousElementSibling.querySelector('.faq-icon').classList.remove('open');
+          }
+        });
+
+        answer.classList.toggle('show');
+        icon.classList.toggle('open');
+      });
+    });
+
+    document.querySelectorAll('.btn-upgrade').forEach(btn => {
+      btn.addEventListener('click', function() {
+        console.log("[v0] Upgrade clicked:", this.parentElement.querySelector('.plan-name').textContent);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Preferences - DoorSkill</title>
+  <link rel="stylesheet" href="../assets/global.css">
+  <style>
+    :root {
+      --rose: #f43f5e;
+      --rose-md: #fb7185;
+      --rose-lt: #ffe4e6;
+      --green: #10b981;
+      --dark: #1a0a14;
+      --mid: #6b7280;
+      --muted: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #fafaf9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--dark); background: var(--bg); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+
+    .header {
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .settings-section {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--dark);
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row:last-child {
+      border-bottom: none;
+    }
+
+    .setting-info h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--dark);
+    }
+
+    .setting-info p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .setting-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .toggle-checkbox {
+      width: 44px;
+      height: 24px;
+      background: var(--border);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .toggle-checkbox.active {
+      background: var(--green);
+    }
+
+    .toggle-checkbox::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.2s;
+    }
+
+    .toggle-checkbox.active::after {
+      left: 22px;
+    }
+
+    .channel-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .channel-btn {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--dark);
+    }
+
+    .channel-btn.active {
+      background: var(--rose-lt);
+      border-color: var(--rose);
+      color: var(--rose);
+    }
+
+    .save-btn {
+      background: var(--rose);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .save-btn:hover {
+      background: var(--rose-md);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    .alert.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .settings-section { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Notification Preferences</h1>
+      <p>Control how and when you receive notifications about orders, messages, and more.</p>
+    </div>
+
+    <div id="successAlert" class="alert success" style="display: none;">
+      ✅ Your preferences have been saved successfully
+    </div>
+
+    <!-- Order Notifications -->
+    <div class="settings-section">
+      <div class="section-title">🎯 Order Notifications</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>New Orders</h3>
+          <p>Get notified when you receive a new order</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="order_received"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Order Accepted</h3>
+          <p>Confirmation when an order is accepted</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="order_accepted"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Delivery Submitted</h3>
+          <p>Notify when work is delivered for review</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="delivery_submitted"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Order Completed</h3>
+          <p>Order completion notifications</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="order_completed"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message & Offer Notifications -->
+    <div class="settings-section">
+      <div class="section-title">💬 Messages & Offers</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>New Messages</h3>
+          <p>Alerts when you receive new messages</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="message_received"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Custom Offers</h3>
+          <p>Notifications for custom service offers</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="custom_offer"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account & Review Notifications -->
+    <div class="settings-section">
+      <div class="section-title">⭐ Reviews & Account</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>New Reviews</h3>
+          <p>Get notified when you receive a review</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="review_received"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Level Upgrades</h3>
+          <p>Celebrate seller level promotions</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="level_upgraded"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Payment Received</h3>
+          <p>Confirmations when payments clear</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="payment_received"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support & Disputes -->
+    <div class="settings-section">
+      <div class="section-title">🛡️ Support & Disputes</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Dispute Notifications</h3>
+          <p>Alerts for order disputes and escalations</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" data-type="dispute_filed"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Promotions & Offers</h3>
+          <p>Special promotions and platform updates</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox" data-type="promotion"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Channels -->
+    <div class="settings-section">
+      <div class="section-title">📱 Notification Channels</div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">Choose how you want to receive notifications</p>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>In-App Notifications</h3>
+          <p>See alerts in your notification bell</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" id="channel-inapp"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Email Notifications</h3>
+          <p>Receive updates via email</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" id="channel-email"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>Push Notifications</h3>
+          <p>Get browser push alerts</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox active" id="channel-push"></button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>SMS Notifications</h3>
+          <p>Receive SMS for important alerts (optional)</p>
+        </div>
+        <div class="setting-controls">
+          <button class="toggle-checkbox" id="channel-sms"></button>
+        </div>
+      </div>
+    </div>
+
+    <button class="save-btn">Save Preferences</button>
+  </div>
+
+  <script>
+    document.querySelectorAll('.toggle-checkbox').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        console.log("[v0] Toggled:", this.dataset.type, this.classList.contains('active'));
+      });
+    });
+
+    document.querySelector('.save-btn').addEventListener('click', async () => {
+      const preferences = {};
+      document.querySelectorAll('[data-type]').forEach(btn => {
+        preferences[btn.dataset.type] = btn.classList.contains('active');
+      });
+      console.log("[v0] Saving preferences:", preferences);
+      
+      const alert = document.getElementById('successAlert');
+      alert.style.display = 'block';
+      setTimeout(() => {
+        alert.style.display = 'none';
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
