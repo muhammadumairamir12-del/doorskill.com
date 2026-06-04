@@ -157,7 +157,7 @@
 
 
 <style>
-/* ══════════════════════════════════════════
+/* ═════════════��════════════════════════════
    DESIGN TOKENS
 ══════════════════════════════════════════ */
 :root{
@@ -246,12 +246,18 @@ nav.scrolled{box-shadow:0 4px 24px rgba(244,63,94,.10);}
 }
 .btn-fill:hover{background:#e0334f;box-shadow:0 4px 14px rgba(244,63,94,.3);}
 .btn-fill:active{transform:scale(0.96);background:#be123c;box-shadow:none;}
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;font-size:22px;color:var(--dark);}
+.hamburger{
+  display:none;background:none;border:none;cursor:pointer;
+  padding:8px;font-size:22px;color:var(--dark);
+  transition:all .2s;
+}
+.hamburger.active{color:var(--rose);}
 .mobile-menu{
   display:none;position:fixed;top:68px;left:0;right:0;z-index:999;
   background:#fff;border-bottom:1px solid var(--border);
   padding:16px 5%;box-shadow:0 8px 24px rgba(0,0,0,.1);
   transform-origin: top;
+  max-height:calc(100vh - 68px);overflow-y:auto;
 }
 .mobile-menu.open{
   display:block;
@@ -2547,7 +2553,7 @@ function handleSearch(val){
     item.cat.toLowerCase().includes(val.toLowerCase())
   ).slice(0,7);
   if(filtered.length===0){
-    box.innerHTML='<div style="padding:16px;text-align:center;font-size:14px;color:var(--muted);">🔍 No match — post a custom job!</div>';
+    box.innerHTML='<div style="padding:16px;text-align:center;font-size:14px;color:var(--muted);">��� No match — post a custom job!</div>';
     box.classList.add('show'); return;
   }
   box.innerHTML = filtered.map(item=>`

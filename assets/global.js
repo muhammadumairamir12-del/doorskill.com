@@ -1,32 +1,98 @@
 // ===== HAMBURGER MENU =====
 function initHamburger() {
   const hamburger = document.querySelector('.hamburger');
+  const mobileMenu = document.querySelector('.mobile-menu');
   const navLinks = document.querySelector('.nav-links');
-  const overlay = document.getElementById('navOverlay');
   
-  if (!hamburger || !navLinks) return;
+  if (!hamburger) return;
   
-  hamburger.addEventListener('click', () => {
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
     hamburger.classList.toggle('active');
-    navLinks.classList.toggle('open');
-    if (overlay) overlay.classList.toggle('show');
+    if (mobileMenu) {
+      mobileMenu.classList.toggle('open');
+    }
   });
   
-  if (overlay) {
-    overlay.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      navLinks.classList.remove('open');
-      overlay.classList.remove('show');
+  // Close on nav link click (mobile)
+  if (mobileMenu) {
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('open');
+      });
     });
   }
   
-  // Close on nav link click (mobile)
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!hamburger.contains(e.target) && !mobileMenu?.contains(e.target)) {
       hamburger.classList.remove('active');
-      navLinks.classList.remove('open');
-    });
+      if (mobileMenu) mobileMenu.classList.remove('open');
+    }
   });
+}
+
+// ===== SEARCH AUTOCOMPLETE =====
+function initSearchAutocomplete() {
+  const input = document.querySelector('.search-wrap input');
+  const autocomplete = document.querySelector('.autocomplete');
+  if (!input || !autocomplete) return;
+  
+  const suggestions = [
+    { icon: '🔧', text: 'Plumbing Repair', category: 'Home Repairs' },
+    { icon: '⚡', text: 'Electrical Installation', category: 'Home Repairs' },
+    { icon: '❄️', text: 'AC Repair & Maintenance', category: 'Home Repairs' },
+    { icon: '🧹', text: 'Deep Cleaning', category: 'Cleaning' },
+    { icon: '🏠', text: 'Home Movers & Packers', category: 'Logistics' },
+    { icon: '💅', text: 'Makeup Artist', category: 'Beauty' },
+    { icon: '🚗', text: 'Car Mechanic', category: 'Auto Services' },
+    { icon: '👨‍🏫', text: 'Home Tutor', category: 'Education' }
+  ];
+  
+  input.addEventListener('focus', () => {
+    autocomplete.classList.add('show');
+    populateAutocomplete('');
+  });
+  
+  input.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    if (query.length === 0) {
+      populateAutocomplete('');
+    } else {
+      const filtered = suggestions.filter(s => 
+        s.text.toLowerCase().includes(query) || 
+        s.category.toLowerCase().includes(query)
+      );
+      populateAutocomplete(filtered);
+    }
+  });
+  
+  input.addEventListener('blur', () => {
+    setTimeout(() => autocomplete.classList.remove('show'), 150);
+  });
+  
+  function populateAutocomplete(results) {
+    const items = Array.isArray(results) ? results : suggestions;
+    autocomplete.innerHTML = items.map(item => `
+      <div class="auto-item">
+        <span class="auto-item-icon">${item.icon}</span>
+        <div>
+          <div class="auto-item-text">${item.text}</div>
+          <div class="auto-item-cat">${item.category}</div>
+        </div>
+        <span class="auto-arrow">→</span>
+      </div>
+    `).join('');
+    
+    autocomplete.querySelectorAll('.auto-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const text = item.querySelector('.auto-item-text').textContent;
+        input.value = text;
+        autocomplete.classList.remove('show');
+      });
+    });
+  }
 }
 
 // ===== SCROLL TO TOP =====
@@ -159,9 +225,11 @@ function initCounters() {
 // ===== INIT ALL =====
 document.addEventListener('DOMContentLoaded', () => {
   initHamburger();
+  initSearchAutocomplete();
   initScrollTop();
   initCookieConsent();
   initLazyLoad();
   initFormValidation();
   initCounters();
 });
+
