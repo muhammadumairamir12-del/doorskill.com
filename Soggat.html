@@ -1876,21 +1876,6 @@
       }
     }
 
-    // Seed Firestore menu database if empty
-    async function seedFirestoreDatabase() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "menuItems"));
-        if (querySnapshot.empty) {
-          console.log("Seeding menuItems to Firestore...");
-          for (let i = 0; i < initialMenuItemsToSeed.length; i++) {
-            await addDoc(collection(db, "menuItems"), initialMenuItemsToSeed[i]);
-          }
-          console.log("Initial seed complete.");
-        }
-      } catch (error) {
-        console.error("Error checking/seeding Firestore:", error);
-      }
-    }
 
     // Render Menu Grid based on filter/search and page
     window.filterMenu = (category, btn) => {
@@ -1914,8 +1899,13 @@
       grid.innerHTML = "";
 
       let filtered = allMenuItems.filter(item => {
-        const matchesCat = (activeCategory === 'all' || item.category === activeCategory || (activeCategory === 'sweets' && item.category === 'dessert'));
-        const matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.description.toLowerCase().includes(searchQuery);
+        if (!item) return false;
+        const itemCategory = item.category || "";
+        const itemName = item.name || "";
+        const itemDesc = item.description || "";
+        
+        const matchesCat = (activeCategory === 'all' || itemCategory === activeCategory || (activeCategory === 'sweets' && itemCategory === 'dessert'));
+        const matchesSearch = itemName.toLowerCase().includes(searchQuery) || itemDesc.toLowerCase().includes(searchQuery);
         return matchesCat && matchesSearch;
       });
 
@@ -1942,7 +1932,13 @@
       }
 
       paginatedItems.forEach(item => {
-        const cartItem = cart.find(c => c.name === item.name);
+        if (!item) return;
+        const itemName = item.name || "Unnamed Item";
+        const itemCategory = item.category || "General";
+        const itemDesc = item.description || "";
+        const itemImage = item.image || "logo.png";
+        
+        const cartItem = cart.find(c => c.name === itemName);
         const qty = cartItem ? cartItem.qty : 0;
 
         const card = document.createElement('div');
@@ -1950,22 +1946,22 @@
         card.innerHTML = `
           <div class="dish-card" data-aos="fade-up">
             <div class="dish-img">
-              <img src="${item.image}" alt="${item.name}">
-              <span class="dish-badge">${item.category.replace('-', ' ')}</span>
+              <img src="${itemImage}" alt="${itemName}">
+              <span class="dish-badge">${itemCategory.replace('-', ' ')}</span>
             </div>
             <div class="dish-body">
-              <h5 class="dish-name" title="${item.name}">${item.name}</h5>
-              <p class="dish-desc">${item.description}</p>
+              <h5 class="dish-name" title="${itemName}">${itemName}</h5>
+              <p class="dish-desc">${itemDesc}</p>
               <div class="dish-footer">
-                <span class="dish-price">$${item.price}</span>
+                <span class="dish-price">$${item.price || 0}</span>
                 ${qty > 0 ? `
                   <div class="qty-ctrl">
-                    <button class="qty-btn" onclick="updateCartQty('${item.name}', -1)">-</button>
+                    <button class="qty-btn" onclick="updateCartQty('${itemName}', -1)">-</button>
                     <span class="qty-num">${qty}</span>
-                    <button class="qty-btn" onclick="updateCartQty('${item.name}', 1)">+</button>
+                    <button class="qty-btn" onclick="updateCartQty('${itemName}', 1)">+</button>
                   </div>
                 ` : `
-                  <button class="add-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')"><i class="fas fa-plus"></i></button>
+                  <button class="add-btn" onclick="addToCart('${itemName}', ${item.price || 0}, '${itemImage}')"><i class="fas fa-plus"></i></button>
                 `}
               </div>
             </div>
@@ -2531,50 +2527,10 @@
       }
     };
 
-    // Sync Firestore menu items
-    async function syncMenuItemsFromFirestore() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "menuItems"));
-        querySnapshot.forEach(docSnap => {
-          const dbItem = docSnap.data();
-          const localItem = allMenuItems.find(item => item.id === dbItem.id);
-          if (localItem) {
-            localItem.price = dbItem.price;
-            localItem.name = dbItem.name;
-            localItem.category = dbItem.category;
-            localItem.description = dbItem.description;
-            localItem.image = dbItem.image;
-            localItem.docId = docSnap.id;
-          }
-        });
-      } catch (error) {
-        console.error("Error syncing menu items from Firestore:", error);
-      }
-    }
-
-    // Navigation and grid loading
-    window.showPage = (pageId) => {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      const activePage = document.getElementById(`page-${pageId}`);
-      if (activePage) {
-        activePage.classList.add('active');
-        window.scrollTo(0, 0);
-      }
-      
-      const collapseEl = document.getElementById('navItems');
-      const bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
-      if (bsCollapse) bsCollapse.hide();
-
-      if (pageId === 'menu') {
-        renderMenuGrid();
-      } else if (pageId === 'order') {
-        renderOrderCheckoutPage();
-      }
-    };
-
     // Startup Init
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('DOMContentLoaded', () => {
       generate1000Dishes();
+      renderMenuGrid();
       
       setTimeout(() => {
         const loader = document.getElementById('loading-screen');
@@ -2584,8 +2540,6 @@
         }
       }, 800);
 
-      await seedFirestoreDatabase();
-      await syncMenuItemsFromFirestore();
       startRecommendationCycle();
     });
 

@@ -1125,7 +1125,10 @@
       body.innerHTML = "";
 
       let filtered = allMenuItems.filter(item => {
-        return item.name.toLowerCase().includes(adminMenuSearchText) || item.category.toLowerCase().includes(adminMenuSearchText);
+        if (!item) return false;
+        const name = item.name || "";
+        const category = item.category || "";
+        return name.toLowerCase().includes(adminMenuSearchText) || category.toLowerCase().includes(adminMenuSearchText);
       });
 
       document.getElementById('adminMenuCountText').innerText = `Showing ${filtered.length} of ${allMenuItems.length} products`;
@@ -1138,15 +1141,17 @@
       }
 
       toShow.forEach(item => {
+        const name = item.name || "";
+        const category = item.category || "";
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>#${item.id || 'seed'}</td>
-          <td><strong>${item.name}</strong></td>
-          <td class="text-uppercase" style="font-size: 0.75rem;">${item.category.replace('-', ' ')}</td>
+          <td><strong>${name}</strong></td>
+          <td class="text-uppercase" style="font-size: 0.75rem;">${category.replace('-', ' ')}</td>
           <td>
             <div class="input-group input-group-sm" style="max-width: 130px;">
               <span class="input-group-text">$</span>
-              <input type="number" class="form-control" value="${item.price}" onchange="changePrice('${item.docId}', ${item.id}, this.value)">
+              <input type="number" class="form-control" value="${item.price || 0}" onchange="changePrice('${item.docId}', ${item.id}, this.value)">
             </div>
           </td>
           <td>
