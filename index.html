@@ -1750,6 +1750,9 @@
 
       if (pageId === 'menu') {
         renderMenuGrid();
+        // Hide recommendation popup if open when navigating to products catalog
+        const popup = document.getElementById('dishRecommendationPopup');
+        if (popup) popup.classList.remove('active');
       } else if (pageId === 'order') {
         renderOrderCheckoutPage();
       }
@@ -2328,6 +2331,11 @@
       if (recTimer) clearInterval(recTimer);
       recTimer = setInterval(() => {
         if (recHovered || !allMenuItems.length) return;
+        
+        // Suppress popup recommendation if user is browsing the products page
+        const isMenuPageActive = document.getElementById('page-menu')?.classList.contains('active');
+        if (isMenuPageActive) return;
+        
         showRandomRecommendation();
       }, 3000); // Trigger every 3 seconds
     }
