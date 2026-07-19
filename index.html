@@ -1026,21 +1026,28 @@
     /* ─── RECOMMENDATION POPUP ─── */
     .dish-rec-popup {
       position: fixed;
-      bottom: -180px; /* Hidden state */
-      left: 20px;
-      width: 320px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7); /* Center + scale down */
+      width: 340px;
+      max-width: 90%;
       background: var(--bg-white);
       border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-      border: 1px solid var(--border-color);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.18);
+      border: 1.5px solid var(--gold);
       z-index: 1050;
-      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      padding: 16px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      padding: 20px;
       overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      cursor: pointer;
     }
 
     .dish-rec-popup.active {
-      bottom: 20px; /* Visible state */
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .rec-close-btn {
@@ -1150,8 +1157,8 @@
       .booking-form-card { padding: 20px; }
       .checkout-delivery { flex-direction: column; }
       .dish-rec-popup {
-        width: calc(100% - 40px);
-        left: 20px;
+        width: 90%;
+        max-width: 340px;
       }
       .menu-grid {
         grid-template-columns: 1fr;
@@ -1560,7 +1567,7 @@
       </div>
     </div>
   <!-- DYNAMIC RECOMMENDATION POPUP -->
-  <div id="dishRecommendationPopup" class="dish-rec-popup">
+  <div id="dishRecommendationPopup" class="dish-rec-popup" onclick="handlePopupClick(event)">
     <button class="rec-close-btn" onclick="closeRecommendationPopup()">&times;</button>
     <div class="rec-badge"><i class="fas fa-fire me-1"></i> VIP Offer</div>
     <div class="rec-content">
@@ -2338,6 +2345,14 @@
       // Suspend recommendation for a bit (restart timer)
       if (recTimer) clearInterval(recTimer);
       setTimeout(startRecommendationCycle, 5000); // Wait 5 seconds after close before resuming
+    };
+
+    window.handlePopupClick = (event) => {
+      if (event.target.closest('.rec-close-btn') || event.target.closest('.rec-buy-btn')) {
+        return;
+      }
+      showPage('menu');
+      closeRecommendationPopup();
     };
 
     // Pause on hover
