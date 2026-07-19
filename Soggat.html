@@ -1882,8 +1882,8 @@
         const querySnapshot = await getDocs(collection(db, "menuItems"));
         if (querySnapshot.empty) {
           console.log("Seeding menuItems to Firestore...");
-          for (let i = 0; i < 40; i++) {
-            await addDoc(collection(db, "menuItems"), allMenuItems[i]);
+          for (let i = 0; i < initialMenuItemsToSeed.length; i++) {
+            await addDoc(collection(db, "menuItems"), initialMenuItemsToSeed[i]);
           }
           console.log("Initial seed complete.");
         }
