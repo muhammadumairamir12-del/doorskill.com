@@ -516,79 +516,86 @@
 
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
     }
 
     .dish-card {
-      background: var(--bg-white);
-      border-radius: 16px;
+      background: #fff;
+      border-radius: 20px;
       overflow: hidden;
-      border: 1px solid var(--border-color);
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow-sm);
+      border: 1px solid #f0e9d6;
+      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      width: 100%;
+      margin: 0 auto;
     }
 
     .dish-card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-8px);
       border-color: var(--gold);
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 40px rgba(197,168,80,0.22);
     }
 
     .dish-img {
       position: relative;
       height: 200px;
       overflow: hidden;
-      background: #eee;
+      background: #f5f0e8;
     }
 
     .dish-img img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      transition: transform 0.6s ease;
     }
 
     .dish-card:hover .dish-img img {
-      transform: scale(1.06);
+      transform: scale(1.08);
     }
 
     .dish-badge {
       position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(255, 255, 255, 0.9);
+      top: 14px;
+      left: 14px;
+      background: rgba(255,255,255,0.95);
       color: var(--gold-dark);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.68rem;
-      letter-spacing: 0.5px;
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      font-weight: 700;
-      border: 1px solid var(--gold);
-      backdrop-filter: blur(4px);
+      font-weight: 800;
+      border: 1.5px solid var(--gold);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
     .dish-body {
-      padding: 20px;
+      padding: 18px 20px 20px;
     }
 
     .dish-name {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 6px;
-      color: var(--text-dark);
-      white-space: nowrap;
+      color: #1a1a1a;
+      white-space: normal;
       overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      min-height: 2.8rem;
     }
 
     .dish-desc {
-      font-size: 0.8rem;
-      color: var(--text-gray);
-      line-height: 1.5;
-      margin-bottom: 18px;
-      height: 50px;
+      font-size: 0.78rem;
+      color: #888;
+      line-height: 1.55;
+      margin-bottom: 16px;
+      height: 48px;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -599,13 +606,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-top: 1px solid #f5f0e8;
+      padding-top: 14px;
+      margin-top: 4px;
     }
 
     .dish-price {
       font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      color: var(--text-dark);
+      font-size: 1.4rem;
+      color: #1a1a1a;
       font-weight: 900;
+      letter-spacing: -0.5px;
     }
 
     .add-btn {
@@ -1142,6 +1153,10 @@
         width: calc(100% - 40px);
         left: 20px;
       }
+      .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
     }
   </style>
 </head>
@@ -1191,7 +1206,7 @@
             PREMIUM FOODS<br><span>NEW YORK CITY</span>
           </h1>
           <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
-            Welcome to the gourmet catalog. Discover our 1000+ item master food library featuring artisanal fast food, traditional BBQ platters, drinks, and sweets.
+            Welcome to the gourmet catalog. Discover our exclusive VIP item master food library featuring artisanal dishes, premium pizzas, signature BBQs, and royal desserts.
           </p>
           <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
             <button class="btn-gold" onclick="showPage('menu')">
@@ -1204,7 +1219,7 @@
           
           <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
             <div class="hero-stat">
-              <div class="hero-stat-num">1,000+</div>
+              <div class="hero-stat-num">VIP</div>
               <div class="hero-stat-label">Dishes</div>
             </div>
             <div class="hero-stat">
@@ -1252,7 +1267,7 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       PAGE 2: PRODUCTS CATALOG (1000+ Items)
+       PAGE 2: PRODUCTS CATALOG (VIP Items)
   ══════════════════════════════════════ -->
   <div class="page" id="page-menu">
     <section class="section section-white" style="padding-top: 130px;">
@@ -1278,7 +1293,7 @@
         <!-- Search -->
         <div class="search-wrap">
           <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-input" id="menuSearchInput" oninput="searchMenu()" placeholder="Search from 1000+ products...">
+          <input type="text" class="search-input" id="menuSearchInput" oninput="searchMenu()" placeholder="Search from VIP products...">
         </div>
 
         <!-- Products Grid -->
@@ -1740,140 +1755,107 @@
       }
     });
 
-    // ─── MASTER PRODUCTS LIST (USD $50 - $1000) ───
+    // --- MASTER PRODUCTS LIST (New York USD Prices) ---
     const initialMenuItemsToSeed = [
-      { id: 1, name: "Zinger Burger", price: 85, category: "fast-food", description: "Crispy chicken fillet", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" },
-      { id: 2, name: "Chicken Pizza", price: 195, category: "pizza", description: "Large chicken pizza", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" },
-      { id: 3, name: "Mutton Karahi", price: 290, category: "main", description: "Traditional karahi", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500" },
-      { id: 4, name: "Chicken Karahi", price: 240, category: "main", description: "Fresh chicken karahi", image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500" },
-      { id: 5, name: "Seekh Kabab", price: 140, category: "bbq", description: "Grilled kebabs", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=500" },
-      { id: 6, name: "Chicken Tikka", price: 120, category: "bbq", description: "Marinated chicken", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=500" },
-      { id: 7, name: "Lava Cake", price: 75, category: "dessert", description: "Chocolate cake", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500" },
-      { id: 8, name: "Mint Margarita", price: 50, category: "drinks", description: "Refreshing drink", image: "https://images.unsplash.com/photo-1546173159-315724a31696?w=500" },
-      { id: 9, name: "Beef Burger Deluxe", price: 85, category: "fast-food", description: "Juicy beef patty with fresh toppings", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 9, name: "Club Sandwich Max", price: 75, category: "fast-food", description: "Triple decker sandwich with chicken and vegetables", image: "https://images.pexels.com/photos/1600727/pexels-photo-1600727.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 10, name: "Chicken Biryani Full", price: 95, category: "main", description: "Aromatic basmati rice with tender chicken", image: "https://images.pexels.com/photos/7394851/pexels-photo-7394851.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 12, name: "Chicken Tikka BBQ", price: 160, category: "bbq", description: "Marinated chicken pieces grilled to perfection", image: "https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 13, name: "Special Fish Fry", price: 180, category: "main", description: "Fresh fish marinated and fried with spices", image: "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 14, name: "Mango Shake", price: 50, category: "drinks", description: "Thick and creamy mango shake", image: "https://images.pexels.com/photos/775032/pexels-photo-775032.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 15, name: "Beef Burger Deluxe", price: 85, category: "fast-food", description: "Juicy beef patty with fresh toppings", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 16, name: "Malai Boti", price: 150, category: "bbq", description: "Creamy marinated chicken tikka", image: "https://images.pexels.com/photos/6210876/pexels-photo-6210876.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 17, name: "Gulab Jamun", price: 50, category: "dessert", description: "Traditional sweet dumplings in sugar syrup", image: "https://images.pexels.com/photos/4087611/pexels-photo-4087611.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 18, name: "Fresh Lime Soda", price: 50, category: "drinks", description: "Refreshing lime drink with soda", image: "https://images.pexels.com/photos/1233319/pexels-photo-1233319.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 19, name: "SHA G Royal Mutton Karahi", price: 380, category: "main", description: "Premium mutton cooked in traditional desi ghee with secret SHA G spices.", image: "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 20, name: "Executive T-Bone Steak", price: 450, category: "main", description: "Prime cut beef steak served with grilled vegetables and mushroom sauce.", image: "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 21, name: "Jumbo Grilled Prawns", price: 520, category: "bbq", description: "Fresh jumbo prawns marinated in lemon butter and charcoal grilled.", image: "https://images.pexels.com/photos/566344/pexels-photo-566344.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 22, name: "Whole Stuffed Sajji", price: 280, category: "main", description: "Full chicken stuffed with aromatic rice and slow-roasted over charcoal.", image: "https://images.pexels.com/photos/233305/pexels-photo-233305.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 23, name: "Grand SHA G BBQ Platter", price: 480, category: "bbq", description: "A royal mix of Kababs, Tikka, Malai Boti, and Chops for the whole family.", image: "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 24, name: "Beef Wellington Exclusive", price: 650, category: "main", description: "Tender beef fillet wrapped in puff pastry with mushroom duxelles.", image: "https://images.pexels.com/photos/7613568/pexels-photo-7613568.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 25, name: "Mutton Kunna Clay Pot", price: 340, category: "main", description: "Traditional Chinioti Mutton Kunna slow-cooked in a clay pot for 6 hours.", image: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 26, name: "Grilled Lobster Tail", price: 680, category: "main", description: "Premium lobster tail served with garlic butter sauce and saffron rice.", image: "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 27, name: "Turkish Adana Kebab Platter", price: 350, category: "bbq", description: "Authentic spicy Turkish minced meat kebabs served with pita and hummus.", image: "https://images.pexels.com/photos/5946633/pexels-photo-5946633.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 28, name: "Desi Ghee Lamb Chops", price: 420, category: "bbq", description: "Juicy lamb chops marinated in yogurt and pan-fried in pure desi ghee.", image: "https://images.pexels.com/photos/410648/pexels-photo-410648.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 29, name: "College Hangout Deal", price: 280, category: "main", description: "4 SHA G Burgers, 2 Jumbo Fries, and 1.5L Coke. Best for college friends and groups.", image: "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 30, name: "Romantic Dinner Date", price: 550, category: "main", description: "2 Premium Steaks, 1 Chocolate Lava Cake, and 2 Mint Margaritas. Includes table decoration.", image: "https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 31, name: "Royal Family Feast", price: 1000, category: "main", description: "Full Mutton Karahi, 2 Large Pizzas, BBQ Platter, 2L Drinks, and 12 Gulab Jamuns. Serves 6-8.", image: "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 32, name: "Executive Business Buffet", price: 450, category: "main", description: "Unlimited BBQ, 3 types of Handi, Chinese, Salad Bar, and Tea. Perfect for corporate meetings.", image: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 33, name: "SHA G Birthday Blast Pack", price: 1000, category: "main", description: "Party for 10! Mixed BBQ, Fast Food Platter, Customized Cake, and unlimited soft drinks.", image: "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 34, name: "Couple's BBQ Night", price: 320, category: "bbq", description: "Seekh Kabab, Malai Boti, Chicken Tikka, Raita, and Hot Naans. Specially for two.", image: "https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 35, name: "Weekend Brunch Group", price: 480, category: "main", description: "Special Halwa Puri, Nihari, Paye, and Lassi for a group of 4. Only on Saturday/Sunday.", image: "https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 36, name: "SHA G Signature Elite Deal", price: 1000, category: "main", description: "The most expensive deal. Stuffed Lamb, Seafood Mix, Royal Desserts, and Private Cabin for 12.", image: "https://images.pexels.com/photos/6267/menu-restaurant-vintage-table.jpg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 35, name: "Classic Margherita", price: 120, category: "pizza", description: "Traditional Italian style with fresh tomato sauce, basil, and pure mozzarella.", image: "https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 36, name: "SHA G Signature Tikka", price: 165, category: "pizza", description: "Desi style spicy chicken tikka chunks with onions and green peppers.", image: "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 37, name: "Spicy Chicken Fajita", price: 175, category: "pizza", description: "Marinated fajita chicken, jalapeños, olives, and extra stringy cheese.", image: "https://images.pexels.com/photos/10790638/pexels-photo-10790638.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 38, name: "Premium Pepperoni Feast", price: 185, category: "pizza", description: "Loaded with premium beef pepperoni slices and double mozzarella.", image: "https://images.pexels.com/photos/1552635/pexels-photo-1552635.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 39, name: "SHA G Stuffed Crust Gold", price: 220, category: "pizza", description: "Cheese-filled crust with any topping of your choice. A 7-star favorite.", image: "https://images.pexels.com/photos/2619967/pexels-photo-2619967.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 40, name: "Veggie Delight Supreme", price: 140, category: "pizza", description: "Corn, mushrooms, olives, peppers, and onions. Healthy and delicious.", image: "https://images.pexels.com/photos/3652899/pexels-photo-3652899.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 41, name: "Smokey BBQ Chicken Pizza", price: 180, category: "pizza", description: "BBQ sauce base with grilled chicken, red onions, and sweet corn.", image: "https://images.pexels.com/photos/4394612/pexels-photo-4394612.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 42, name: "Royal Seafood Pizza", price: 280, category: "pizza", description: "Premium topping of prawns and tuna with a hint of garlic and herbs.", image: "https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 43, name: "Club Sandwich Max", price: 75, category: "pizza", description: "SHA G king", image: "https://images.pexels.com/photos/1600727/pexels-photo-1600727.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 44, name: "Assorted Turkish Baklava Box", price: 250, category: "sweets", description: "Premium 500g box of authentic Turkish Baklava with pistachios and honey.", image: "https://images.pexels.com/photos/10313462/pexels-photo-10313462.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 45, name: "Belgian Chocolate Fudge Cake", price: 380, category: "sweets", description: "Full 2lbs rich chocolate cake made with premium Belgian cocoa and dark chocolate.", image: "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 46, name: "New York Cheesecake (Slice)", price: 85, category: "sweets", description: "Creamy, smooth cheesecake on a graham cracker crust with strawberry topping.", image: "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 47, name: "SHA G Royal Shahi Tukray", price: 120, category: "sweets", description: "Traditional bread pudding slow-cooked in thick saffron milk and dry fruits.", image: "https://images.pexels.com/photos/1359302/pexels-photo-1359302.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 48, name: "Premium Macarons Gift Box", price: 180, category: "sweets", description: "Box of 12 colorful French macarons with assorted flavors like lavender, rose, and pistachio.", image: "https://images.pexels.com/photos/239578/pexels-photo-239578.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 49, name: "Custom Fondant Celebration Cake", price: 480, category: "sweets", description: "2kg custom designed cake for birthdays or anniversaries with edible fondant art.", image: "https://images.pexels.com/photos/1702373/pexels-photo-1702373.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 50, name: "Desi Ghee Gajar Ka Halwa", price: 95, category: "sweets", description: "Fresh carrots slow-cooked in pure desi ghee and khoya. A winter special.", image: "https://images.pexels.com/photos/5639413/pexels-photo-5639413.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 51, name: "Premium Assorted Cookies Bucket", price: 150, category: "sweets", description: "1kg freshly baked bakery cookies including Almond, Chocolate Chip, and Pistachio.", image: "https://images.pexels.com/photos/230325/pexels-photo-230325.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 52, name: "SHA G Gold Leaf Matka Kheer", price: 220, category: "sweets", description: "Elite kheer served in traditional clay pots decorated with real edible gold leaf.", image: "https://images.pexels.com/photos/4087611/pexels-photo-4087611.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 53, name: "Premium Fettuccine Alfredo", price: 185, category: "main", description: "Creamy white sauce pasta with grilled chicken chunks, mushrooms, and imported parmesan cheese.", image: "https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 55, name: "Royal Mutton Raan Roast", price: 750, category: "main", description: "Whole leg of lamb slow-roasted for 8 hours, marinated in secret SHA G royal spices. Serves 4-5.", image: "https://images.pexels.com/photos/541216/pexels-photo-541216.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 56, name: "Spicy Seafood Penne", price: 240, category: "main", description: "Penne pasta tossed in spicy red arrabbiata sauce with sautéed prawns and calamari.", image: "https://images.pexels.com/photos/14737/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 57, name: "Saffron Pistachio Kheer", price: 110, category: "sweets", description: "Traditional slow-cooked rice pudding infused with pure saffron and topped with roasted pistachios.", image: "https://images.pexels.com/photos/1359302/pexels-photo-1359302.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 59, name: "Premium Beef Nalli Nihari", price: 320, category: "main", description: "Buffalo meat slow-cooked to perfection with bone marrow (Nalli) and authentic Nihari spices. Served with ginger and lemon.", image: "https://images.pexels.com/photos/604969/pexels-photo-604969.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 60, name: "SHA G Special Beef Karahi", price: 280, category: "main", description: "Fresh buffalo meat stir-fried in a wok with tomatoes, green chilies, and black pepper. Authentic 7-star taste.", image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 61, name: "Baked Chicken Lasagna", price: 210, category: "main", description: "Layers of pasta sheet filled with minced chicken, red sauce, and topped with a heavy layer of melted mozzarella and cheddar.", image: "https://images.pexels.com/photos/5949900/pexels-photo-5949900.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 62, name: "Exotic Fruit Trifle Custard", price: 125, category: "sweets", description: "Multi-layered dessert with vanilla custard, fresh seasonal fruits, jelly, and soft sponge cake. A family favorite.", image: "https://images.pexels.com/photos/2693447/pexels-photo-2693447.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 63, name: "Premium Fruit Cream Salad", price: 145, category: "sweets", description: "A rich mix of fresh fruits, cocktail fruits, and dry fruits folded into chilled, whipped fresh cream.", image: "https://images.pexels.com/photos/11305342/pexels-photo-11305342.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 64, name: "Creamy Chicken Macaroni", price: 165, category: "main", description: "Italian style macaroni tossed in a rich, creamy bechamel sauce with tender chicken chunks and bell peppers.", image: "https://images.pexels.com/photos/1438672/pexels-photo-1438672.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 14, name: "Bana Shake", price: 50, category: "drinks", description: "Thick and creamy mango shake", image: "https://images.pexels.com/photos/775032/pexels-photo-775032.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { id: 15, name: "Beef Burger Deluxe", price: 85, category: "fast-food", description: "Juicy beef patty with fresh toppings", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600" }
+      { id: 1, name: "Zinger Burger", price: 95, category: "fast-food", description: "Crispy golden chicken fillet with lettuce, pickles and signature sauce", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" },
+      { id: 2, name: "Chicken Pizza", price: 240, category: "pizza", description: "Large NY-style chicken pizza with fresh mozzarella and herbs", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600" },
+      { id: 3, name: "Mutton Karahi", price: 620, category: "main", description: "Traditional slow-cooked mutton karahi with handpicked spices", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600" },
+      { id: 4, name: "Chicken Karahi", price: 800, category: "main", description: "Fresh chicken karahi cooked in desi ghee and tomatoes", image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=600" },
+      { id: 5, name: "Seekh Kabab", price: 270, category: "bbq", description: "Hand-minced beef kababs grilled over charcoal flame", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600" },
+      { id: 6, name: "Chicken Tikka", price: 325, category: "bbq", description: "Boneless chicken marinated in yogurt and tandoor spices", image: "https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 7, name: "Chocolate Lava Cake", price: 50, category: "dessert", description: "Warm Belgian chocolate cake with a liquid center, served with vanilla ice cream", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600" },
+      { id: 8, name: "Mint Margarita", price: 65, category: "drinks", description: "Fresh mint, lime juice, and soda — the perfect refresher", image: "https://images.unsplash.com/photo-1546173159-315724a31696?w=600" },
+      { id: 9, name: "Beef Burger Deluxe", price: 65, category: "fast-food", description: "Juicy Angus beef patty with caramelized onion, aged cheddar and brioche bun", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 10, name: "Club Sandwich Max", price: 55, category: "fast-food", description: "Triple-decker club sandwich with grilled chicken, bacon, and fresh vegetables", image: "https://images.pexels.com/photos/1600727/pexels-photo-1600727.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 11, name: "Chicken Biryani Full", price: 245, category: "main", description: "Aromatic basmati rice layered with slow-cooked spiced chicken and saffron", image: "https://images.pexels.com/photos/7394851/pexels-photo-7394851.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 12, name: "Chicken Tikka BBQ Platter", price: 300, category: "bbq", description: "Large plate of marinated chicken tikka pieces grilled over charcoal", image: "https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 13, name: "Special Fish Fry", price: 480, category: "main", description: "Fresh Atlantic fish fillet marinated with herbs and deep-fried to golden crisp", image: "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 14, name: "Mango Shake", price: 40, category: "drinks", description: "Thick and creamy Alphonso mango blended with fresh cream and ice", image: "https://images.pexels.com/photos/775032/pexels-photo-775032.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 15, name: "Malai Boti", price: 330, category: "bbq", description: "Tender chicken chunks marinated in cream and mild spices, grilled to perfection", image: "https://images.pexels.com/photos/6210876/pexels-photo-6210876.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 16, name: "Gulab Jamun", price: 55, category: "dessert", description: "Soft milk-solid dumplings soaked in fragrant rose and cardamom sugar syrup", image: "https://images.pexels.com/photos/4087611/pexels-photo-4087611.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 17, name: "Fresh Lime Soda", price: 60, category: "drinks", description: "Hand-squeezed lime juice with sparkling water and a pinch of Himalayan salt", image: "https://images.pexels.com/photos/1233319/pexels-photo-1233319.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 18, name: "SHA G Royal Mutton Karahi", price: 405, category: "main", description: "Premium mutton cooked in traditional desi ghee with secret SHA G spices", image: "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 19, name: "Executive T-Bone Steak", price: 305, category: "main", description: "Prime-cut USDA beef steak grilled to your preference, served with grilled vegetables", image: "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 20, name: "Chicken Manchurian", price: 520, category: "main", description: "Crispy chicken balls tossed in a tangy savory Manchurian sauce with bell peppers", image: "https://images.pexels.com/photos/3763847/pexels-photo-3763847.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 21, name: "Pepperoni Pizza", price: 135, category: "pizza", description: "Hand-tossed pizza loaded with premium pepperoni and extra mozzarella", image: "https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 22, name: "Mutton Biryani", price: 515, category: "main", description: "Slow dum-cooked mutton biryani with golden fried onions and saffron", image: "https://images.pexels.com/photos/12737647/pexels-photo-12737647.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 23, name: "Grilled Whole Chicken", price: 335, category: "bbq", description: "Full Afghani-style roasted chicken marinated overnight in aromatic spices", image: "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 24, name: "Cheese Burst Pizza", price: 230, category: "pizza", description: "Thick crust pizza stuffed with molten cheese on every bite", image: "https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 25, name: "Strawberry Milkshake", price: 50, category: "drinks", description: "Freshly blended strawberries with whole milk, cream and vanilla", image: "https://images.pexels.com/photos/1346347/pexels-photo-1346347.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 26, name: "Daal Makhani", price: 835, category: "main", description: "Slow-simmered black lentils in butter and cream — a North Indian classic", image: "https://images.pexels.com/photos/6260921/pexels-photo-6260921.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 27, name: "Chicken Shawarma", price: 65, category: "fast-food", description: "Shaved rotisserie chicken wrapped in warm bread with garlic sauce and pickles", image: "https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 28, name: "Lamb Chops", price: 440, category: "bbq", description: "Premium New Zealand lamb chops marinated with rosemary and grilled on coal", image: "https://images.pexels.com/photos/361184/asparagus-steak-veal-steak-veal-361184.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 29, name: "Brownie Sundae", price: 65, category: "dessert", description: "Warm fudge brownie topped with vanilla ice cream and chocolate drizzle", image: "https://images.pexels.com/photos/1346347/pexels-photo-1346347.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 30, name: "Shrimp Pasta", price: 215, category: "main", description: "Linguine with jumbo shrimp in a garlic white wine and herb cream sauce", image: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 31, name: "Chicken Quesadilla", price: 80, category: "fast-food", description: "Grilled flour tortilla filled with seasoned chicken, bell peppers, and melted cheese", image: "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 32, name: "Beef Nihari", price: 680, category: "main", description: "Slow-cooked rich beef stew with aromatic whole spices — a breakfast royal", image: "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 33, name: "BBQ Mixed Platter", price: 200, category: "bbq", description: "Mixed grill platter with seekh kabab, chicken tikka, malai boti, and boti kabab", image: "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 34, name: "Fettuccine Alfredo", price: 470, category: "main", description: "Fresh fettuccine in a classic Parmesan cream sauce with cracked black pepper", image: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 35, name: "Oreo Milkshake", price: 70, category: "drinks", description: "Blended Oreo cookies with whole milk and vanilla ice cream — thick and indulgent", image: "https://images.pexels.com/photos/3727250/pexels-photo-3727250.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 36, name: "Mushroom Swiss Burger", price: 75, category: "fast-food", description: "Beef patty topped with sauteed mushrooms, Swiss cheese, and truffle mayo", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 37, name: "Paneer Tikka", price: 370, category: "bbq", description: "Cubes of marinated cottage cheese grilled in tandoor with bell peppers and onion", image: "https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 38, name: "Mango Cheesecake", price: 85, category: "dessert", description: "Chilled New York cheesecake with a fresh Alphonso mango topping", image: "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 39, name: "Chicken Butter Masala", price: 350, category: "main", description: "Rich tomato butter gravy with tender chicken — a restaurant signature", image: "https://images.pexels.com/photos/6363897/pexels-photo-6363897.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 40, name: "Seafood Pizza", price: 200, category: "pizza", description: "Fresh shrimp, squid, and mussels over a white garlic base with mozzarella", image: "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 41, name: "Frozen Lemonade", price: 65, category: "drinks", description: "Ice-blended fresh lemonade with mint — a New York summer staple", image: "https://images.pexels.com/photos/1187766/pexels-photo-1187766.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 42, name: "Chicken Wonton Soup", price: 835, category: "main", description: "Delicate wontons filled with minced chicken in a clear ginger broth", image: "https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 43, name: "Tiramisu", price: 90, category: "dessert", description: "Authentic Italian tiramisu with espresso-soaked ladyfingers and mascarpone cream", image: "https://images.pexels.com/photos/6880219/pexels-photo-6880219.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 44, name: "Chicken Wrap", price: 80, category: "fast-food", description: "Grilled chicken strips, fresh greens, and chipotle mayo in a warm whole-wheat wrap", image: "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 45, name: "Prawn Bhuna", price: 200, category: "main", description: "Juicy prawns cooked in a thick spiced masala with caramelized onion", image: "https://images.pexels.com/photos/3763847/pexels-photo-3763847.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 46, name: "Reshmi Kabab", price: 155, category: "bbq", description: "Silken chicken mince kababs flavored with almonds and cream, grilled on skewers", image: "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 47, name: "Chocolate Truffle Cake", price: 70, category: "dessert", description: "Decadent multi-layer chocolate cake with ganache frosting and truffle shavings", image: "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 48, name: "Rose Lemonade", price: 45, category: "drinks", description: "Fresh lemonade infused with rose water and topped with edible dried rose petals", image: "https://images.pexels.com/photos/1187766/pexels-photo-1187766.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 49, name: "Chicken Caesar Salad", price: 205, category: "main", description: "Romaine lettuce, Parmesan, croutons, and grilled chicken in Caesar dressing", image: "https://images.pexels.com/photos/1211887/pexels-photo-1211887.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 50, name: "Margherita Pizza", price: 185, category: "pizza", description: "Classic Naples-style pizza with San Marzano tomatoes, fresh basil, and buffalo mozzarella", image: "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 51, name: "Beef Chapli Kabab", price: 405, category: "bbq", description: "Peshawar-style flat beef kabab with onion, tomato and pomegranate seeds", image: "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 52, name: "Pina Colada Mocktail", price: 50, category: "drinks", description: "Chilled coconut cream and pineapple juice blended to tropical perfection", image: "https://images.pexels.com/photos/3727250/pexels-photo-3727250.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 53, name: "Caramel Pudding", price: 80, category: "dessert", description: "Silky smooth baked caramel custard with a golden caramel glaze", image: "https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 54, name: "Peri Peri Chicken", price: 355, category: "main", description: "Flame-grilled half chicken marinated in African peri peri chili sauce", image: "https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 55, name: "Fish and Chips", price: 700, category: "main", description: "British-style beer-battered fish with thick-cut fries and tartare sauce", image: "https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 56, name: "Chicken Burger XL", price: 105, category: "fast-food", description: "Extra-large crispy chicken burger with coleslaw and honey mustard glaze", image: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 57, name: "Shahi Tukray", price: 85, category: "dessert", description: "Royal Mughal dessert of fried bread soaked in sweetened milk with saffron and nuts", image: "https://images.pexels.com/photos/4087611/pexels-photo-4087611.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 58, name: "Chicken Lasagna", price: 285, category: "main", description: "Layers of pasta sheets with minced chicken bolognese and creamy bechamel sauce", image: "https://images.pexels.com/photos/5949900/pexels-photo-5949900.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 59, name: "Four Cheese Pizza", price: 230, category: "pizza", description: "Mozzarella, cheddar, Parmesan, and Gouda on a thin golden crust", image: "https://images.pexels.com/photos/2147491/pexels-photo-2147491.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 60, name: "Beef Nihari Roll", price: 95, category: "fast-food", description: "Slow-cooked nihari beef wrapped in a flaky paratha with caramelized onions", image: "https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 61, name: "Banana Split", price: 90, category: "dessert", description: "Classic banana split with three scoops of ice cream, whipped cream and hot fudge", image: "https://images.pexels.com/photos/1346347/pexels-photo-1346347.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 62, name: "Fruit Trifle", price: 85, category: "dessert", description: "Multi-layered dessert with vanilla custard, seasonal fruits, jelly, and sponge cake", image: "https://images.pexels.com/photos/2693447/pexels-photo-2693447.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 63, name: "Fruit Cream Salad", price: 50, category: "dessert", description: "A rich mix of fresh fruits and dry fruits folded into chilled fresh whipped cream", image: "https://images.pexels.com/photos/11305342/pexels-photo-11305342.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 64, name: "Creamy Chicken Macaroni", price: 710, category: "main", description: "Macaroni tossed in a rich bechamel sauce with chicken chunks and bell peppers", image: "https://images.pexels.com/photos/1438672/pexels-photo-1438672.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 65, name: "Banana Shake", price: 50, category: "drinks", description: "Creamy blended banana milkshake with a hint of vanilla and honey", image: "https://images.pexels.com/photos/775032/pexels-photo-775032.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { id: 66, name: "Classic NY Cheesecake", price: 95, category: "dessert", description: "Rich, dense, and creamy baked cheesecake with a graham cracker crust and fresh strawberry compote", image: "https://images.unsplash.com/photo-1524351199679-46cddf530c04?w=600" },
+      { id: 67, name: "Manhattan Clam Chowder", price: 120, category: "main", description: "Savory tomato-based soup with fresh Atlantic clams, diced potatoes, carrots, and celery", image: "https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=600" },
+      { id: 68, name: "Famous Coney Island Hot Dog", price: 55, category: "fast-food", description: "Nathan's-style grilled all-beef hot dog topped with spicy brown mustard, sauerkraut, and red onion sauce", image: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?w=600" },
+      { id: 69, name: "Katz's Pastrami on Rye", price: 165, category: "fast-food", description: "Mouth-watering hand-carved beef pastrami piled high on rye bread with spicy brown deli mustard", image: "https://images.unsplash.com/photo-1553909489-cd47e0907980?w=600" },
+      { id: 70, name: "Brooklyn Bagel with Lox", price: 85, category: "fast-food", description: "Hand-rolled NYC bagel toasted with rich cream cheese, wild smoked salmon, capers, and red onion", image: "https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=600" },
+      { id: 71, name: "Black and White Cookie", price: 45, category: "dessert", description: "Iconic soft sponge cookie iced with half rich chocolate and half sweet vanilla fondant", image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600" },
+      { id: 72, name: "Flaky NYC Cronut", price: 65, category: "dessert", description: "The legendary croissant-donut hybrid, laminated with butter, fried, and glazed with rose vanilla glaze", image: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=600" },
+      { id: 73, name: "Classic Eggs Benedict", price: 130, category: "main", description: "Perfectly poached farm eggs and Canadian bacon over toasted English muffin, drizzled with buttery Hollandaise", image: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600" },
+      { id: 74, name: "Chicken Waldorf Salad", price: 110, category: "main", description: "Julienne chicken, crisp apples, celery, and toasted walnuts, tossed in a light mayonnaise dressing", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600" },
+      { id: 75, name: "Lobster Newberg", price: 380, category: "main", description: "Indulgent lobster chunks sauteed in butter, cream, cognac, and dry Sherry, finished with cayenne", image: "https://images.unsplash.com/photo-1553618551-fba689030290?w=600" },
+      { id: 76, name: "General Tso's Chicken", price: 145, category: "main", description: "Crispy sweet and spicy deep-fried chicken chunks tossed with broccoli in a rich garlic soy glaze", image: "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600" },
+      { id: 77, name: "Artisanal Brooklyn Egg Cream", price: 40, category: "drinks", description: "Traditional soda fountain drink made with chilled whole milk, carbonated seltzer, and Fox's U-bet chocolate syrup", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600" },
+      { id: 78, name: "Manhattan Craft Cocktail", price: 75, category: "drinks", description: "Premium rye whiskey, sweet Italian vermouth, and Angostura bitters, stirred with ice and a brandied cherry", image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600" },
+      { id: 79, name: "Coal-Oven Clam Pizza", price: 215, category: "pizza", description: "Crispy charred thin crust topped with fresh shucked clams, pecorino cheese, garlic, oregano, and olive oil", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600" },
+      { id: 80, name: "Brooklyn Lager Brew", price: 50, category: "drinks", description: "Crisp dry-hopped amber lager with floral aromas and malt sweetness, served ice cold", image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600" },
+      { id: 81, name: "Coney Island Knish", price: 60, category: "fast-food", description: "Puff pastry stuffed with a spiced mashed potato and caramelized onion filling, baked golden brown", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600" },
+      { id: 82, name: "Historic Delmonico's Steak", price: 520, category: "main", description: "Signature 24oz dry-aged ribeye steak broiled on the bone and seasoned with sea salt and black pepper", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600" },
+      { id: 83, name: "NYC Spiced Beef Brisket", price: 290, category: "bbq", description: "Slow charcoal-smoked beef brisket rubbed with crushed black peppercorns, coriander, and brown sugar", image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600" },
+      { id: 84, name: "Hudson Valley Spiced Cider", price: 45, category: "drinks", description: "Warm local apple cider pressed from orchard apples, simmered with cinnamon sticks, cloves, and orange peel", image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600" },
+      { id: 85, name: "New York Slice Pizza", price: 120, category: "pizza", description: "Authentic extra-large thin crust pizza slice loaded with fresh crushed tomato sauce and shredded mozzarella", image: "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=600" },
+      { id: 86, name: "Dom Pérignon Vintage Brut", price: 380, category: "drinks", description: "Prestigious vintage Champagne with notes of stone fruit, toasted brioche, and vibrant acidity", image: "https://images.unsplash.com/photo-1594487017992-4ab8f45f448c?w=600" },
+      { id: 87, name: "Krug Clos d'Ambonnay Champagne", price: 950, category: "drinks", description: "Ultra-luxury single-plot Blanc de Noirs Champagne, exceptionally rare, with complex pinot noir depth", image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600" },
+      { id: 88, name: "Louis Roederer Cristal Rosé", price: 720, category: "drinks", description: "Elite vintage rosé Champagne with aromas of red fruit, white flowers, and chalky mineral elegance", image: "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=600" },
+      { id: 89, name: "Château Lafite Rothschild 2015", price: 850, category: "drinks", description: "Legendary Premier Cru Bordeaux red wine with exceptional structure, dark fruit, and cedar notes", image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600" },
+      { id: 90, name: "Screaming Eagle Cabernet", price: 900, category: "drinks", description: "Iconic Napa Valley cult Cabernet Sauvignon with layered black currant, violet, and velvety tannins", image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600" },
+      { id: 91, name: "Veuve Clicquot La Grande Dame", price: 290, category: "drinks", description: "Prestige cuvée Champagne celebrating structural complexity, silkiness, and hints of fresh pear", image: "https://images.unsplash.com/photo-1594487017992-4ab8f45f448c?w=600" },
+      { id: 92, name: "Romanée-Conti Grand Cru Burgundy", price: 980, category: "drinks", description: "The world's most prestigious Pinot Noir from Vosne-Romanée, boasting sublime complexity and spices", image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=600" },
+      { id: 93, name: "Penfolds Grange Shiraz", price: 650, category: "drinks", description: "Pinnacle Australian red wine with rich blackberry, dark chocolate, and spicy American oak influence", image: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=600" }
     ];
 
-    // Master seed generator for 1,000+ items
+    // Master seed generator for items
     function generate1000Dishes() {
       allMenuItems = [...initialMenuItemsToSeed];
-      
-      const prefixes = ["Signature", "Royal", "Manhattan", "Brooklyn", "Wall Street", "Imperial", "Fifth Ave", "Classic", "Premium", "Grand Reserve", "Chef's Special", "Gold Medal"];
-      const fastFoodBases = ["Burger Deluxe", "Truffle Sandwich", "Gourmet Hotdog", "Pizza Flatbread", "Crispy Fillet", "Smashburger", "Tacos de Luxe", "Ribs Platter"];
-      const pizzaBases = ["Margherita Pizza", "Pepperoni Style", "Fajita Classic", "Cheese Burst Pizza", "Seafood Delight Pizza"];
-      const drinkBases = ["Whiskey Pour Mocktail", "Chardonnay Sparkling", "Pinot Noir Elixir", "Lime Soda refresher", "Fruit Shake", "Berry Decanter"];
-      const mainBases = ["Tomahawk Cuts", "Filet Mignon", "Salmon Roasted", "Lobster Medallion", "Duck breast", "Risotto Plate", "Gnocchi Truffle", "Sea Bass Fillet", "Karahi Pot", "Sajji Roast"];
-      const sweetBases = ["Baklava Box", "Cheesecake Slice", "Fudge Cake", "Matka Kheer", "Shahi Tukray", "Macaron Plate"];
-
-      const descriptions = [
-        "Prepared daily by our culinary team using fresh ingredients.",
-        "Infused with delicate notes of herbs and dry seasoning.",
-        "An absolute culinary classic scaled for our premium catalog.",
-        "Served fresh with artisanal garnishes and custom sauces.",
-        "Meticulously cooked to seal in maximum flavor."
-      ];
-
-      const categories = ['fast-food', 'pizza', 'main', 'bbq', 'drinks', 'sweets'];
-
-      let itemIdCounter = 100;
-      while (allMenuItems.length < 1010) {
-        const cat = categories[Math.floor(Math.random() * categories.length)];
-        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-        
-        let baseName = "";
-        let imgUrl = "";
-        if (cat === 'fast-food') {
-          baseName = fastFoodBases[Math.floor(Math.random() * fastFoodBases.length)];
-          imgUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500";
-        } else if (cat === 'pizza') {
-          baseName = pizzaBases[Math.floor(Math.random() * pizzaBases.length)];
-          imgUrl = "https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=600";
-        } else if (cat === 'drinks') {
-          baseName = drinkBases[Math.floor(Math.random() * drinkBases.length)];
-          imgUrl = "https://images.unsplash.com/photo-1546173159-315724a31696?w=500";
-        } else if (cat === 'sweets') {
-          baseName = sweetBases[Math.floor(Math.random() * sweetBases.length)];
-          imgUrl = "https://images.pexels.com/photos/4087611/pexels-photo-4087611.jpeg?auto=compress&cs=tinysrgb&w=600";
-        } else if (cat === 'bbq') {
-          baseName = "Flame Grill skewered";
-          imgUrl = "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=500";
-        } else {
-          baseName = mainBases[Math.floor(Math.random() * mainBases.length)];
-          imgUrl = "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=600";
-        }
-
-        const name = `${prefix} ${baseName} #${itemIdCounter}`;
-        // Random price between 50 and 1000
-        const price = Math.floor(Math.random() * 950) + 50;
-        const description = descriptions[Math.floor(Math.random() * descriptions.length)];
-
-        allMenuItems.push({
-          id: itemIdCounter,
-          name: name,
-          price: price,
-          category: cat,
-          description: description,
-          image: imgUrl
-        });
-
-        itemIdCounter++;
-      }
+      // Random generation loop removed to only show the real 64 products
     }
 
 
@@ -1942,28 +1924,26 @@
         const qty = cartItem ? cartItem.qty : 0;
 
         const card = document.createElement('div');
-        card.className = "col-lg-3 col-md-4 col-sm-6"
+        card.className = "dish-card";
         card.innerHTML = `
-          <div class="dish-card" data-aos="fade-up">
-            <div class="dish-img">
-              <img src="${itemImage}" alt="${itemName}">
-              <span class="dish-badge">${itemCategory.replace('-', ' ')}</span>
-            </div>
-            <div class="dish-body">
-              <h5 class="dish-name" title="${itemName}">${itemName}</h5>
-              <p class="dish-desc">${itemDesc}</p>
-              <div class="dish-footer">
-                <span class="dish-price">$${item.price || 0}</span>
-                ${qty > 0 ? `
-                  <div class="qty-ctrl">
-                    <button class="qty-btn" onclick="updateCartQty('${itemName}', -1)">-</button>
-                    <span class="qty-num">${qty}</span>
-                    <button class="qty-btn" onclick="updateCartQty('${itemName}', 1)">+</button>
-                  </div>
-                ` : `
-                  <button class="add-btn" onclick="addToCart('${itemName}', ${item.price || 0}, '${itemImage}')"><i class="fas fa-plus"></i></button>
-                `}
-              </div>
+          <div class="dish-img">
+            <img src="${itemImage}" alt="${itemName}">
+            <span class="dish-badge">${itemCategory.replace('-', ' ')}</span>
+          </div>
+          <div class="dish-body">
+            <h5 class="dish-name" title="${itemName}">${itemName}</h5>
+            <p class="dish-desc">${itemDesc}</p>
+            <div class="dish-footer">
+              <span class="dish-price">$${item.price || 0}</span>
+              ${qty > 0 ? `
+                <div class="qty-ctrl">
+                  <button class="qty-btn" onclick="updateCartQty('${itemName}', -1)">-</button>
+                  <span class="qty-num">${qty}</span>
+                  <button class="qty-btn" onclick="updateCartQty('${itemName}', 1)">+</button>
+                </div>
+              ` : `
+                <button class="add-btn" onclick="addToCart('${itemName}', ${item.price || 0}, '${itemImage}')"><i class="fas fa-plus"></i></button>
+              `}
             </div>
           </div>
         `;
@@ -2382,9 +2362,9 @@
 
       setQuickDeliveryMode('delivery');
       
-      // Open Bootstrap Modal
+      // Open Bootstrap Modal reliably
       const modalEl = document.getElementById('quickOrderModal');
-      const bsModal = new bootstrap.Modal(modalEl);
+      const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
       bsModal.show();
     };
 
@@ -2527,21 +2507,19 @@
       }
     };
 
-    // Startup Init
-    window.addEventListener('DOMContentLoaded', () => {
-      generate1000Dishes();
-      renderMenuGrid();
-      
-      setTimeout(() => {
-        const loader = document.getElementById('loading-screen');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => loader.remove(), 800);
-        }
-      }, 800);
+    // Startup Init — run immediately since DOM is already built above
+    generate1000Dishes();
+    renderMenuGrid();
 
-      startRecommendationCycle();
-    });
+    setTimeout(() => {
+      const loader = document.getElementById('loading-screen');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 800);
+      }
+    }, 800);
+
+    startRecommendationCycle();
 
   </script>
 </body>
