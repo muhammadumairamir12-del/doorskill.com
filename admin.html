@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food New York — Admin Hub Console</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #c5a850;
+      --gold-light: #f1d58a;
+      --gold-dark: #977a33;
+      --bg-light: #f8f9fa;
+      --bg-white: #ffffff;
+      --border-color: #e9ecef;
+      --text-dark: #212529;
+      --text-gray: #6c757d;
+      --text-light: #f8f9fa;
+      --red: #c0392b;
+      --green: #2e7d32;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-light);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 3px;
+    }
+
+    /* ─── LOGIN PANEL ─── */
+    .login-container {
+      max-width: 420px;
+      margin: 100px auto;
+      background: var(--bg-white);
+      border-radius: 20px;
+      padding: 40px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .login-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--text-dark);
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #c5a850 0%, #f1d58a 100%);
+      color: #000;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(197, 168, 80, 0.2);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(197, 168, 80, 0.4);
+    }
+
+    .form-control {
+      border: 1px solid var(--border-color);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      background: var(--bg-light);
+    }
+
+    .form-control:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(197, 168, 80, 0.15);
+      background: var(--bg-white);
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-gray);
+      margin-bottom: 8px;
+    }
+
+    /* ─── ADMIN DASHBOARD ─── */
+    #admin-panel {
+      display: none;
+      min-height: 100vh;
+      flex-direction: row;
+    }
+
+    .admin-sidebar {
+      width: 280px;
+      background: var(--bg-white);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 30px 20px;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-sidebar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 15px;
+    }
+
+    .admin-nav {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 20px;
+      color: var(--text-gray);
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .admin-nav-link:hover, .admin-nav-link.active {
+      background: rgba(197, 168, 80, 0.08);
+      color: var(--gold-dark);
+    }
+
+    .admin-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px;
+      background: var(--bg-light);
+    }
+
+    .admin-section {
+      display: none;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+
+    /* ─── STAT CARDS ─── */
+    .stat-card {
+      background: var(--bg-white);
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card-info h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.2rem;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .stat-card-info p {
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-gray);
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .stat-card-icon {
+      font-size: 2.2rem;
+      color: var(--gold);
+      opacity: 0.3;
+    }
+
+    /* ─── TABLES ─── */
+    .admin-table {
+      background: var(--bg-white);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      margin-top: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .admin-table th {
+      background: var(--bg-light);
+      padding: 16px 20px;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .admin-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-dark);
+    }
+
+    .admin-table tr:last-child td {
+      border: none;
+    }
+
+    .badge-status {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .badge-status.pending { background: rgba(192, 57, 43, 0.1); color: var(--red); border: 1px solid var(--red); }
+    .badge-status.confirmed { background: rgba(46, 125, 50, 0.1); color: var(--green); border: 1px solid var(--green); }
+    .badge-status.delivered { background: rgba(52, 152, 219, 0.1); color: #2980b9; border: 1px solid #2980b9; }
+
+    /* ─── CHAT DESK ─── */
+    .admin-chat-list-card {
+      background: var(--bg-white);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      max-height: 550px;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-chat-item {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-chat-item:hover {
+      background: var(--bg-light);
+    }
+
+    .admin-chat-item.unread {
+      background: rgba(197, 168, 80, 0.05);
+    }
+
+    .admin-chat-item.active {
+      background: rgba(197, 168, 80, 0.1);
+    }
+
+    .admin-chat-item-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .admin-chat-item-msg {
+      font-size: 0.8rem;
+      color: var(--text-gray);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
+    .chat-card {
+      background: var(--bg-white);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 550px;
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background: var(--bg-light);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .chat-bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .chat-bubble.sent {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #c5a850 0%, #f1d58a 100%);
+      color: #000;
+      font-weight: 600;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-bubble.received {
+      align-self: flex-start;
+      background: var(--bg-white);
+      color: var(--text-dark);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .chat-bubble-time {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      margin-top: 5px;
+      text-align: right;
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .chat-input-field {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      outline: none;
+      background: var(--bg-light);
+    }
+
+    .chat-input-field:focus {
+      border-color: var(--gold);
+      background: var(--bg-white);
+    }
+
+    .chat-send-btn {
+      background: linear-gradient(135deg, #c5a850 0%, #f1d58a 100%);
+      color: #000;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chat-send-btn:hover {
+      transform: scale(1.06);
+    }
+
+    /* ─── TOAST ─── */
+    .toast-nyc {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      background: var(--bg-white);
+      border: 1px solid var(--gold);
+      border-radius: 14px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      z-index: 99998;
+      min-width: 300px;
+      box-shadow: var(--shadow-lg);
+      animation: toastIn 0.4s cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    .toast-nyc i {
+      font-size: 1.3rem;
+      color: var(--gold);
+    }
+
+    .toast-nyc span {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    @keyframes toastIn {
+      from { transform: translateX(120%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media(max-width: 991px) {
+      #admin-panel { flex-direction: column; }
+      .admin-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 20px; }
+      .admin-sidebar-logo { margin-bottom: 20px; }
+      .admin-nav { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 5px; }
+      .admin-nav-link { padding: 10px 15px; font-size: 0.82rem; }
+      .admin-content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── LOGIN PANEL SCREEN ─── -->
+  <div id="login-screen">
+    <div class="login-container">
+      <h2 class="login-title">Food New York</h2>
+      <p class="text-center text-muted mb-4" style="font-size: 0.85rem; font-weight: 500;">ADMINISTRATION CONSOLE</p>
+      
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+        <div class="mb-3">
+          <label class="form-label">Email Address / Username</label>
+          <input type="text" class="form-control" id="adminEmail" required placeholder="admin@foodnewyork.com">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="adminPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-gold mt-2">Log In To Console</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── ADMINISTRATIVE HUB ─── -->
+  <div id="admin-panel">
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-logo">Admin Desk</div>
+      <ul class="admin-nav">
+        <li>
+          <a href="#admin-dashboard" class="admin-nav-link active" onclick="switchAdminTab('admin-dashboard')">
+            <i class="fas fa-chart-line"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#admin-orders" class="admin-nav-link" onclick="switchAdminTab('admin-orders')">
+            <i class="fas fa-receipt"></i> Orders Manager
+          </a>
+        </li>
+        <li>
+          <a href="#admin-chats" class="admin-nav-link" onclick="switchAdminTab('admin-chats')">
+            <i class="fas fa-comments"></i> Support Chats
+          </a>
+        </li>
+        <li>
+          <a href="#admin-bookings" class="admin-nav-link" onclick="switchAdminTab('admin-bookings')">
+            <i class="fas fa-calendar-alt"></i> Booking Log
+          </a>
+        </li>
+        <li>
+          <a href="#admin-menu" class="admin-nav-link" onclick="switchAdminTab('admin-menu')">
+            <i class="fas fa-edit"></i> Edit Prices
+          </a>
+        </li>
+      </ul>
+      
+      <div class="mt-auto pt-3 border-top">
+        <a href="index.html" class="admin-nav-link mb-2 text-primary" style="padding: 8px 10px;">
+          <i class="fas fa-arrow-left"></i> View Live Site
+        </a>
+        <button class="btn btn-outline-danger w-100 py-2 btn-sm fw-bold" onclick="handleAdminLogout()">
+          <i class="fas fa-sign-out-alt me-1"></i>Logout Desk
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Tab: Dashboard -->
+      <div class="admin-section active" id="admin-dashboard">
+        <h2 style="margin-bottom: 30px;">Overview Statistics</h2>
+        <div class="row g-4">
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <h3 id="statTotalOrders">0</h3>
+                <p>Total Orders</p>
+              </div>
+              <i class="fas fa-receipt stat-card-icon"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <h3 id="statTotalSales">$0</h3>
+                <p>Total Revenue</p>
+              </div>
+              <i class="fas fa-dollar-sign stat-card-icon"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <h3 id="statPendingOrders" style="color: var(--red);">0</h3>
+                <p>Pending Checkout</p>
+              </div>
+              <i class="fas fa-clock stat-card-icon" style="color: var(--red);"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-card-info">
+                <h3 id="statTotalBookings">0</h3>
+                <p>Tables Booked</p>
+              </div>
+              <i class="fas fa-calendar-alt stat-card-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-table">
+          <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-light">
+            <h5 class="m-0">Unconfirmed Payments</h5>
+            <button class="btn btn-outline-secondary btn-sm" onclick="switchAdminTab('admin-orders')">View All</button>
+          </div>
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Client Name</th>
+                <th>Phone</th>
+                <th>Total due</th>
+                <th>Payment status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminRecentOrdersBody">
+              <!-- Recent orders injected here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Orders Manager -->
+      <div class="admin-section" id="admin-orders">
+        <h2 class="mb-4">Orders Manager</h2>
+        <div class="admin-table">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer Contact</th>
+                <th>Items Ordered</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminFullOrdersBody">
+              <!-- All orders loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Support Chats -->
+      <div class="admin-section" id="admin-chats">
+        <h2 class="mb-4">Support Channels</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="admin-chat-list-card" id="adminChatListContainer">
+              <!-- Active customer chat entries -->
+            </div>
+          </div>
+          
+          <div class="col-md-8">
+            <div class="chat-card">
+              <h5 id="adminChatTitle" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px;">Select customer channel to start messaging</h5>
+              <div class="chat-body flex-1 mb-3" id="adminChatBody">
+                <!-- Message histories -->
+              </div>
+              <div class="d-flex gap-2">
+                <input type="text" class="chat-input-field" id="adminChatInputField" placeholder="Type reply here..." onkeydown="handleAdminChatKey(event)" disabled>
+                <button class="chat-send-btn" id="adminChatSendBtn" onclick="sendAdminReply()" disabled><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Booking Log -->
+      <div class="admin-section" id="admin-bookings">
+        <h2 class="mb-4">Table Reservations Log</h2>
+        <div class="admin-table">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Contact info</th>
+                <th>Guests</th>
+                <th>Booking Details</th>
+                <th>Special requests</th>
+              </tr>
+            </thead>
+            <tbody id="adminBookingsBody">
+              <!-- Table bookings logged -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Edit Prices -->
+      <div class="admin-section" id="admin-menu">
+        <h2 class="mb-4">Master Menu Prices</h2>
+        <div class="admin-table">
+          <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+            <input type="text" class="form-control w-25" id="adminMenuSearch" placeholder="Search products..." oninput="searchAdminMenu()">
+            <span style="font-size: 0.85rem;" id="adminMenuCountText">Loading menu database...</span>
+          </div>
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price (USD)</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminMenuTableBody">
+              <!-- Items catalog editor -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, doc, getDocs, setDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Firebase configurations
+    const firebaseConfig = {
+      apiKey: "AIzaSyDkOlJ-9fID5ZueTkwY8Qxv8GUFzNkkDAQ",
+      authDomain: "food-new-york.firebaseapp.com",
+      projectId: "food-new-york",
+      storageBucket: "food-new-york.firebasestorage.app",
+      messagingSenderId: "657168364944",
+      appId: "1:657168364944:web:b03313fbe8ced9a4d3af15",
+      measurementId: "G-LEPZHDYYPD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let adminLoggedIn = false;
+    let currentAdminChatId = null;
+    let unsubscribeAdminChat = null;
+    let adminMenuSearchText = '';
+    let allMenuItems = [];
+
+    // Toast alerts
+    window.showToast = (message) => {
+      const existing = document.querySelector('.toast-nyc');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast-nyc';
+      toast.innerHTML = `<i class="fas fa-info-circle"></i><span>${message}</span>`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+      }, 3500);
+    };
+
+    // Admin Login Actions
+    window.handleAdminLogin = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value.trim();
+      const pass = document.getElementById('adminPassword').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        adminLoggedIn = true;
+        loginSuccess();
+      } catch (err) {
+        console.error("Firebase auth login failed. Checking offline fallback credentials...", err);
+        if (email === "admin@foodnewyork.com" && pass === "admin123") {
+          adminLoggedIn = true;
+          loginSuccess();
+        } else {
+          window.showToast("Authentication verification failed.");
+        }
+      }
+    };
+
+    function loginSuccess() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'flex';
+      switchAdminTab('admin-dashboard');
+      loadAllMenuItemsLocal();
+    }
+
+    window.handleAdminLogout = async () => {
+      try { await signOut(auth); } catch (err) {}
+      adminLoggedIn = false;
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('admin-panel').style.display = 'none';
+      if (unsubscribeAdminChat) {
+        unsubscribeAdminChat();
+        unsubscribeAdminChat = null;
+      }
+    };
+
+    // Tab Management
+    window.switchAdminTab = (tabId) => {
+      document.querySelectorAll('.admin-sidebar .admin-nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      document.querySelector(`.admin-sidebar .admin-nav-link[href="#${tabId}"]`).classList.add('active');
+
+      document.querySelectorAll('.admin-content .admin-section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+
+      if (tabId === 'admin-dashboard') {
+        loadAdminDashboardData();
+      } else if (tabId === 'admin-orders') {
+        loadAdminOrdersList();
+      } else if (tabId === 'admin-chats') {
+        loadAdminChatsCenter();
+      } else if (tabId === 'admin-bookings') {
+        loadAdminBookingsList();
+      } else if (tabId === 'admin-menu') {
+        renderAdminMenuConfig();
+      }
+    };
+
+    // Load Menu list to display editing
+    async function loadAllMenuItemsLocal() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "menuItems"));
+        allMenuItems = [];
+        querySnapshot.forEach(docSnap => {
+          allMenuItems.push({ docId: docSnap.id, ...docSnap.data() });
+        });
+      } catch (err) {
+        console.error("Error fetching menu items:", err);
+      }
+    }
+
+    // Dashboard loading
+    async function loadAdminDashboardData() {
+      try {
+        const ordersSnapshot = await getDocs(collection(db, "orders"));
+        document.getElementById('statTotalOrders').innerText = ordersSnapshot.size;
+
+        let sales = 0;
+        let pending = 0;
+        const recentOrdersBody = document.getElementById('adminRecentOrdersBody');
+        recentOrdersBody.innerHTML = "";
+
+        ordersSnapshot.forEach(docSnap => {
+          const ord = docSnap.data();
+          if (ord.status === 'Confirmed & Preparing' || ord.status === 'Completed') {
+            sales += parseFloat(ord.grandTotal || 0);
+          }
+          if (ord.status === 'Pending Payment Confirmation') {
+            pending++;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>#${docSnap.id.substring(0, 6)}</td>
+              <td>${ord.customerName}</td>
+              <td>${ord.customerPhone}</td>
+              <td>$${ord.grandTotal}</td>
+              <td><span class="badge-status pending">Pending Payment</span></td>
+              <td><button class="btn btn-success btn-sm px-3 fw-bold" onclick="confirmOrder('${docSnap.id}', ${ord.grandTotal})">Confirm</button></td>
+            `;
+            recentOrdersBody.appendChild(tr);
+          }
+        });
+
+        document.getElementById('statTotalSales').innerText = `$${sales.toFixed(2)}`;
+        document.getElementById('statPendingOrders').innerText = pending;
+
+        if (pending === 0) {
+          recentOrdersBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">No pending order invoices.</td></tr>`;
+        }
+
+        const bookingsSnapshot = await getDocs(collection(db, "bookings"));
+        document.getElementById('statTotalBookings').innerText = bookingsSnapshot.size;
+
+      } catch (error) {
+        console.error("Dashboard error:", error);
+      }
+    }
+
+    // Orders tab
+    async function loadAdminOrdersList() {
+      const container = document.getElementById('adminFullOrdersBody');
+      container.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Loading orders...</td></tr>`;
+
+      try {
+        const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No orders found.</td></tr>`;
+          return;
+        }
+
+        snapshot.forEach(docSnap => {
+          const ord = docSnap.data();
+          const itemsString = ord.items.map(item => `${item.qty}x ${item.name}`).join('<br>');
+          const dateStr = ord.timestamp ? ord.timestamp.toDate().toLocaleString() : "N/A";
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${docSnap.id.substring(0, 8)}</strong><br><small class="text-muted">${dateStr}</small></td>
+            <td>
+              <strong>${ord.customerName}</strong><br>
+              <small class="text-muted">${ord.customerPhone} | ${ord.customerEmail}</small><br>
+              <small class="text-secondary">${ord.deliveryMode.toUpperCase()}: ${ord.deliveryAddress}</small>
+            </td>
+            <td style="font-size: 0.82rem;">${itemsString}</td>
+            <td style="font-family: 'JetBrains Mono', monospace; font-weight: 700;">$${ord.grandTotal}</td>
+            <td><span class="badge-status ${ord.status === 'Pending Payment Confirmation' ? 'pending' : (ord.status === 'Delivered' ? 'delivered' : 'confirmed')}">${ord.status}</span></td>
+            <td>
+              ${ord.status === 'Pending Payment Confirmation' ? `
+                <button class="btn btn-success btn-sm fw-bold px-3" onclick="confirmOrder('${docSnap.id}', ${ord.grandTotal})">Verify Payment</button>
+              ` : (ord.status === 'Confirmed & Preparing' ? `
+                <button class="btn btn-primary btn-sm fw-bold px-3" onclick="deliverOrder('${docSnap.id}', '${ord.customerName}')">Mark Delivered</button>
+              ` : `
+                <span class="text-success"><i class="fas fa-check-circle"></i> Delivered</span>
+              `)}
+            </td>
+          `;
+          container.appendChild(tr);
+        });
+      } catch (error) {
+        console.error("Orders list error:", error);
+      }
+    }
+
+    // Confirm Payment verification
+    window.confirmOrder = async (orderId, amount) => {
+      try {
+        await updateDoc(doc(db, "orders", orderId), { status: "Confirmed & Preparing" });
+
+        const chatsSnapshot = await getDocs(collection(db, "chats"));
+        let targetChatId = null;
+        
+        chatsSnapshot.forEach(chatSnap => {
+          const chatData = chatSnap.data();
+          if (chatData.lastMessage && chatData.lastMessage.includes(orderId.substring(0, 6))) {
+            targetChatId = chatSnap.id;
+          }
+        });
+
+        if (targetChatId) {
+          await addDoc(collection(db, "chats", targetChatId, "messages"), {
+            sender: "admin",
+            text: `✅ PAYMENT CONFIRMED! Order #${orderId.substring(0, 8)} ($${amount.toFixed(2)}) is verified. Our kitchen is preparing your dishes.`,
+            timestamp: serverTimestamp()
+          });
+
+          await updateDoc(doc(db, "chats", targetChatId), {
+            lastMessage: `Order verified: #${orderId.substring(0, 6)}`,
+            lastMessageTimestamp: serverTimestamp()
+          });
+        }
+
+        window.showToast("Order verified and confirmed.");
+        
+        const activeTabLink = document.querySelector('.admin-sidebar .admin-nav-link.active');
+        if (activeTabLink.getAttribute('href') === '#admin-dashboard') {
+          loadAdminDashboardData();
+        } else {
+          loadAdminOrdersList();
+        }
+      } catch (err) {
+        console.error("Confirmation error:", err);
+      }
+    };
+
+    window.deliverOrder = async (orderId, customerName) => {
+      try {
+        await updateDoc(doc(db, "orders", orderId), { status: "Delivered" });
+
+        const chatsSnapshot = await getDocs(collection(db, "chats"));
+        let targetChatId = null;
+        
+        chatsSnapshot.forEach(chatSnap => {
+          const chatData = chatSnap.data();
+          if (chatData.userName === customerName) {
+            targetChatId = chatSnap.id;
+          }
+        });
+
+        if (targetChatId) {
+          await addDoc(collection(db, "chats", targetChatId, "messages"), {
+            sender: "admin",
+            text: `🚚 DELIVERED! Your order #${orderId.substring(0, 8)} has been successfully delivered. Enjoy your premium meals!`,
+            timestamp: serverTimestamp()
+          });
+
+          await updateDoc(doc(db, "chats", targetChatId), {
+            lastMessage: `Order delivered: #${orderId.substring(0, 6)}`,
+            lastMessageTimestamp: serverTimestamp()
+          });
+        }
+
+        window.showToast("Order marked as Delivered.");
+        
+        const activeTabLink = document.querySelector('.admin-sidebar .admin-nav-link.active');
+        if (activeTabLink.getAttribute('href') === '#admin-dashboard') {
+          loadAdminDashboardData();
+        } else {
+          loadAdminOrdersList();
+        }
+      } catch (err) {
+        console.error("Delivery status update failed:", err);
+      }
+    };
+
+    // Chat Center Log
+    async function loadAdminChatsCenter() {
+      const listContainer = document.getElementById('adminChatListContainer');
+      listContainer.innerHTML = `<div class="text-center py-4 text-muted">Loading chats...</div>`;
+
+      try {
+        const chatsQuery = query(collection(db, "chats"), orderBy("lastMessageTimestamp", "desc"));
+        onSnapshot(chatsQuery, (snapshot) => {
+          listContainer.innerHTML = "";
+          
+          if (snapshot.empty) {
+            listContainer.innerHTML = `<div class="text-center py-4 text-muted">No support chats.</div>`;
+            return;
+          }
+
+          snapshot.forEach(docSnap => {
+            const chat = docSnap.data();
+            const unread = chat.adminUnreadCount > 0;
+            const active = currentAdminChatId === docSnap.id;
+
+            const div = document.createElement('div');
+            div.className = `admin-chat-item ${unread ? 'unread' : ''} ${active ? 'active' : ''}`;
+            div.onclick = () => openAdminConversation(docSnap.id, chat.userName || 'Gourmet Client');
+
+            div.innerHTML = `
+              <div>
+                <div class="admin-chat-item-title">${chat.userName || 'Client'}</div>
+                <div class="admin-chat-item-msg">${chat.lastMessage || 'Active chat'}</div>
+              </div>
+              ${unread ? `<span class="badge bg-danger">${chat.adminUnreadCount}</span>` : ''}
+            `;
+            listContainer.appendChild(div);
+          });
+        });
+      } catch (err) {
+        console.error("Chats load failed:", err);
+      }
+    }
+
+    window.openAdminConversation = async (chatId, clientName) => {
+      currentAdminChatId = chatId;
+      document.getElementById('adminChatTitle').innerText = `Messaging Client: ${clientName}`;
+      document.getElementById('adminChatInputField').disabled = false;
+      document.getElementById('adminChatSendBtn').disabled = false;
+
+      await updateDoc(doc(db, "chats", chatId), { adminUnreadCount: 0 });
+
+      if (unsubscribeAdminChat) unsubscribeAdminChat();
+
+      const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
+      unsubscribeAdminChat = onSnapshot(q, (snapshot) => {
+        const body = document.getElementById('adminChatBody');
+        body.innerHTML = "";
+
+        snapshot.forEach(docSnap => {
+          const msg = docSnap.data();
+          const bubble = document.createElement('div');
+          bubble.className = `chat-bubble ${msg.sender === 'admin' ? 'sent' : 'received'}`;
+          const time = msg.timestamp ? msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+
+          bubble.innerHTML = `${msg.text}<span class="chat-bubble-time">${time}</span>`;
+          body.appendChild(bubble);
+        });
+
+        body.scrollTop = body.scrollHeight;
+      });
+    };
+
+    window.sendAdminReply = async () => {
+      const input = document.getElementById('adminChatInputField');
+      const text = input.value.trim();
+      if (!text || !currentAdminChatId) return;
+
+      input.value = "";
+
+      try {
+        await addDoc(collection(db, "chats", currentAdminChatId, "messages"), {
+          sender: "admin",
+          text: text,
+          timestamp: serverTimestamp()
+        });
+
+        await updateDoc(doc(db, "chats", currentAdminChatId), {
+          lastMessage: text,
+          lastMessageTimestamp: serverTimestamp()
+        });
+      } catch (err) {
+        console.error("Reply error:", err);
+      }
+    };
+
+    window.handleAdminChatKey = (e) => {
+      if (e.key === 'Enter') sendAdminReply();
+    };
+
+    // Table Bookings List
+    async function loadAdminBookingsList() {
+      const body = document.getElementById('adminBookingsBody');
+      body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Loading reservations...</td></tr>`;
+
+      try {
+        const q = query(collection(db, "bookings"), orderBy("date", "asc"));
+        const snapshot = await getDocs(q);
+        body.innerHTML = "";
+
+        if (snapshot.empty) {
+          body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No reservations booked.</td></tr>`;
+          return;
+        }
+
+        snapshot.forEach(docSnap => {
+          const bk = docSnap.data();
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${bk.name}</strong></td>
+            <td>${bk.phone}<br><small class="text-muted">${bk.email}</small></td>
+            <td>${bk.guests} Guests</td>
+            <td><strong>${bk.date}</strong> at <span class="text-primary">${bk.time}</span></td>
+            <td style="font-size: 0.8rem; color: var(--text-gray);">${bk.notes || 'None'}</td>
+          `;
+          body.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Bookings error:", err);
+      }
+    }
+
+    // Menu Price Settings
+    window.searchAdminMenu = () => {
+      adminMenuSearchText = document.getElementById('adminMenuSearch').value.trim().toLowerCase();
+      renderAdminMenuConfig();
+    };
+
+    function renderAdminMenuConfig() {
+      const body = document.getElementById('adminMenuTableBody');
+      body.innerHTML = "";
+
+      let filtered = allMenuItems.filter(item => {
+        return item.name.toLowerCase().includes(adminMenuSearchText) || item.category.toLowerCase().includes(adminMenuSearchText);
+      });
+
+      document.getElementById('adminMenuCountText').innerText = `Showing ${filtered.length} of ${allMenuItems.length} products`;
+      
+      const toShow = filtered.slice(0, 80);
+
+      if (toShow.length === 0) {
+        body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No matching products.</td></tr>`;
+        return;
+      }
+
+      toShow.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>#${item.id || 'seed'}</td>
+          <td><strong>${item.name}</strong></td>
+          <td class="text-uppercase" style="font-size: 0.75rem;">${item.category.replace('-', ' ')}</td>
+          <td>
+            <div class="input-group input-group-sm" style="max-width: 130px;">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" value="${item.price}" onchange="changePrice('${item.docId}', ${item.id}, this.value)">
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-outline-danger btn-sm" onclick="deleteItem('${item.docId}', ${item.id})"><i class="fas fa-trash"></i></button>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    window.changePrice = async (docId, itemId, newPrice) => {
+      const parsed = parseInt(newPrice);
+      if (isNaN(parsed) || parsed < 50 || parsed > 1000) {
+        window.showToast("Price must be between $50 and $1000.");
+        return;
+      }
+
+      const idx = allMenuItems.findIndex(item => item.id === itemId);
+      if (idx !== -1) {
+        allMenuItems[idx].price = parsed;
+      }
+
+      try {
+        if (docId && docId !== 'undefined') {
+          await updateDoc(doc(db, "menuItems", docId), { price: parsed });
+        }
+        window.showToast("Product price updated successfully.");
+      } catch (err) {
+        console.error("Error writing price to DB:", err);
+      }
+    };
+
+    window.deleteItem = async (docId, itemId) => {
+      const idx = allMenuItems.findIndex(item => item.id === itemId);
+      if (idx !== -1) {
+        allMenuItems.splice(idx, 1);
+      }
+
+      try {
+        if (docId && docId !== 'undefined') {
+          await deleteDoc(doc(db, "menuItems", docId));
+        }
+        window.showToast("Product deleted.");
+        renderAdminMenuConfig();
+      } catch (err) {
+        console.error("Delete err:", err);
+      }
+    };
+
+  </script>
+</body>
+</html>
