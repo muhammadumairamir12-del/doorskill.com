@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DoorSkill — Client Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --rose:#F43F5E;
+  --rose-lt:#FFE4EC;
+  --rose-md:#FB7185;
+  --pink-bg:#FFF0F5;
+  --dark:#1A0A14;
+  --mid:#5C3D4E;
+  --muted:#9D7589;
+  --border:#F3D6E0;
+  --green:#10B981;
+  --green-lt:#D1FAE5;
+  --yellow:#F59E0B;
+  --yellow-lt:#FEF3C7;
+  --blue:#3B82F6;
+  --blue-lt:#DBEAFE;
+  --red:#EF4444;
+  --red-lt:#FEE2E2;
+  --sidebar:#12070F;
+  --sidebar-w:240px;
+  --topbar-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#FFF5F7;
+  color:var(--dark);
+  display:flex;min-height:100vh;
+}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--sidebar);
+  min-height:100vh;position:fixed;
+  left:0;top:0;bottom:0;
+  display:flex;flex-direction:column;
+  z-index:200;transition:transform .3s;
+}
+.sb-logo{
+  padding:20px 18px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;
+}
+.sb-logo-txt{
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-weight:900;color:var(--rose);
+}
+.sb-logo-txt span{color:#fff;}
+.sb-badge-role{
+  margin-left:auto;font-size:10px;font-weight:700;
+  background:rgba(59,130,246,.25);color:#93C5FD;
+  padding:2px 8px;border-radius:999px;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.sb-nav{flex:1;padding:12px 0;overflow-y:auto;}
+.sb-section{
+  font-size:10px;font-weight:700;
+  color:rgba(255,255,255,.22);
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:14px 18px 6px;
+}
+.sb-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 18px;margin:2px 8px;
+  border-radius:10px;cursor:pointer;
+  font-size:14px;font-weight:500;
+  color:rgba(255,255,255,.5);
+  transition:all .2s;position:relative;
+  text-decoration:none;
+}
+.sb-item:hover{
+  background:rgba(59,130,246,.1);
+  color:rgba(255,255,255,.85);
+}
+.sb-item.active{
+  background:rgba(59,130,246,.18);color:#fff;
+}
+.sb-item.active::before{
+  content:'';position:absolute;
+  left:-8px;top:50%;transform:translateY(-50%);
+  width:3px;height:18px;
+  background:var(--blue);border-radius:2px;
+}
+.sb-icon{font-size:17px;width:20px;text-align:center;flex-shrink:0;}
+.sb-badge{
+  margin-left:auto;background:var(--rose);color:#fff;
+  font-size:10px;font-weight:700;
+  padding:2px 6px;border-radius:999px;
+  min-width:18px;text-align:center;
+}
+.sb-badge.blue{background:var(--blue);}
+.sb-bottom{
+  padding:12px 8px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.sb-profile{
+  display:flex;align-items:center;gap:10px;
+  padding:10px;border-radius:12px;cursor:pointer;
+}
+.sb-avatar{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),#1D4ED8);
+  display:flex;align-items:center;
+  justify-content:center;font-size:16px;
+  flex-shrink:0;overflow:hidden;
+}
+.sb-avatar img{width:100%;height:100%;object-fit:cover;}
+.sb-name{
+  font-size:13px;font-weight:600;color:#fff;
+  max-width:120px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;
+}
+.sb-role{font-size:11px;color:rgba(255,255,255,.3);}
+.sb-logout{
+  margin-left:auto;background:transparent;border:none;
+  color:rgba(255,255,255,.3);cursor:pointer;
+  font-size:16px;padding:4px;transition:color .2s;
+}
+.sb-logout:hover{color:var(--rose);}
+
+/* ══ MAIN ══ */
+.main{
+  margin-left:var(--sidebar-w);
+  flex:1;display:flex;flex-direction:column;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  height:var(--topbar-h);background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 24px;gap:14px;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-hamburger{
+  display:none;background:none;border:none;
+  font-size:22px;cursor:pointer;color:var(--dark);
+}
+.topbar-title{font-size:17px;font-weight:700;color:var(--dark);}
+.topbar-sub{font-size:13px;color:var(--muted);}
+.topbar-right{
+  margin-left:auto;display:flex;
+  align-items:center;gap:10px;
+}
+.post-job-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 18px;border:none;
+  border-radius:10px;background:var(--rose);
+  color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;text-decoration:none;
+}
+.post-job-btn:hover{
+  background:#e0334f;transform:translateY(-1px);
+}
+.notif-btn{
+  position:relative;background:transparent;
+  border:none;cursor:pointer;font-size:20px;
+  padding:6px;border-radius:8px;transition:background .2s;
+}
+.notif-btn:hover{background:var(--rose-lt);}
+.notif-count{
+  position:absolute;top:2px;right:2px;
+  width:16px;height:16px;background:var(--rose);
+  border-radius:50%;font-size:9px;font-weight:700;
+  color:#fff;display:flex;align-items:center;
+  justify-content:center;border:2px solid #fff;
+}
+
+/* ══ CONTENT ══ */
+.content{padding:24px;flex:1;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── STAT CARDS ── */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:14px;margin-bottom:22px;
+}
+.stat-card{
+  background:#fff;border-radius:14px;
+  border:1.5px solid var(--border);
+  padding:18px 16px;transition:all .2s;
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(244,63,94,.1);
+}
+.sc-top{
+  display:flex;align-items:center;
+  justify-content:space-between;margin-bottom:12px;
+}
+.sc-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;
+  justify-content:center;font-size:18px;
+}
+.sc-badge{
+  font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:999px;
+}
+.badge-green{background:var(--green-lt);color:#065F46;}
+.badge-yellow{background:var(--yellow-lt);color:#92400E;}
+.badge-blue{background:var(--blue-lt);color:#1E40AF;}
+.badge-red{background:var(--red-lt);color:#991B1B;}
+.sc-num{
+  font-size:26px;font-weight:800;color:var(--dark);line-height:1;
+}
+.sc-lbl{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* ── CARD ── */
+.card{
+  background:#fff;border-radius:14px;
+  border:1.5px solid var(--border);
+  padding:20px;margin-bottom:18px;
+}
+.card-head{
+  display:flex;align-items:center;
+  justify-content:space-between;margin-bottom:18px;
+}
+.card-title{font-size:15px;font-weight:700;color:var(--dark);}
+.card-action{
+  font-size:13px;color:var(--rose);font-weight:600;
+  background:transparent;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;text-decoration:none;
+}
+.card-action:hover{text-decoration:underline;}
+
+/* ── JOB CARD (my posted jobs) ── */
+.my-job-card{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:16px;margin-bottom:12px;
+  transition:all .2s;background:#fff;
+}
+.my-job-card:hover{
+  border-color:var(--blue);
+  box-shadow:0 4px 16px rgba(59,130,246,.1);
+}
+.my-job-card:last-child{margin-bottom:0;}
+.mjc-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;gap:12px;margin-bottom:8px;
+}
+.mjc-title{font-size:15px;font-weight:700;color:var(--dark);}
+.mjc-budget{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:900;color:var(--blue);
+  white-space:nowrap;
+}
+.mjc-meta{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;
+}
+.mjc-tag{font-size:12px;color:var(--muted);}
+.mjc-desc{
+  font-size:13px;color:var(--mid);line-height:1.6;
+  margin-bottom:12px;
+  display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;
+}
+.mjc-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.btn-primary{
+  padding:8px 16px;border:none;border-radius:8px;
+  background:var(--blue);color:#fff;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary:hover{background:#2563EB;transform:translateY(-1px);}
+.btn-danger{
+  padding:8px 14px;border:1.5px solid var(--red-lt);
+  border-radius:8px;background:transparent;
+  color:var(--red);font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-danger:hover{background:var(--red-lt);}
+.btn-outline{
+  padding:8px 14px;border:1.5px solid var(--border);
+  border-radius:8px;background:transparent;
+  color:var(--mid);font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+
+/* Status */
+.status{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;
+  padding:3px 10px;border-radius:999px;
+}
+.status::before{
+  content:'';width:5px;height:5px;border-radius:50%;
+}
+.st-open{background:var(--green-lt);color:#065F46;}
+.st-open::before{background:var(--green);}
+.st-pending{background:var(--yellow-lt);color:#92400E;}
+.st-pending::before{background:var(--yellow);}
+.st-hired{background:var(--blue-lt);color:#1E40AF;}
+.st-hired::before{background:var(--blue);}
+.st-done{background:#F3F4F6;color:#374151;}
+.st-done::before{background:#9CA3AF;}
+.st-closed{background:var(--red-lt);color:#991B1B;}
+.st-closed::before{background:var(--red);}
+
+/* ── BIDS LIST ── */
+.bid-card{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:16px;margin-bottom:12px;
+  transition:all .2s;
+}
+.bid-card:hover{
+  border-color:var(--rose-md);
+  box-shadow:0 4px 16px rgba(244,63,94,.1);
+}
+.bid-top{
+  display:flex;align-items:center;gap:12px;margin-bottom:10px;
+}
+.bid-avatar{
+  width:46px;height:46px;border-radius:12px;
+  background:var(--pink-bg);flex-shrink:0;
+  overflow:hidden;display:flex;align-items:center;
+  justify-content:center;font-size:20px;
+  border:2px solid var(--border);
+}
+.bid-avatar img{width:100%;height:100%;object-fit:cover;}
+.bid-worker-name{font-size:14px;font-weight:700;color:var(--dark);}
+.bid-worker-skills{font-size:12px;color:var(--muted);margin-top:2px;}
+.bid-rating{
+  display:flex;align-items:center;gap:4px;
+  font-size:12px;color:var(--muted);margin-top:2px;
+}
+.bid-price{
+  margin-left:auto;text-align:right;flex-shrink:0;
+}
+.bid-price-num{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:900;color:var(--rose);
+}
+.bid-price-type{font-size:11px;color:var(--muted);}
+.bid-message{
+  font-size:13px;color:var(--mid);line-height:1.6;
+  margin-bottom:12px;
+  background:var(--pink-bg);padding:10px 12px;
+  border-radius:8px;
+}
+.bid-time{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.bid-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-accept{
+  padding:9px 20px;border:none;border-radius:8px;
+  background:var(--green);color:#fff;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-accept:hover{background:#059669;transform:translateY(-1px);}
+.btn-reject{
+  padding:9px 14px;border:1.5px solid var(--red-lt);
+  border-radius:8px;background:transparent;
+  color:var(--red);font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-reject:hover{background:var(--red-lt);}
+
+/* ── TIMER ── */
+.timer-wrap{
+  display:none;
+  background:var(--yellow-lt);border:1.5px solid #FCD34D;
+  border-radius:10px;padding:12px 16px;
+  margin-bottom:12px;
+  align-items:center;gap:12px;
+}
+.timer-wrap.show{display:flex;}
+.timer-icon{font-size:22px;flex-shrink:0;}
+.timer-text{font-size:13px;color:#92400E;flex:1;}
+.timer-countdown{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:900;color:#92400E;
+  flex-shrink:0;
+}
+
+/* ── REVIEW MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,10,20,.55);
+  backdrop-filter:blur(5px);
+  z-index:9999;align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:#fff;border-radius:20px;
+  padding:32px;width:100%;max-width:440px;
+  margin:16px;
+  box-shadow:0 24px 60px rgba(0,0,0,.2);
+  max-height:90vh;overflow-y:auto;
+}
+.modal h3{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:900;color:var(--dark);
+  margin-bottom:6px;
+}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.fgroup{margin-bottom:16px;}
+.fgroup label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--mid);margin-bottom:7px;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.fgroup input,
+.fgroup textarea,
+.fgroup select{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  color:var(--dark);outline:none;transition:all .2s;background:#fff;
+}
+.fgroup input:focus,
+.fgroup textarea:focus{
+  border-color:var(--rose);
+  box-shadow:0 0 0 3px var(--rose-lt);
+}
+.fgroup textarea{resize:vertical;min-height:80px;line-height:1.6;}
+
+/* Star Rating Input */
+.star-rating{display:flex;gap:8px;margin-bottom:8px;}
+.star-btn{
+  font-size:28px;cursor:pointer;
+  transition:transform .15s;
+  background:none;border:none;
+  color:var(--border);padding:0;
+}
+.star-btn:hover,
+.star-btn.selected{color:#F59E0B;}
+.star-btn:hover{transform:scale(1.2);}
+
+.modal-btns{display:flex;gap:10px;margin-top:6px;}
+.btn-cancel{
+  flex:1;padding:12px;border:1.5px solid var(--border);
+  border-radius:10px;background:transparent;
+  color:var(--mid);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-cancel:hover{border-color:var(--rose);color:var(--rose);}
+.btn-submit-modal{
+  flex:2;padding:12px;border:none;
+  border-radius:10px;background:var(--rose);
+  color:#fff;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit-modal:hover{background:#e0334f;}
+.btn-submit-modal:disabled{opacity:.6;cursor:not-allowed;}
+
+/* ── PROFILE PAGE ── */
+.profile-card{
+  max-width:600px;margin:0 auto;
+}
+.profile-photo-wrap{
+  display:flex;align-items:center;gap:18px;margin-bottom:24px;
+}
+.profile-photo-circle{
+  width:80px;height:80px;border-radius:20px;
+  border:3px solid var(--blue-lt);overflow:hidden;
+  background:var(--pink-bg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;position:relative;cursor:pointer;
+}
+.profile-photo-circle input{
+  position:absolute;inset:0;opacity:0;cursor:pointer;
+}
+.profile-photo-circle img{
+  width:100%;height:100%;object-fit:cover;display:none;
+}
+.edit-section{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:18px;margin-bottom:14px;
+}
+.edit-section-title{
+  font-size:14px;font-weight:700;color:var(--dark);
+  margin-bottom:14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ── FIND WORKERS SHORTCUT ── */
+.shortcut-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:10px;margin-top:16px;
+}
+.shortcut-item{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:16px 10px;border-radius:12px;
+  border:1.5px solid var(--border);background:#fff;
+  cursor:pointer;transition:all .22s;text-align:center;
+  text-decoration:none;
+}
+.shortcut-item:hover{
+  border-color:var(--rose);background:var(--rose-lt);
+  transform:translateY(-2px);
+}
+.si-icon{font-size:24px;}
+.si-label{font-size:12px;font-weight:600;color:var(--mid);}
+.shortcut-item:hover .si-label{color:var(--rose);}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.empty-sub{font-size:13px;line-height:1.6;}
+.empty-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;padding:10px 20px;
+  border-radius:10px;background:var(--rose);
+  color:#fff;font-size:13px;font-weight:700;
+  text-decoration:none;transition:all .2s;border:none;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+.empty-btn:hover{background:#e0334f;}
+
+/* ── SPINNER ── */
+.spin{
+  width:36px;height:36px;
+  border:3px solid var(--rose-lt);
+  border-top-color:var(--rose);border-radius:50%;
+  animation:spin .7s linear infinite;margin:24px auto;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--dark);color:#fff;
+  padding:12px 18px;border-radius:10px;
+  font-size:14px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  border-left:3px solid var(--rose);
+  margin-bottom:12px;
+  background:var(--pink-bg);padding:10px 12px;
+  border-radius:8px;
+}
+.bid-time{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.bid-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-accept{
+  padding:9px 20px;border:none;border-radius:8px;
+  background:var(--green);color:#fff;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-accept:hover{background:#059669;transform:translateY(-1px);}
+.btn-reject{
+  padding:9px 14px;border:1.5px solid var(--red-lt);
+  border-radius:8px;background:transparent;
+  color:var(--red);font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-reject:hover{background:var(--red-lt);}
+
+/* ── TIMER ── */
+.timer-wrap{
+  display:none;
+  background:var(--yellow-lt);border:1.5px solid #FCD34D;
+  border-radius:10px;padding:12px 16px;
+  margin-bottom:12px;
+  align-items:center;gap:12px;
+}
+.timer-wrap.show{display:flex;}
+.timer-icon{font-size:22px;flex-shrink:0;}
+.timer-text{font-size:13px;color:#92400E;flex:1;}
+.timer-countdown{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:900;color:#92400E;
+  flex-shrink:0;
+}
+
+/* ── REVIEW MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,10,20,.55);
+  backdrop-filter:blur(5px);
+  z-index:9999;align-items:center;justify-content:center;
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:#fff;border-radius:20px;
+  padding:32px;width:100%;max-width:440px;
+  margin:16px;
+  box-shadow:0 24px 60px rgba(0,0,0,.2);
+  max-height:90vh;overflow-y:auto;
+}
+.modal h3{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:900;color:var(--dark);
+  margin-bottom:6px;
+}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.fgroup{margin-bottom:16px;}
+.fgroup label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--mid);margin-bottom:7px;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.fgroup input,
+.fgroup textarea,
+.fgroup select{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  color:var(--dark);outline:none;transition:all .2s;background:#fff;
+}
+.fgroup input:focus,
+.fgroup textarea:focus{
+  border-color:var(--rose);
+  box-shadow:0 0 0 3px var(--rose-lt);
+}
+.fgroup textarea{resize:vertical;min-height:80px;line-height:1.6;}
+
+/* Star Rating Input */
+.star-rating{display:flex;gap:8px;margin-bottom:8px;}
+.star-btn{
+  font-size:28px;cursor:pointer;
+  transition:transform .15s;
+  background:none;border:none;
+  color:var(--border);padding:0;
+}
+.star-btn:hover,
+.star-btn.selected{color:#F59E0B;}
+.star-btn:hover{transform:scale(1.2);}
+
+.modal-btns{display:flex;gap:10px;margin-top:6px;}
+.btn-cancel{
+  flex:1;padding:12px;border:1.5px solid var(--border);
+  border-radius:10px;background:transparent;
+  color:var(--mid);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-cancel:hover{border-color:var(--rose);color:var(--rose);}
+.btn-submit-modal{
+  flex:2;padding:12px;border:none;
+  border-radius:10px;background:var(--rose);
+  color:#fff;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit-modal:hover{background:#e0334f;}
+.btn-submit-modal:disabled{opacity:.6;cursor:not-allowed;}
+
+/* ── PROFILE PAGE ── */
+.profile-card{
+  max-width:600px;margin:0 auto;
+}
+.profile-photo-wrap{
+  display:flex;align-items:center;gap:18px;margin-bottom:24px;
+}
+.profile-photo-circle{
+  width:80px;height:80px;border-radius:20px;
+  border:3px solid var(--blue-lt);overflow:hidden;
+  background:var(--pink-bg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;position:relative;cursor:pointer;
+}
+.profile-photo-circle input{
+  position:absolute;inset:0;opacity:0;cursor:pointer;
+}
+.profile-photo-circle img{
+  width:100%;height:100%;object-fit:cover;display:none;
+}
+.edit-section{
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:18px;margin-bottom:14px;
+}
+.edit-section-title{
+  font-size:14px;font-weight:700;color:var(--dark);
+  margin-bottom:14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ── FIND WORKERS SHORTCUT ── */
+.shortcut-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:10px;margin-top:16px;
+}
+.shortcut-item{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:16px 10px;border-radius:12px;
+  border:1.5px solid var(--border);background:#fff;
+  cursor:pointer;transition:all .22s;text-align:center;
+  text-decoration:none;
+}
+.shortcut-item:hover{
+  border-color:var(--rose);background:var(--rose-lt);
+  transform:translateY(-2px);
+}
+.si-icon{font-size:24px;}
+.si-label{font-size:12px;font-weight:600;color:var(--mid);}
+.shortcut-item:hover .si-label{color:var(--rose);}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.empty-sub{font-size:13px;line-height:1.6;}
+.empty-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;padding:10px 20px;
+  border-radius:10px;background:var(--rose);
+  color:#fff;font-size:13px;font-weight:700;
+  text-decoration:none;transition:all .2s;border:none;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+.empty-btn:hover{background:#e0334f;}
+
+/* ── SPINNER ── */
+.spin{
+  width:36px;height:36px;
+  border:3px solid var(--rose-lt);
+  border-top-color:var(--rose);border-radius:50%;
+  animation:spin .7s linear infinite;margin:24px auto;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  background:var(--dark);color:#fff;
+  padding:12px 18px;border-radius:10px;
+  font-size:14px;font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  border-left:3px solid var(--rose);
+  transform:translateY(20px);opacity:0;
+  transition:all .3s;max-width:320px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .topbar-hamburger{display:block;}
+}
+@media(max-width:600px){
+  .content{padding:16px;}
+  .stats-row{grid-template-columns:1fr; gap:12px;}
+  .job-card{padding:16px;}
+  .job-top { flex-direction:column; align-items:flex-start; gap:4px; }
+  .job-actions { flex-direction:column; align-items:stretch; }
+  .btn-bid, .btn-view { width: 100%; justify-content:center; }
+  .modal { padding: 24px 16px; margin: 8px; }
+  .modal-btns { flex-direction:column; }
+  .bid-card { flex-direction:column; align-items:flex-start; gap:12px; }
+  .bc-left, .bc-right { width:100%; }
+  .bc-right { display:flex; flex-direction:column; gap:8px; align-items:stretch; }
+  .bc-right .btn-hire, .bc-right .btn-msg { width:100%; justify-content:center; }
+}
+
+/* ── NOTIFICATION PANEL ── */
+.notif-panel{
+  display:none;position:absolute;right:0;top:calc(100% + 8px);
+  width:340px;max-height:420px;overflow-y:auto;
+  background:#fff;border-radius:14px;
+  border:1.5px solid var(--border);
+  box-shadow:0 12px 40px rgba(0,0,0,.15);
+  z-index:9999;
+}
+.notif-panel.show{display:block;}
+.notif-panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  font-size:14px;
+}
+.notif-panel-body{max-height:340px;overflow-y:auto;}
+.notif-item{
+  display:flex;gap:10px;padding:12px 16px;
+  border-bottom:1px solid #FFF5F7;
+  cursor:pointer;transition:background .2s;
+}
+.notif-item:hover{background:#FFF0F5;}
+.notif-item.unread{background:#FFF5F7;border-left:3px solid var(--rose);}
+.notif-item-icon{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--rose-lt);display:flex;
+  align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.notif-item-content{flex:1;min-width:0;}
+.notif-item-title{font-size:13px;font-weight:700;color:var(--dark);}
+.notif-item-msg{font-size:12px;color:var(--mid);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.notif-item-time{font-size:10px;color:var(--muted);margin-top:4px;}
+@media(max-width:600px){
+  .notif-panel{width:calc(100vw - 24px);right:-12px;}
+}
+</style>
+<link rel="icon" href="../assets/logo.png" type="image/png"/>
+</head>
+<body>
+<!-- ------------------------------
+     SIDEBAR
+------------------------------ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+  <link rel="icon" href="../assets/logo.png" type="image/png"/>
+
+<!-- ══════════════════════════════
+     SIDEBAR
+══════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-txt">Door<span>Skill</span></div>
+    <div class="sb-badge-role">Client</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <a class="sb-item active" onclick="showPage('home',this)">
+      <span class="sb-icon">🏠</span> Dashboard
+    </a>
+    <a class="sb-item" onclick="showPage('myjobs',this)">
+      <span class="sb-icon">📋</span> My Jobs
+      <span class="sb-badge blue" id="jobsBadge">0</span>
+    </a>
+    <a class="sb-item" onclick="showPage('bids',this)">
+      <span class="sb-icon">📬</span> View Bids
+      <span class="sb-badge" id="bidsBadge">0</span>
+    </a>
+    <a class="sb-item" onclick="showPage('active',this)">
+      <span class="sb-icon">⚡</span> Active Jobs
+    </a>
+
+    <div class="sb-section">Discover</div>
+    <a class="sb-item"
+       href="../pages/find-workers.html">
+      <span class="sb-icon">🔍</span> Find Workers
+    </a>
+    <a class="sb-item"
+       href="../pages/post-job.html">
+      <span class="sb-icon">➕</span> Post a Job
+    </a>
+
+    <div class="sb-section">Account</div>
+    <a class="sb-item" onclick="showPage('history',this)">
+      <span class="sb-icon">📁</span> Job History
+    </a>
+    <a class="sb-item" onclick="showPage('profile',this)">
+      <span class="sb-icon">👤</span> My Profile
+    </a>
+  </nav>
+
+  <div class="sb-bottom">
+    <div class="sb-profile">
+      <div class="sb-avatar" id="sbAvatar">👤</div>
+      <div>
+        <div class="sb-name" id="sbName">Loading...</div>
+        <div class="sb-role">Client Account</div>
+      </div>
+      <button class="sb-logout"
+              onclick="doLogout()" title="Logout">⏻</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════
+     MAIN
+══════════════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="topbar-hamburger"
+            onclick="toggleSidebar()">☰</button>
+    <div>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-sub"  id="topbarSub">Welcome!</div>
+    </div>
+    <div class="topbar-right">
+      <a href="../pages/post-job.html"
+         class="post-job-btn">
+        ➕ Post a Job
+      </a>
+      <button class="notif-btn" onclick="toggleNotifPanel()">
+        🔔
+        <div class="notif-count" id="notifCount" style="display:none;">0</div>
+      </button>
+      <!-- Notification Panel -->
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-panel-head">
+          <strong>🔔 Notifications</strong>
+          <button onclick="markAllRead()" style="background:none;border:none;color:var(--rose);font-size:11px;font-weight:600;cursor:pointer;">Mark all read</button>
+        </div>
+        <div class="notif-panel-body" id="notifPanelBody">
+          <div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">No notifications</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════
+         PAGE: HOME
+    ══════════════════════════════ -->
+    <div class="page active" id="page-home">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:#DBEAFE;">📋</div>
+            <span class="sc-badge badge-blue">Total</span>
+          </div>
+          <div class="sc-num" id="stat-total">0</div>
+          <div class="sc-lbl">Jobs Posted</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:#FFF0F5;">📬</div>
+            <span class="sc-badge badge-yellow">New</span>
+          </div>
+          <div class="sc-num" id="stat-bids">0</div>
+          <div class="sc-lbl">New Bids</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:#D1FAE5;">✅</div>
+            <span class="sc-badge badge-green">Done</span>
+          </div>
+          <div class="sc-num" id="stat-done">0</div>
+          <div class="sc-lbl">Jobs Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-top">
+            <div class="sc-icon" style="background:#FEF3C7;">💰</div>
+            <span class="sc-badge badge-yellow">Spent</span>
+          </div>
+          <div class="sc-num" id="stat-spent">Rs.0</div>
+          <div class="sc-lbl">Total Spent</div>
+        </div>
+      </div>
+
+      <!-- Two col -->
+      <div style="display:grid;grid-template-columns:1fr 300px;
+                  gap:18px;flex-wrap:wrap;">
+
+        <!-- Recent Jobs -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">📋 My Recent Jobs</div>
+            <button class="card-action"
+                    onclick="showPage('myjobs',null)">
+              View All →
+            </button>
+          </div>
+          <div id="homeJobsList">
+            <div class="spin"></div>
+          </div>
+        </div>
+
+        <!-- Right Col -->
+        <div>
+          <!-- Quick Post -->
+          <div class="card">
+            <div class="card-title"
+                 style="margin-bottom:12px;">
+              🚀 Quick Actions
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <a href="../pages/post-job.html"
+                 style="display:flex;align-items:center;gap:10px;
+                        padding:12px;border-radius:10px;
+                        border:1.5px solid var(--border);
+                        text-decoration:none;transition:all .2s;"
+                 onmouseover="this.style.borderColor='var(--rose)'"
+                 onmouseout="this.style.borderColor='var(--border)'">
+                <span style="font-size:20px;">📋</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700;
+                               color:var(--dark);">Post a New Job</div>
+                  <div style="font-size:11px;color:var(--muted);">
+                    Get bids in minutes
+                  </div>
+                </div>
+              </a>
+              <a href="../pages/find-workers.html"
+                 style="display:flex;align-items:center;gap:10px;
+                        padding:12px;border-radius:10px;
+                        border:1.5px solid var(--border);
+                        text-decoration:none;transition:all .2s;"
+                 onmouseover="this.style.borderColor='var(--blue)'"
+                 onmouseout="this.style.borderColor='var(--border)'">
+                <span style="font-size:20px;">🔍</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700;
+                               color:var(--dark);">Find Workers</div>
+                  <div style="font-size:11px;color:var(--muted);">
+                    Search by skill near you
+                  </div>
+                </div>
+              </a>
+              <button onclick="showPage('bids',null)"
+                      style="display:flex;align-items:center;gap:10px;
+                             padding:12px;border-radius:10px;
+                             border:1.5px solid var(--border);
+                             background:transparent;cursor:pointer;
+                             width:100%;text-align:left;
+                             font-family:'DM Sans',sans-serif;
+                             transition:all .2s;"
+                      onmouseover="this.style.borderColor='var(--green)'"
+                      onmouseout="this.style.borderColor='var(--border)'">
+                <span style="font-size:20px;">📬</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700;
+                               color:var(--dark);">
+                    View Bids
+                    <span id="homeBidsBadge"
+                          style="background:var(--rose);color:#fff;
+                                 font-size:10px;padding:1px 6px;
+                                 border-radius:999px;margin-left:4px;">
+                      0
+                    </span>
+                  </div>
+                  <div style="font-size:11px;color:var(--muted);">
+                    Workers bidding on your jobs
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Find by category -->
+          <div class="card">
+            <div class="card-title"
+                 style="margin-bottom:10px;">
+              🔍 Browse by Category
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;
+                        gap:8px;">
+              <a href="../pages/find-workers.html?q=Plumber"
+                 class="shortcut-item">
+                <span class="si-icon">🪛</span>
+                <span class="si-label">Plumber</span>
+              </a>
+              <a href="../pages/find-workers.html?q=Electrician"
+                 class="shortcut-item">
+                <span class="si-icon">⚡</span>
+                <span class="si-label">Electrician</span>
+              </a>
+              <a href="../pages/find-workers.html?q=Doctor"
+                 class="shortcut-item">
+                <span class="si-icon">👨‍⚕️</span>
+                <span class="si-label">Doctor</span>
+              </a>
+              <a href="../pages/find-workers.html?q=Teacher"
+                 class="shortcut-item">
+                <span class="si-icon">📚</span>
+                <span class="si-label">Teacher</span>
+              </a>
+              <a href="../pages/find-workers.html?q=Laptop Repair"
+                 class="shortcut-item">
+                <span class="si-icon">💻</span>
+                <span class="si-label">IT Repair</span>
+              </a>
+              <a href="../pages/find-workers.html"
+                 class="shortcut-item">
+                <span class="si-icon">✨</span>
+                <span class="si-label">View All</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         PAGE: MY JOBS
+    ══════════════════════════════ -->
+    <div class="page" id="page-myjobs">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📋 My Posted Jobs</div>
+          <a href="../pages/post-job.html"
+             class="card-action">+ Post New Job</a>
+        </div>
+        <!-- Filters -->
+        <div style="display:flex;gap:8px;
+                    flex-wrap:wrap;margin-bottom:16px;">
+          <select id="jobStatusFilter"
+                  onchange="loadMyJobs()"
+                  style="padding:7px 12px;
+                         border:1.5px solid var(--border);
+                         border-radius:8px;font-size:13px;
+                         color:var(--mid);outline:none;
+                         background:#fff;cursor:pointer;">
+            <option value="">All Status</option>
+            <option value="open">Open</option>
+            <option value="hired">Hired</option>
+            <option value="done">Completed</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+        <div id="myJobsList">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         PAGE: VIEW BIDS
+    ══════════════════════════════ -->
+    <div class="page" id="page-bids">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📬 Bids on My Jobs</div>
+          <button class="card-action" onclick="loadBids()">
+            🔄 Refresh
+          </button>
+        </div>
+
+        <!-- Timer Banner -->
+        <div class="timer-wrap" id="timerWrap">
+          <div class="timer-icon">⏱️</div>
+          <div class="timer-text">
+            <strong>Worker accepted!</strong>
+            Time remaining to confirm or choose another:
+          </div>
+          <div class="timer-countdown" id="timerDisplay">20:00</div>
+        </div>
+
+        <div id="bidsList">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         PAGE: ACTIVE JOBS
+    ══════════════════════════════ -->
+    <div class="page" id="page-active">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">⚡ Active (Hired) Jobs</div>
+        </div>
+        <div id="activeJobsList">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         PAGE: HISTORY
+    ══════════════════════════════ -->
+    <div class="page" id="page-history">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📁 Completed Jobs</div>
+        </div>
+        <div id="historyList">
+          <div class="spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         PAGE: PROFILE
+    ══════════════════════════════ -->
+    <div class="page" id="page-profile">
+      <div class="profile-card">
+        <div class="card">
+
+          <!-- Photo -->
+          <div class="profile-photo-wrap">
+            <div class="profile-photo-circle" id="profilePhotoCircle">
+              <input type="file" id="profilePhotoFile"
+                     accept="image/*"
+                     onchange="previewProfilePhoto(this)"/>
+              <img id="profilePhotoImg" alt=""/>
+              <span id="profilePhotoEmoji">👤</span>
+            </div>
+            <div>
+              <div style="font-family:'Playfair Display',serif;
+                          font-size:20px;font-weight:900;
+                          color:var(--dark);"
+                   id="profileDisplayName">—</div>
+              <div style="font-size:13px;color:var(--muted);"
+                   id="profileDisplayEmail">—</div>
+              <div style="font-size:12px;color:var(--blue);
+                          margin-top:4px;font-weight:600;">
+                ✅ Client Account
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Form -->
+          <div class="edit-section">
+            <div class="edit-section-title">
+              👤 Personal Info
+            </div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>First Name</label>
+                <input type="text" id="editFirst"
+                       placeholder="First Name"/>
+              </div>
+              <div class="fgroup">
+                <label>Last Name</label>
+                <input type="text" id="editLast"
+                       placeholder="Last Name"/>
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Phone</label>
+              <input type="tel" id="editPhone"
+                     placeholder="+92 300 ..."/>
+            </div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>City</label>
+                <select id="editCity">
+                  <option>Karachi</option>
+                  <option>Lahore</option>
+                  <option>Islamabad</option>
+                  <option>Rawalpindi</option>
+                  <option>Faisalabad</option>
+                  <option>Multan</option>
+                  <option>Peshawar</option>
+                  <option>Quetta</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="fgroup">
+                <label>Gender</label>
+                <select id="editGender">
+                  <option value="">Prefer not to say</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Msg -->
+          <div id="profileMsg"
+               style="display:none;padding:11px 14px;
+                      border-radius:10px;font-size:13px;
+                      margin-bottom:14px;"></div>
+
+          <button onclick="saveProfile()"
+                  id="saveProfileBtn"
+                  style="width:100%;padding:13px;border:none;
+                         border-radius:10px;background:var(--rose);
+                         color:#fff;font-size:15px;font-weight:700;
+                         cursor:pointer;font-family:'DM Sans',sans-serif;
+                         transition:all .2s;">
+            💾 Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .content -->
+</div><!-- end .main -->
+
+<!-- ══════════════════════════════
+     REVIEW MODAL
+══════════════════════════════ -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <h3>⭐ Leave a Review</h3>
+    <div class="modal-sub">
+      Rate your experience with this worker
+    </div>
+
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;
+                  color:var(--dark);margin-bottom:12px;"
+           id="reviewWorkerName">Worker Name</div>
+      <div class="star-rating" style="justify-content:center;">
+        <button class="star-btn" onclick="setRating(1)">★</button>
+        <button class="star-btn" onclick="setRating(2)">★</button>
+        <button class="star-btn" onclick="setRating(3)">★</button>
+        <button class="star-btn" onclick="setRating(4)">★</button>
+        <button class="star-btn" onclick="setRating(5)">★</button>
+      </div>
+      <div id="ratingLabel"
+           style="font-size:13px;color:var(--muted);margin-top:6px;">
+        Tap a star to rate
+      </div>
+    </div>
+
+    <div class="fgroup">
+      <label>Your Review *</label>
+      <textarea id="reviewComment"
+                placeholder="Describe your experience — was the worker professional, on-time, skilled?"
+                rows="4" maxlength="300"></textarea>
+    </div>
+
+    <div id="reviewError"
+         style="display:none;padding:10px 14px;
+                background:var(--red-lt);color:#991B1B;
+                border-radius:8px;font-size:13px;margin-bottom:12px;">
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeReviewModal()">
+        Cancel
+      </button>
+      <button class="btn-submit-modal" id="reviewSubmitBtn"
+              onclick="submitReview()">
+        ⭐ Submit Review
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════
+     FIREBASE
+══════════════════════════════ -->
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc, getDoc, getDocs, updateDoc, addDoc,
+  collection, query, where, orderBy,
+  onSnapshot, serverTimestamp, deleteDoc, limit
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey:            "AIzaSyDLPAfokHz2ZHdRh8ppAEsdWHCkeloI1g0",
+  authDomain:        "doorskill-beff1.firebaseapp.com",
+  databaseURL:       "https://doorskill-beff1-default-rtdb.firebaseio.com",
+  projectId:         "doorskill-beff1",
+  storageBucket:     "doorskill-beff1.firebasestorage.app",
+  messagingSenderId: "620272735898",
+  appId:             "1:620272735898:web:b35d24737ef79c01a67123"
+});
+
+const auth    = getAuth(app);
+const db      = getFirestore(app);
+const storage = getStorage(app);
+
+let _uid     = null;
+let _client  = null;
+let _reviewData = {};
+let _selectedRating = 0;
+let _timerInterval  = null;
+
+// ── AUTH CHECK ──
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    window.location.href = '../auth/login.html';
+    return;
+  }
+  _uid = user.uid;
+
+  const snap = await getDoc(doc(db,'clients',_uid));
+  if(!snap.exists()){
+    window.location.href = '../auth/login.html';
+    return;
+  }
+
+  _client = snap.data();
+  localStorage.setItem('ds_uid',  _uid);
+  localStorage.setItem('ds_role', 'client');
+
+  initUI(_client);
+  loadMyJobs();
+  loadBids();
+  loadActiveJobs();
+  loadHistory();
+  listenBids();
+  loadNotifications();
+});
+
+// ── INIT UI ──
+function initUI(c){
+  document.getElementById('sbName').textContent =
+    c.fullName || 'Client';
+  document.getElementById('topbarSub').textContent =
+    'Welcome back, '+(c.firstName||'')+'!';
+
+  if(c.photoURL){
+    document.getElementById('sbAvatar').innerHTML =
+      `<img src="${c.photoURL}"
+            style="width:100%;height:100%;
+                   object-fit:cover;border-radius:10px;"/>`;
+    document.getElementById('profilePhotoImg').src = c.photoURL;
+    document.getElementById('profilePhotoImg').style.display='block';
+    document.getElementById('profilePhotoEmoji').style.display='none';
+  }
+
+  document.getElementById('profileDisplayName').textContent =
+    c.fullName||'—';
+  document.getElementById('profileDisplayEmail').textContent =
+    c.email||'—';
+
+  // Fill edit form
+  document.getElementById('editFirst').value  = c.firstName ||'';
+  document.getElementById('editLast').value   = c.lastName  ||'';
+  document.getElementById('editPhone').value  = c.phone     ||'';
+  document.getElementById('editCity').value   = c.city      ||'';
+  document.getElementById('editGender').value = c.gender    ||'';
+
+  // Stats
+  document.getElementById('stat-total').textContent =
+    c.totalJobs ||0;
+  document.getElementById('stat-done').textContent  =
+    c.totalDone ||0;
+  document.getElementById('stat-spent').textContent =
+    'Rs.'+(c.totalSpent||0).toLocaleString();
+}
+
+// ── LOAD MY JOBS ──
+window.loadMyJobs = async function(){
+  if(!_uid) return;
+  const container  = document.getElementById('myJobsList');
+  const homeList   = document.getElementById('homeJobsList');
+  container.innerHTML = '<div class="spin"></div>';
+  homeList.innerHTML  = '<div class="spin"></div>';
+
+  try {
+    const filterVal = document.getElementById('jobStatusFilter')?.value||'';
+    let q;
+    if(filterVal){
+      q = query(
+        collection(db,'jobs'),
+        where('clientId','==',_uid),
+        where('status','==',filterVal),
+        orderBy('createdAt','desc')
+      );
+    } else {
+      q = query(
+        collection(db,'jobs'),
+        where('clientId','==',_uid),
+        orderBy('createdAt','desc')
+      );
+    }
+
+    const snap = await getDocs(q);
+    let jobs   = [];
+    snap.forEach(d=> jobs.push({id:d.id,...d.data()}));
+
+    document.getElementById('jobsBadge').textContent  = jobs.length;
+    document.getElementById('stat-total').textContent = jobs.length;
+
+    if(jobs.length === 0){
+      const empty = `
+        <div class="empty">
+          <div class="empty-icon">📋</div>
+          <div class="empty-title">No jobs posted yet</div>
+          <div class="empty-sub">
+            Post your first job and get bids
+            from skilled workers near you!
+          </div>
+          <a href="../pages/post-job.html"
+             class="empty-btn">📋 Post a Job</a>
+        </div>`;
+      container.innerHTML = empty;
+      homeList.innerHTML  = empty;
+      return;
+    }
+
+    const html = jobs.map(j => myJobHTML(j)).join('');
+    container.innerHTML = html;
+    homeList.innerHTML  = jobs.slice(0,3).map(j=>myJobHTML(j)).join('');
+
+  } catch(err){
+    const errHtml = `
+      <div class="empty">
+        <div class="empty-title">⚠️ Could not load jobs</div>
+        <div class="empty-sub">${err.message}</div>
+      </div>`;
+    document.getElementById('myJobsList').innerHTML = errHtml;
+    document.getElementById('homeJobsList').innerHTML= errHtml;
+    console.error('Load jobs error:',err);
+  }
+};
+
+function myJobHTML(j){
+  const time = j.createdAt?.toDate ?
+    j.createdAt.toDate().toLocaleDateString() : '—';
+  const stMap = {
+    open:'st-open',hired:'st-hired',
+    done:'st-done',closed:'st-closed',pending:'st-pending'
+  };
+  const stCls = stMap[j.status] || 'st-open';
+  return `
+    <div class="my-job-card">
+      <div class="mjc-top">
+        <div class="mjc-title">${j.title||'Untitled'}</div>
+        <div class="mjc-budget">Rs.${(j.budget||0).toLocaleString()}</div>
+      </div>
+      <div class="mjc-meta">
+        <span class="mjc-tag">📂 ${j.category||'—'}</span>
+        <span class="mjc-tag">📍 ${j.city||'—'}</span>
+        <span class="mjc-tag">🕐 ${time}</span>
+        <span class="mjc-tag">👥 ${j.bidsCount||0} bids</span>
+      </div>
+      <div class="mjc-desc">${j.description||'—'}</div>
+      <div class="mjc-actions">
+        <span class="status ${stCls}">
+          ${capitalize(j.status||'Open')}
+        </span>
+        ${j.bidsCount > 0
+          ? `<button class="btn-primary"
+                     onclick="viewJobBids('${j.id}')">
+               📬 View ${j.bidsCount} Bid${j.bidsCount===1?'':'s'}
+             </button>`
+          : ''
+        }
+        ${j.status === 'hired'
+          ? `<button class="btn-outline"
+                     onclick="window.location.href='../pages/chat.html?job=${j.id}'">
+               💬 Chat
+             </button>`
+          : ''
+        }
+        ${j.status === 'done'
+          ? `<button class="btn-outline"
+                     onclick="openReviewModal('${j.id}','${(j.hiredWorkerName||'').replace(/'/g,"\\'")}','${j.hiredWorkerId||'')">
+               ⭐ Leave Review
+             </button>`
+          : ''
+        }
+        ${j.status === 'open'
+          ? `<button class="btn-danger"
+                     onclick="closeJob('${j.id}')">
+               🗑️ Close Job
+             </button>`
+          : ''
+        }
+      </div>
+    </div>`;
+}
+
+// ── VIEW JOB BIDS ──
+window.viewJobBids = function(jobId){
+  window._filterJobId = jobId;
+  showPage('bids', null);
+  loadBids(jobId);
+};
+
+// ── LOAD BIDS ──
+window.loadBids = async function(filterJobId){
+  if(!_uid) return;
+  const container = document.getElementById('bidsList');
+  container.innerHTML = '<div class="spin"></div>';
+
+  try {
+    let q;
+    if(filterJobId || window._filterJobId){
+      const jid = filterJobId || window._filterJobId;
+      q = query(
+        collection(db,'bids'),
+        where('jobId','==',jid),
+        where('status','==','pending'),
+        orderBy('createdAt','desc')
+      );
+    } else {
+      q = query(
+        collection(db,'bids'),
+        where('clientId','==',_uid),
+        where('status','==','pending'),
+        orderBy('createdAt','desc')
+      );
+    }
+
+    const snap = await getDocs(q);
+    let   html = '';
+    let   count= 0;
+
+    snap.forEach(d => {
+      const b = d.data();
+      count++;
+      const stars = '★'.repeat(Math.round(b.workerRating||0)) +
+                    '☆'.repeat(5-Math.round(b.workerRating||0));
+      const skillsStr = (b.workerSkills||[]).slice(0,2).join(', ');
+      html += `
+        <div class="bid-card" id="bid-${d.id}">
+          <div class="bid-top">
+            <div class="bid-avatar">
+              ${b.workerPhoto
+                ? `<img src="${b.workerPhoto}" alt=""/>`
+                : '👷'
+              }
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div class="bid-worker-name">
+                ${b.workerName||'Worker'}
+              </div>
+              <div class="bid-worker-skills">
+                ${skillsStr||'—'}
+              </div>
+              <div class="bid-rating">
+                <span style="color:#F59E0B;">${stars}</span>
+                <span>${(b.workerRating||0).toFixed(1)}</span>
+              </div>
+            </div>
+            <div class="bid-price">
+              <div class="bid-price-num">
+                Rs.${(b.myPrice||0).toLocaleString()}
+              </div>
+              <div class="bid-price-type">
+                ${b.timeEstimate||'—'}
+              </div>
+            </div>
+          </div>
+          <div class="bid-message">
+            💬 "${b.message||'—'}"
+          </div>
+          <div class="bid-time">
+            📂 Job: ${b.jobTitle||'—'}
+          </div>
+          <div class="bid-actions">
+            <button class="btn-accept"
+                    onclick="acceptBid('${d.id}','${b.workerId}','${(b.workerName||'').replace(/'/g,"\\'")}','${b.jobId}')">
+              ✅ Accept & Hire
+            </button>
+            <button class="btn-reject"
+                    onclick="rejectBid('${d.id}')">
+              ✗ Reject
+            </button>
+            <button class="btn-outline"
+                    onclick="window.location.href='../pages/find-workers.html?worker=${b.workerId}'">
+              👤 View Profile
+            </button>
+          </div>
+        </div>`;
+    });
+
+    document.getElementById('bidsBadge').textContent   = count;
+    document.getElementById('notifCount').textContent  = count;
+    document.getElementById('stat-bids').textContent   = count;
+    document.getElementById('homeBidsBadge').textContent = count;
+
+    container.innerHTML = html || `
+      <div class="empty">
+        <div class="empty-icon">📬</div>
+        <div class="empty-title">No pending bids</div>
+        <div class="empty-sub">
+          When workers bid on your jobs,
+          they will appear here.
+        </div>
+      </div>`;
+
+  } catch(err){
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-title">⚠️ Could not load bids</div>
+        <div class="empty-sub">${err.message}</div>
+      </div>`;
+    console.error('Load bids error:',err);
+  }
+};
+
+// ── LISTEN BIDS (real-time) ──
+function listenBids(){
+  if(!_uid) return;
+  try {
+    const q = query(
+      collection(db,'bids'),
+      where('clientId','==',_uid),
+      where('status','==','pending')
+    );
+    onSnapshot(q, snap => {
+      const count = snap.size;
+      document.getElementById('bidsBadge').textContent    = count;
+      document.getElementById('notifCount').textContent   = count;
+      document.getElementById('homeBidsBadge').textContent= count;
+    });
+  } catch(e){
+    console.log('Bid listener:',e.message);
+  }
+}
+
+// ── ACCEPT BID ──
+window.acceptBid = async function(bidId, workerId, workerName, jobId){
+  if(!confirm(`Hire ${workerName} for this job?\n\nYou will have ${window._WAIT_MINUTES||20} minutes to confirm.`)) return;
+
+  try {
+    // Update bid status
+    await updateDoc(doc(db,'bids',bidId),{
+      status: 'accepted',
+      acceptedAt: serverTimestamp(),
+    });
+
+    // Update job status
+    await updateDoc(doc(db,'jobs',jobId),{
+      status:          'hired',
+      hiredWorkerId:   workerId,
+      hiredWorkerName: workerName,
+      hiredBidId:      bidId,
+      hiredAt:         serverTimestamp(),
+    });
+
+    // Reject all other bids for this job
+    const otherBids = query(
+      collection(db,'bids'),
+      where('jobId','==',jobId),
+      where('status','==','pending')
+    );
+    const otherSnap = await getDocs(otherBids);
+    for(const d of otherSnap.docs){
+      if(d.id !== bidId){
+        await updateDoc(doc(db,'bids',d.id),{status:'rejected'});
+      }
+    }
+
+    // Start 20-minute timer
+    startTimer(jobId, bidId, workerId);
+
+    showToast('✅ Worker hired! You have '+
+      (window._WAIT_MINUTES||20)+' minutes to confirm.');
+    loadBids();
+    loadMyJobs();
+    loadActiveJobs();
+
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+    console.error('Accept bid error:',err);
+  }
+};
+
+// ── REJECT BID ──
+window.rejectBid = async function(bidId){
+  try {
+    await updateDoc(doc(db,'bids',bidId),{status:'rejected'});
+    document.getElementById('bid-'+bidId)?.remove();
+    showToast('🚫 Bid rejected.');
+    loadBids();
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+  }
+};
+
+// ── CLOSE JOB ──
+window.closeJob = async function(jobId){
+  if(!confirm('Close this job? Workers will not be able to bid anymore.')) return;
+  try {
+    await updateDoc(doc(db,'jobs',jobId),{
+      status:'closed', closedAt:serverTimestamp()
+    });
+    showToast('✅ Job closed.');
+    loadMyJobs();
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+  }
+};
+
+// ── TIMER (20 min) ──
+window._WAIT_MINUTES = 20;
+
+function startTimer(jobId, bidId, workerId){
+  const endTime = Date.now() + (window._WAIT_MINUTES * 60 * 1000);
+  const wrap    = document.getElementById('timerWrap');
+  wrap.classList.add('show');
+
+  if(_timerInterval) clearInterval(_timerInterval);
+
+  _timerInterval = setInterval(async () => {
+    const remaining = endTime - Date.now();
+    if(remaining <= 0){
+      clearInterval(_timerInterval);
+      wrap.classList.remove('show');
+      document.getElementById('timerDisplay').textContent = '00:00';
+      // Timer expired — reopen job
+      try {
+        await updateDoc(doc(db,'jobs',jobId),{
+          status:'open',
+          hiredWorkerId:null,
+          hiredWorkerName:null,
+        });
+        await updateDoc(doc(db,'bids',bidId),{
+          status:'expired'
+        });
+        showToast('⏰ Timer expired. You can now select another worker.');
+        loadBids();
+        loadActiveJobs();
+      } catch(e){
+        console.error('Timer expire error:',e);
+      }
+      return;
+    }
+    const mins = Math.floor(remaining/60000);
+    const secs = Math.floor((remaining%60000)/1000);
+    document.getElementById('timerDisplay').textContent =
+      String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
+  }, 1000);
+}
+
+// ── LOAD ACTIVE JOBS ──
+window.loadActiveJobs = async function(){
+  if(!_uid) return;
+  const container = document.getElementById('activeJobsList');
+  container.innerHTML = '<div class="spin"></div>';
+
+  try {
+    const q = query(
+      collection(db,'jobs'),
+      where('clientId','==',_uid),
+      where('status','==','hired')
+    );
+    const snap = await getDocs(q);
+    let   html = '';
+
+    snap.forEach(d => {
+      const j = d.data();
+      html += `
+        <div class="my-job-card">
+          <div class="mjc-top">
+            <div class="mjc-title">${j.title||'Job'}</div>
+            <div class="mjc-budget">
+              Rs.${(j.budget||0).toLocaleString()}
+            </div>
+          </div>
+          <div class="mjc-meta">
+            <span class="mjc-tag">👷 ${j.hiredWorkerName||'Worker'}</span>
+            <span class="mjc-tag">📂 ${j.category||'—'}</span>
+          </div>
+          <div class="mjc-actions">
+            <span class="status st-hired">Hired</span>
+            <button class="btn-primary"
+                    onclick="window.location.href='../pages/chat.html?job=${d.id}&worker=${j.hiredWorkerId}'">
+              💬 Chat with Worker
+            </button>
+            <button class="btn-outline"
+                    style="background:var(--blue-lt);
+                           border-color:var(--blue);color:var(--blue);"
+                    onclick="window.location.href='../pages/call.html?job=${d.id}&worker=${j.hiredWorkerId}'">
+              📞 Call Worker
+            </button>
+            <button class="btn-accept"
+                    onclick="markDone('${d.id}','${j.hiredWorkerId}','${(j.hiredWorkerName||'').replace(/'/g,"\\'")}')">
+              ✅ Mark Done
+            </button>
+          </div>
+        </div>`;
+    });
+
+    container.innerHTML = html || `
+      <div class="empty">
+        <div class="empty-icon">⚡</div>
+        <div class="empty-title">No active jobs</div>
+        <div class="empty-sub">
+          When you hire a worker,
+          the job appears here.
+        </div>
+      </div>`;
+
+  } catch(err){
+    console.error('Active jobs error:',err);
+  }
+};
+
+// ── MARK JOB DONE ──
+window.markDone = async function(jobId, workerId, workerName){
+  if(!confirm(`Mark job as completed?\nThis will open the review screen for ${workerName}.`)) return;
+
+  try {
+    await updateDoc(doc(db,'jobs',jobId),{
+      status:'done', doneAt:serverTimestamp()
+    });
+
+    // Update bids to done
+    const bidQ = query(
+      collection(db,'bids'),
+      where('jobId','==',jobId),
+      where('workerId','==',workerId)
+    );
+    const bidSnap = await getDocs(bidQ);
+    for(const d of bidSnap.docs){
+      await updateDoc(doc(db,'bids',d.id),{
+        status:'done', completedAt:serverTimestamp()
+      });
+    }
+
+    showToast('✅ Job marked as done!');
+    openReviewModal(jobId, workerName, workerId);
+    loadActiveJobs();
+    loadMyJobs();
+
+  } catch(err){
+    showToast('❌ Error: '+err.message);
+    console.error('Mark done error:',err);
+  }
+};
+
+// ── LOAD HISTORY ──
+window.loadHistory = async function(){
+  if(!_uid) return;
+  const container = document.getElementById('historyList');
+  container.innerHTML = '<div class="spin"></div>';
+
+  try {
+    const q = query(
+      collection(db,'jobs'),
+      where('clientId','==',_uid),
+      where('status','==','done'),
+      orderBy('doneAt','desc')
+    );
+    const snap = await getDocs(q);
+    let   html = '';
+    let   total= 0;
+    let   spent= 0;
+
+    snap.forEach(d => {
+      const j = d.data();
+      total++;
+      spent += (j.budget||0);
+      const date = j.doneAt?.toDate ?
+        j.doneAt.toDate().toLocaleDateString() : '—';
+      html += `
+        <div class="my-job-card">
+          <div class="mjc-top">
+            <div class="mjc-title">${j.title||'Job'}</div>
+            <div class="mjc-budget">
+              Rs.${(j.budget||0).toLocaleString()}
+            </div>
+          </div>
+          <div class="mjc-meta">
+            <span class="mjc-tag">
+              👷 ${j.hiredWorkerName||'Worker'}
+            </span>
+            <span class="mjc-tag">📅 Done: ${date}</span>
+          </div>
+          <div class="mjc-actions">
+            <span class="status st-done">Completed</span>
+            <button class="btn-outline"
+                    onclick="openReviewModal('${d.id}','${(j.hiredWorkerName||'').replace(/'/g,"\\'")}','${j.hiredWorkerId||'')">
+              ⭐ Review
+            </button>
+          </div>
+        </div>`;
+    });
+
+    document.getElementById('stat-done').textContent  = total;
+    document.getElementById('stat-spent').textContent =
+      'Rs.'+spent.toLocaleString();
+
+    container.innerHTML = html || `
+      <div class="empty">
+        <div class="empty-icon">📁</div>
+        <div class="empty-title">No completed jobs yet</div>
+        <div class="empty-sub">
+          Completed jobs will appear here.
+        </div>
+      </div>`;
+
+  } catch(err){
+    console.error('History error:',err);
+  }
+};
+
+// ── REVIEW MODAL ──
+window.openReviewModal = function(jobId, workerName, workerId){
+  _reviewData = {jobId, workerName, workerId};
+  _selectedRating = 0;
+  document.getElementById('reviewWorkerName').textContent =
+    workerName || 'Worker';
+  document.getElementById('reviewComment').value = '';
+  document.getElementById('reviewError').style.display = 'none';
+  document.getElementById('ratingLabel').textContent = 'Tap a star to rate';
+  document.querySelectorAll('.star-btn').forEach(s=>
+    s.classList.remove('selected'));
+  document.getElementById('reviewModal').classList.add('show');
+};
+
+window.closeReviewModal = function(){
+  document.getElementById('reviewModal').classList.remove('show');
+};
+
+window.setRating = function(n){
+  _selectedRating = n;
+  const labels = ['','Poor','Fair','Good','Very Good','Excellent!'];
+  document.getElementById('ratingLabel').textContent =
+    '★'.repeat(n) + ' — ' + labels[n];
+  document.querySelectorAll('.star-btn').forEach((s,i)=>{
+    s.classList.toggle('selected', i < n);
+  });
+};
+
+window.submitReview = async function(){
+  const comment = document.getElementById('reviewComment').value.trim();
+  const errEl   = document.getElementById('reviewError');
+  const btn     = document.getElementById('reviewSubmitBtn');
+
+  if(_selectedRating === 0){
+    errEl.textContent = 'Please select a star rating.';
+    errEl.style.display = 'block'; return;
+  }
+  if(!comment){
+    errEl.textContent = 'Please write a review comment.';
+    errEl.style.display = 'block'; return;
+  }
+  if(comment.length < 10){
+    errEl.textContent = 'Review too short. Write at least 10 characters.';
+    errEl.style.display = 'block'; return;
+  }
+
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    // Save review
+    await addDoc(collection(db,'reviews'),{
+      jobId:      _reviewData.jobId,
+      workerId:   _reviewData.workerId,
+      workerName: _reviewData.workerName,
+      clientId:   _uid,
+      clientName: _client?.fullName || 'Client',
+      rating:     _selectedRating,
+      comment,
+      createdAt:  serverTimestamp(),
+    });
+
+    // Update worker rating average
+    const workerRef = doc(db,'workers',_reviewData.workerId);
+    const workerSnap= await getDoc(workerRef);
+    if(workerSnap.exists()){
+      const wd     = workerSnap.data();
+      const newTotal= (wd.totalReviews||0) + 1;
+      const newAvg  =
+        ((wd.rating||0)*(wd.totalReviews||0) + _selectedRating)
+        / newTotal;
+      await updateDoc(workerRef,{
+        rating:       Math.round(newAvg*10)/10,
+        totalReviews: newTotal,
+      });
+    }
+
+    closeReviewModal();
+    showToast('⭐ Review submitted! Thank you.');
+
+  } catch(err){
+    errEl.textContent = '❌ '+err.message;
+    errEl.style.display = 'block';
+    console.error('Review error:',err);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML= '⭐ Submit Review';
+  }
+};
+
+// ── SAVE PROFILE ──
+window.saveProfile = async function(){
+  if(!_uid) return;
+  const btn   = document.getElementById('saveProfileBtn');
+  const msgEl = document.getElementById('profileMsg');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+
+  try {
+    let photoURL = _client?.photoURL || '';
+    const pFile  = document.getElementById('profilePhotoFile').files[0];
+    if(pFile){
+      const pRef = ref(storage,`clients/${_uid}/profile.jpg`);
+      await uploadBytes(pRef, pFile);
+      photoURL = await getDownloadURL(pRef);
+    }
+
+    const first = document.getElementById('editFirst').value.trim();
+    const last  = document.getElementById('editLast').value.trim();
+
+    const updates = {
+      firstName: first,
+      lastName:  last,
+      fullName:  first+' '+last,
+      phone:     document.getElementById('editPhone').value.trim(),
+      city:      document.getElementById('editCity').value,
+      gender:    document.getElementById('editGender').value,
+      photoURL,
+      updatedAt: serverTimestamp(),
+    };
+
+    await updateDoc(doc(db,'clients',_uid), updates);
+    _client = {..._client,...updates};
+    localStorage.setItem('ds_name', first+' '+last);
+
+    msgEl.style.display    = 'block';
+    msgEl.style.background = 'var(--green-lt)';
+    msgEl.style.color      = '#065F46';
+    msgEl.textContent      = '✅ Profile saved!';
+    initUI(_client);
+    showToast('✅ Profile updated!');
+    setTimeout(()=>msgEl.style.display='none', 4000);
+
+  } catch(err){
+    msgEl.style.display    = 'block';
+    msgEl.style.background = 'var(--red-lt)';
+    msgEl.style.color      = '#991B1B';
+    msgEl.textContent      = '❌ '+err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Save Changes';
+  }
+};
+
+// ── LOGOUT ──
+window.doLogout = async function(){
+  if(confirm('Logout from DoorSkill?')){
+    if(_timerInterval) clearInterval(_timerInterval);
+    await signOut(auth);
+    localStorage.clear();
+    window.location.href = '../auth/login.html';
+  }
+};
+
+// ── TOAST ──
+window.showToast = function(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 4000);
+};
+
+function capitalize(s){
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
+window.previewProfilePhoto = function(input){
+  const file = input.files[0];
+  if(!file) return;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById('profilePhotoImg');
+  const ico = document.getElementById('profilePhotoEmoji');
+  img.src = url;
+  img.style.display = 'block';
+  ico.style.display = 'none';
+};
+
+console.log('✅ DoorSkill Client Dashboard loaded!');
+</script>
+
+<!-- ── UI SCRIPT ── -->
+<script>
+const pageMeta = {
+  home:    ['Dashboard',    'Your overview'],
+  myjobs:  ['My Jobs',      'Jobs you have posted'],
+  bids:    ['View Bids',    'Workers bidding on your jobs'],
+  active:  ['Active Jobs',  'Currently in-progress jobs'],
+  history: ['Job History',  'Completed jobs'],
+  profile: ['My Profile',   'Edit your account details'],
+};
+
+window.showPage = function(name, el){
+  document.querySelectorAll('.page')
+          .forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+
+  document.querySelectorAll('.sb-item')
+          .forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  const meta = pageMeta[name]||[name,''];
+  document.getElementById('topbarTitle').textContent = meta[0];
+  document.getElementById('topbarSub').textContent   = meta[1];
+
+  document.getElementById('sidebar').classList.remove('open');
+
+  if(name==='myjobs')  loadMyJobs();
+  if(name==='bids')    loadBids();
+  if(name==='active')  loadActiveJobs();
+  if(name==='history') loadHistory();
+};
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  const sb = document.getElementById('sidebar');
+  if(sb.classList.contains('open') &&
+     !sb.contains(e.target) &&
+     !e.target.closest('.topbar-hamburger')){
+    sb.classList.remove('open');
+  }
+});
+
+// Close review modal on backdrop
+document.getElementById('reviewModal').addEventListener('click', e=>{
+  if(e.target === document.getElementById('reviewModal')){
+    closeReviewModal();
+  }
+});
+// ── NOTIFICATIONS SYSTEM ──
+let _notifs = [];
+
+window.loadNotifications = async function(){
+  if(!_uid) return;
+  try {
+    const snap = await getDocs(
+      query(collection(db,'notifications'),
+        where('uid','==',_uid),
+        orderBy('createdAt','desc'),
+        limit(30)
+      )
+    );
+    _notifs = [];
+    snap.forEach(d => _notifs.push({id:d.id,...d.data()}));
+    renderNotifications();
+  } catch(e){
+    console.error('loadNotifications:', e);
+  }
+};
+
+function renderNotifications(){
+  const unread = _notifs.filter(n=>!n.read).length;
+  const countEl = document.getElementById('notifCount');
+  if(unread > 0){
+    countEl.style.display = 'flex';
+    countEl.textContent = unread > 9 ? '9+' : unread;
+  } else {
+    countEl.style.display = 'none';
+  }
+
+  const body = document.getElementById('notifPanelBody');
+  if(!_notifs.length){
+    body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">📭 No notifications yet</div>';
+    return;
+  }
+
+  body.innerHTML = _notifs.map(n => {
+    const ts = n.createdAt?.seconds ? ntTimeAgo(n.createdAt.seconds) : '';
+    return `
+    <div class="notif-item ${n.read?'':'unread'}" onclick="openNotif('${n.id}')">
+      <div class="notif-item-icon">📢</div>
+      <div class="notif-item-content">
+        <div class="notif-item-title">${n.title||'Notification'}</div>
+        <div class="notif-item-msg">${n.message||''}</div>
+        <div class="notif-item-time">${ts}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function ntTimeAgo(seconds){
+  const diff = Math.floor(Date.now()/1000 - seconds);
+  if(diff < 60) return 'Just now';
+  if(diff < 3600) return Math.floor(diff/60)+'m ago';
+  if(diff < 86400) return Math.floor(diff/3600)+'h ago';
+  return Math.floor(diff/86400)+'d ago';
+}
+
+window.toggleNotifPanel = function(){
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('show');
+};
+
+window.openNotif = async function(nid){
+  try {
+    await updateDoc(doc(db,'notifications',nid), {read:true});
+    _notifs = _notifs.map(n=>n.id===nid?{...n,read:true}:n);
+    renderNotifications();
+  } catch(e){ console.error(e); }
+  document.getElementById('notifPanel').classList.remove('show');
+  showPage('home',null);
+};
+
+window.markAllRead = async function(){
+  try {
+    const unread = _notifs.filter(n=>!n.read);
+    await Promise.all(unread.map(n=>
+      updateDoc(doc(db,'notifications',n.id), {read:true})
+    ));
+    _notifs = _notifs.map(n=>({...n,read:true}));
+    renderNotifications();
+    showToast('✅ All notifications marked as read');
+  } catch(e){ console.error(e); }
+};
+
+// Close notif panel on outside click
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notifPanel');
+  const btn = e.target.closest('.notif-btn');
+  if(!btn && panel && !panel.contains(e.target)){
+    panel.classList.remove('show');
+  }
+});
+</script>
+<script src="../assets/ai-helper.js"></script>
+</body>
+</html>
